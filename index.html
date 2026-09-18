@@ -1,1 +1,40 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>DIVINE-VICK TIPS</title><style>body{background:#0a1929;color:#fff;font-family:sans-serif;text-align:center;padding:20px}h1{color:#00ff88}.card{background:#132f4c;margin:12px auto;padding:15px;border-radius:12px;max-width:350px}button{background:#00ff88;color:#000;padding:10px;border:none;border-radius:8px;font-weight:bold}</style></head><body><h1>DIVINE-VICK 👑</h1><p>50 Daily Banker Tips - Loading...</p><div class="card"><b>Man City vs Arsenal</b><br>Over 2.5 - 85%<br><button>View</button></div><div class="card"><b>Barca vs Real Madrid</b><br>BTTS Yes - 78%<br><button>View</button></div><p>Site is LIVE!</p></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIVINE-VICK - 50 Daily Banker Tips</title>
+<style>
+body{background:#0a0a0a;color:#fff;font-family:Arial;padding:10px;margin:0}
+h1{text-align:center;color:#00ff88;text-shadow:0 0 10px #00ff88}
+#date{text-align:center;color:#aaa;margin-bottom:15px}
+.tip{background:#1a1a1a;border-left:4px solid #00ff88;margin:8px 0;padding:12px;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
+.tip b{color:#fff}
+.tip span{background:#00ff88;color:#000;padding:4px 8px;border-radius:12px;font-size:12px;font-weight:bold}
+.loading{text-align:center;margin-top:50px;color:#00ff88}
+</style>
+</head>
+<body>
+<h1>👑 DIVINE-VICK 👑<br>50 Daily Banker Tips</h1>
+<div id="date">Loading...</div>
+<div id="tips" class="loading">Loading 50 banker tips... ⚽</div>
+<script>
+async function loadTips(){
+ try{
+  const res = await fetch('/api/update');
+  const data = await res.json();
+  document.getElementById('date').innerText = `📅 ${data.date} | Total: ${data.total} Tips`;
+  const html = data.tips.map(t=>`
+    <div class="tip">
+      <div><b>${t.id}. ${t.match}</b><br><small>${t.tip}</small></div>
+      <span>${t.confidence}</span>
+    </div>`).join('');
+  document.getElementById('tips').className='';
+  document.getElementById('tips').innerHTML = html;
+ }catch(e){
+  document.getElementById('tips').innerHTML = "Failed to load. Refresh page.";
+ }
+}
+loadTips();
+</script>
+</body>
+</html>
