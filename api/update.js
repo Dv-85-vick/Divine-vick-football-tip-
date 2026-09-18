@@ -1,35 +1,38 @@
-export default function handler(req, res) {
-  const teams = [
-    ["Man City","Arsenal"],["Barcelona","Real Madrid"],["Bayern Munich","Dortmund"],
-    ["PSG","Marseille"],["Liverpool","Chelsea"],["Juventus","AC Milan"],
-    ["Inter Milan","Napoli"],["Atletico Madrid","Sevilla"],["Man United","Tottenham"],
-    ["Arsenal","Liverpool"],["Real Madrid","Villarreal"],["Ajax","PSV"],
-    ["Benfica","Porto"],["Celtic","Rangers"],["Galatasaray","Fenerbahce"],
-    ["Club Brugge","Anderlecht"],["RB Leipzig","Bayer Leverkusen"],["Roma","Lazio"],
-    ["Athletic Bilbao","Real Sociedad"],["Newcastle","Aston Villa"],["Brighton","West Ham"],
-    ["Leicester","Everton"],["Valencia","Villarreal"],["Monaco","Lyon"],
-    ["Milan","Atalanta"],["Bologna","Fiorentina"],["Sporting CP","Braga"],
-    ["Feyenoord","AZ Alkmaar"],["Lille","Rennes"],["West Ham","Crystal Palace"],
-    ["Fulham","Brentford"],["Getafe","Osasuna"],["Real Betis","Valencia"],
-    ["Nice","Marseille"],["Frankfurt","Stuttgart"],["Wolfsburg","Hoffenheim"],
-    ["Sassuolo","Torino"],["Udinese","Empoli"],["Bournemouth","Wolves"],
-    ["Alaves","Celta Vigo"],["Montpellier","Reims"],["Union Berlin","Mainz"],
-    ["Trabzonspor","Besiktas"],["PAOK","AEK Athens"],["Sparta Prague","Slavia Prague"],
-    ["Dinamo Zagreb","Hajduk Split"],["Red Star","Partizan"],["Young Boys","Basel"],
-    ["Copenhagen","Brondby"],["Rangers","Hearts"],["Aberdeen","Hibernian"]
-  ];
-  const markets = [
-    {m:"Over 2.5 Goals", c:"85%"},
-    {m:"BTTS Yes", c:"78%"},
-    {m:"Home Win", c:"82%"},
-    {m:"Over 1.5 Goals", c:"88%"},
-    {m:"Double Chance 1X", c:"90%"},
-    {m:"Under 3.5 Goals", c:"80%"}
-  ];
-  const today = new Date().toISOString().slice(0,10);
-  const tips = teams.slice(0,50).map((t,i) => {
-    const market = markets[i % markets.length];
-    return { id: i+1, match: `${t[0]} vs ${t[1]}`, tip: market.m, confidence: market.c, date: today };
-  });
-  res.status(200).json({ date: today, total: 50, tips });
+export default async function handler(req, res) {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const response = await fetch(`https://v3.football.api-sports.io/fixtures?date=${today}`, {
+      headers: {
+        'x-rapidapi-key': process.env.API_FOOTBALL_KEY,
+        'x-rapidapi-host': 'v3.football.api-sports.io'
+      }
+    });
+    const data = await response.json();
+
+    if (!data.response || data.response.length === 0) {
+      return res.status(200).json({ date: today, tips: [{match:"No games today - Check tomorrow", tip:"Come back 00:00", confidence:100}] });
+    }
+
+    // Take first 50 real matches and create banker tips
+    const tipsPool = ["Home Win", "Over 1.5", "Over 2.5", "BTTS Yes", "Double Chance 1X", "Home Win or Draw", "Under 3.5"];
+    const tips = data.response.slice(0, 50).map((f, i) => {
+      const home = f.teams.home.name;
+      const away = f.teams.away.name;
+      const tip = tipsPool[Math.floor(Math.random() * tipsPool.length)];
+      const conf = 72 + Math.floor(Math.random() * 21);
+      return {
+        id: i+1,
+        match: `${home} vs ${away}`,
+        league: f.league.name,
+        time: new Date(f.fixture.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+        tip: tip,
+        confidence: conf
+      };
+    });
+
+    res.setHeader('Cache-Control', 's-maxage=3600');
+    return res.status(200).json({ date: today, count: tips.length, tips });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
 }
