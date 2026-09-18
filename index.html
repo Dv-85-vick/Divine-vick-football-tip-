@@ -1,40 +1,55 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DIVINE-VICK - 50 Daily Banker Tips</title>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DIVINE-VICK 50 Tips</title>
 <style>
-body{background:#0a0a0a;color:#fff;font-family:Arial;padding:10px;margin:0}
-h1{text-align:center;color:#00ff88;text-shadow:0 0 10px #00ff88}
-#date{text-align:center;color:#aaa;margin-bottom:15px}
-.tip{background:#1a1a1a;border-left:4px solid #00ff88;margin:8px 0;padding:12px;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
-.tip b{color:#fff}
-.tip span{background:#00ff88;color:#000;padding:4px 8px;border-radius:12px;font-size:12px;font-weight:bold}
-.loading{text-align:center;margin-top:50px;color:#00ff88}
-</style>
-</head>
-<body>
-<h1>👑 DIVINE-VICK 👑<br>50 Daily Banker Tips</h1>
-<div id="date">Loading...</div>
-<div id="tips" class="loading">Loading 50 banker tips... ⚽</div>
+body{background:#080808;color:#fff;font-family:Arial;padding:12px;margin:0}
+h1{color:#00ff88;text-align:center;text-shadow:0 0 12px #00ff88;font-size:22px}
+#info{text-align:center;color:#aaa;margin:10px;font-size:13px}
+.card{background:#151515;border:1px solid #222;border-left:4px solid #00ff88;padding:12px;margin:10px 0;border-radius:10px}
+.league{color:#888;font-size:11px}
+.match{font-size:14px;font-weight:bold;margin:6px 0}
+.grid{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
+.box{background:#222;padding:5px 8px;border-radius:6px;font-size:12px}
+.box b{color:#00ff88}
+.reason{background:#0f0f0f;padding:8px;border-radius:6px;font-size:11px;color:#ccc;margin-top:6px}
+.stats{background:#101010;border:1px dashed #333;padding:8px;border-radius:6px;margin-top:8px;font-size:11px}
+.stats b{color:#ffcc00}
+.badge{background:#00ff88;color:#000;padding:3px 9px;border-radius:12px;font-weight:bold;font-size:12px;float:right}
+.wa-btn{background:#25D366;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;font-weight:bold;margin-top:8px;width:100%;cursor:pointer}
+.wa-top{background:#25D366;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:bold;width:100%;margin:10px 0;cursor:pointer}
+</style></head><body>
+<h1>DIVINE-VICK<br>50 Daily Banker Tips</h1>
+<div id="info">Loading...</div>
+<button class="wa-top" onclick="shareAll()">📲 Share All Tips on WhatsApp</button>
+<div id="list"></div>
 <script>
-async function loadTips(){
- try{
-  const res = await fetch('/api/update');
-  const data = await res.json();
-  document.getElementById('date').innerText = `📅 ${data.date} | Total: ${data.total} Tips`;
-  const html = data.tips.map(t=>`
-    <div class="tip">
-      <div><b>${t.id}. ${t.match}</b><br><small>${t.tip}</small></div>
-      <span>${t.confidence}</span>
-    </div>`).join('');
-  document.getElementById('tips').className='';
-  document.getElementById('tips').innerHTML = html;
- }catch(e){
-  document.getElementById('tips').innerHTML = "Failed to load. Refresh page.";
- }
+let allTips=[];
+async function load(){
+  const r=await fetch('/api/update'); const d=await r.json(); allTips=d.tips;
+  document.getElementById('info').innerHTML=`📅 ${d.date} | Total: ${d.tips.length} Tips`;
+  document.getElementById('list').innerHTML=d.tips.map((t,i)=>{
+    const msg=encodeURIComponent(`🔥 DIVINE-VICK TIP ${i+1}\n⚽ ${t.match}\nTip: ${t.tip} @${t.odd}\n📊 Stats: Form ${t.stats.homeForm}\n👉 https://divine-vick-football-tip.vercel.app`);
+    return `<div class="card">
+      <span class="badge">${t.confidence}%</span>
+      <div class="league">${t.league}</div>
+      <div class="match">${i+1}. ${t.match}</div>
+      <div style="font-size:12px">📅 ${t.date} | 🕒 ${t.time}</div>
+      <div class="grid"><div class="box">Tip: <b>${t.tip}</b></div><div class="box">Odd: <b>${t.odd}</b></div><div class="box">Conf: <b>${t.confidence}%</b></div></div>
+      <div class="stats">
+        📊 <b>STATS:</b><br>
+        Home Form: ${t.stats.homeForm} | Away Form: ${t.stats.awayForm}<br>
+        Avg Goals: Home ${t.stats.homeAvg} - Away ${t.stats.awayAvg}<br>
+        H2H: ${t.stats.h2h} | Over 1.5: ${t.stats.over15}
+      </div>
+      <div class="reason">💡 Reason: ${t.reason}</div>
+      <button class="wa-btn" onclick="window.open('https://wa.me/?text=${msg}','_blank')">📲 Share on WhatsApp</button>
+    </div>`}).join('');
 }
-loadTips();
-</script>
-</body>
-</html>
+function shareAll(){
+  let text=`🔥 DIVINE-VICK 50 TIPS 🔥\n📅 ${new Date().toLocaleDateString()}\n\n`;
+  allTips.slice(0,10).forEach((t,i)=>{text+=`${i+1}. ${t.match} - ${t.tip} @${t.odd}\n`;});
+  text+=`\nFull: https://divine-vick-football-tip.vercel.app`;
+  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
+}
+load();
+</script></body></html>
