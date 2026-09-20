@@ -57,10 +57,10 @@ header{background:#111;border-bottom:1px solid #222;padding:10px 12px;display:fl
 .live-dot{width:6px;height:6px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite}
 @keyframes pulse{0%{opacity:1}50%{opacity:0.4}100%{opacity:1}}
 @media(max-width:480px){
-  .a-game{padding:10px 12px}
-  .a-match{font-size:13px;white-space:normal}
-  .btn{padding:7px 12px;font-size:11px;min-width:58px}
-  .stats{grid-template-columns:1fr 1fr 1fr}
+ .a-game{padding:10px 12px}
+ .a-match{font-size:13px;white-space:normal}
+ .btn{padding:7px 12px;font-size:11px;min-width:58px}
+ .stats{grid-template-columns:1fr 1fr 1fr}
 }
 </style>
 </head>
@@ -69,32 +69,26 @@ header{background:#111;border-bottom:1px solid #222;padding:10px 12px;display:fl
 <div class="logo">DV</div>
 <div><div class="h-title">DIVINE-VIC FOOTBALL TIPS</div><div class="h-sub">Over Market Specialist • Win/Loss Live • No Duplicates</div></div>
 </header>
-
 <div class="stats">
 <div class="stat"><b id="totalTips">60</b><span id="dateLabel">Tips Upcoming</span></div>
 <div class="stat win"><b id="winRate">89%</b><span>Win Rate Yesterday</span></div>
 <div class="stat"><b id="pendingCount">60</b><span>Pending Today</span></div>
 </div>
-
 <div class="filters">
 <select id="marketFilter"><option>All Markets</option><option>Over 1.5</option><option>Over 2.5</option><option>BTTS Yes</option></select>
 <select id="leagueFilter"><option>All Leagues</option></select>
 <select id="statusFilter"><option>All Status</option><option>WON</option><option>LOST</option><option>PENDING</option></select>
 </div>
-
 <div style="padding:0 10px 6px;font-size:12px;font-weight:800">🔥 TODAY'S ACCAS • Win/Loss Status • Share Full Acca</div>
 <div class="accas" id="accas"></div>
-
 <div class="tips">
 <div class="section-title"><span>📊 ALL INDIVIDUAL • Win/Loss + Reason</span><span id="count" style="font-size:11px;color:#888"></span></div>
 <div id="tips"></div>
 </div>
-
 <div class="bet-slip">
 <div class="slip-info"><div class="slip-count" id="slipCount">0</div><div class="slip-text"><b>BET SLIP <span id="slipOdd">@0.00</span></b><span id="slipInfo">Add tips to build 10 odds</span></div></div>
 <button class="share-slip" onclick="shareSlip()">SHARE</button>
 </div>
-
 <script>
 let allTips=[], accasData={}, slip=[];
 async function load(){
@@ -104,7 +98,7 @@ async function load(){
     allTips=data.tips||[];
     accasData=data.accas||{};
     document.getElementById('totalTips').textContent=allTips.length;
-    document.getElementById('dateLabel').textContent=(data.date||'')+(data.isTomorrow?' Tomorrow':'');
+    document.getElementById('dateLabel').textContent=(data.date||'');
     document.getElementById('winRate').textContent=(data.winRate||89)+'%';
     const pending=allTips.filter(t=>t.result==='PENDING').length;
     document.getElementById('pendingCount').textContent=pending+' Pending';
@@ -120,7 +114,7 @@ function buildFilters(){
 function renderAccas(){
   const c=document.getElementById('accas'); c.innerHTML='';
   Object.entries(accasData).forEach(([key, acca])=>{
-    if(!acca || !acca.games) return;
+    if(!acca ||!acca.games) return;
     let name=key==='ov15_2odds'?'🔥 2 ODDS • OVER 1.5':key==='ov15_3odds'?'🔥 3 ODDS • OVER 1.5':key==='over15'?'🔥 10 ODDS • OVER 1.5 ONLY':key.toUpperCase();
     let badgeClass=acca.result==='WON'?'badge-won':acca.result==='LOST'?'badge-lost':'badge-pending';
     const div=document.createElement('div'); div.className='acca';
@@ -179,7 +173,7 @@ function shareFullAcca(key){
   const acca=accasData[key]; if(!acca) return;
   const title=key==='ov15_2odds'?'2 ODDS ACCA':key==='ov15_3odds'?'3 ODDS ACCA':'10 ODDS ACCA';
   const resultIcon=acca.result==='WON'?'✅ WON':acca.result==='LOST'?'❌ LOST':'⏳ PENDING';
-  const txt=`🔥 ${title} • ${resultIcon} • ${acca.totalOdd} ODD • ${acca.count} GAMES\n\n${acca.games.map(g=>`${g.result==='WON'?'✅':g.result==='LOST'?'❌':'⏳'} ${g.match} ${g.score?'['+g.score+']':''}\n   ${g.tip} @${g.odd} • ${g.result||'PENDING'}`).join('\n\n')}\n\n💰 Total: ${acca.totalOdd} ODD • ${resultIcon}\n📊 Over 1.5 hit 90%\n\n${location.origin}`;
+  const txt=`🔥 ${title} • ${resultIcon} • ${acca.totalOdd} ODD • ${acca.count} GAMES\n\n${acca.games.map(g=>`${g.result==='WON'?'✅':g.result==='LOST'?'❌':'⏳'} ${g.match} ${g.score?'['+g.score+']':''}\n ${g.tip} @${g.odd} • ${g.result||'PENDING'}`).join('\n\n')}\n\n💰 Total: ${acca.totalOdd} ODD • ${resultIcon}\n📊 Over 1.5 hit 90%\n\n${location.origin}`;
   if(navigator.share) navigator.share({title:title, text:txt}); else { navigator.clipboard.writeText(txt); alert(title+' '+resultIcon+' copied!'); }
 }
 function shareSlip(){
