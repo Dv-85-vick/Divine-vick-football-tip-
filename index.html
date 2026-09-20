@@ -1,154 +1,51 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head><style>
-@font-face {
-  font-family: "Optimistic";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Optimistic Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
-}
-:where(html) {
-  font-family: "Optimistic", system-ui, sans-serif;
-}
-:where(code, pre, kbd, samp) {
-  font-family: "Optimistic Mono", ui-monospace, monospace;
-}
-</style>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>DIVINE-VICK - Football Tips | Over Market Specialist</title>
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>DIVINE-VIC FOOTBALL TIPS</title>
 <style>
-:root{--bg:#0a0a0a;--card:#151515;--border:#222;--green:#4ade80;--green-dim:#0f2a1a;--green-border:#1f3a2a;--red:#f87171;--red-dim:#2a1515;--yellow:#ffcc00;--muted:#8a8a8a}
-*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:#e5e5e5;font-family:Inter,system-ui,sans-serif;line-height:1.5}
-.mono{font-family:ui-monospace,monospace}
-.header{position:sticky;top:0;z-index:40;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:12px}
-.badge{width:44px;height:44px;border-radius:50%;border:2px solid var(--yellow);background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--yellow);letter-spacing:1px}
-h1{font-size:14px;font-weight:900;letter-spacing:.08em}h1 span{color:var(--yellow)}
-.sub{font-size:10px;color:var(--muted);letter-spacing:.08em}
-.pill{font-size:11px;padding:6px 10px;border-radius:20px;border:1px solid var(--border);background:#151515}
-.stats{display:flex;gap:8px;padding:12px 16px;overflow:auto}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;min-width:120px}
-.stat b{font-size:18px} .stat small{display:block;font-size:10px;color:var(--muted);margin-top:2px}
-.section{padding:16px;max-width:1280px;margin:0 auto}
-.acca-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:12px}
-.acca{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
-.acca-head{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;color:#fff;font-weight:800;font-size:12px}
-.acca-odd{background:#fff;color:#000;padding:4px 8px;border-radius:20px;font-size:11px;font-weight:900}
-.game{padding:8px 12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:11px}
-.game small{color:var(--muted)}
-.btns{display:flex;gap:6px;padding:10px;border-top:1px solid var(--border);background:#101010}
-.btn{flex:1;height:36px;border-radius:10px;border:1px solid var(--border);font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-.btn-w{background:#1a2e1f;border-color:#1f3a2a;color:var(--green)} .btn-y{background:#fff;color:#000}
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-select{background:var(--card);border:1px solid var(--border);color:#ddd;padding:8px 10px;border-radius:10px;font-size:12px}
-.tips{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
-.tip{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;position:relative}
-.tip.win{border-color:#264a32;background:rgba(0,255,136,.04)} .tip.loss{border-color:#4a2626;background:rgba(255,68,68,.03)}
-.badge-res{position:absolute;top:10px;right:10px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:800;border:1px solid var(--border)}
-.badge-res.win{background:var(--green-dim);color:var(--green);border-color:var(--green-border)} .badge-res.loss{background:var(--red-dim);color:var(--red)} .badge-res.pending{background:#1f1f1f;color:#aaa}
-.league{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.match{font-weight:800;font-size:13px;margin-top:2px}
-.meta{font-size:11px;color:var(--muted);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
-.tipbox{margin-top:8px;background:#0a0a0a;border:1px solid var(--border);border-radius:10px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center}
-.tipbox b{font-size:12px;color:var(--green)} .oddbox{background:#ffcc00;color:#000;padding:2px 6px;border-radius:6px;font-weight:900;font-size:11px}
-.reason{font-size:11px;color:#bbb;margin-top:8px;line-height:1.4;background:#0f0f0f;border:1px solid #1e1e1e;border-radius:8px;padding:8px}
-.slip-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(16,16,16,.96);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:50}
-#slipPanel{position:fixed;bottom:58px;left:0;right:0;max-width:1280px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:16px 16px 0 0;max-height:70vh;overflow:auto;display:none;z-index:49}
+*{box-sizing:border-box;margin:0;padding:0}body{background:#0e0e0e;color:#d9d9d9;font-family:system-ui;padding-bottom:90px}
+.header{display:flex;align-items:center;gap:14px;padding:16px;background:#111;border-bottom:1px solid #222}
+.dv{width:56px;height:56px;border-radius:50%;border:2px solid #ffcc00;display:flex;align-items:center;justify-content:center;color:#ffcc00;font-weight:800;font-size:22px;background:#1a1a00}
+.sub{color:#888;font-size:13px;margin-top:4px}
+.stats{display:flex;gap:12px;padding:14px}
+.stat{flex:1;background:#171717;border:1px solid #252525;border-radius:14px;padding:12px}
+.stat b{font-size:22px;color:#fff}
+.acca-card{background:#151515;border:1px solid #222;border-radius:16px;margin:14px;overflow:hidden}
+.acca-head{display:flex;justify-content:space-between;padding:12px 14px;background:#1a1a1a;border-bottom:1px solid #222}
+.badge{background:#f5f5f5;color:#111;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700}
+.game-row{display:flex;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #1e1e1e;gap:10px}
+.g-name{font-weight:700;color:#fff;font-size:14px}.g-meta{color:#888;font-size:12px;margin-top:3px}
+.btn{border:0;border-radius:20px;padding:7px 12px;font-weight:700;font-size:12px;cursor:pointer;background:#fff;color:#111}
+.betbar{position:fixed;bottom:0;left:0;right:0;background:#151515;border-top:1px solid #222;display:flex;justify-content:space-between;padding:10px 12px}
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="logo"><div class="badge">DV</div><div><h1>DIVINE-VICK <span>FOOTBALL TIPS</span></h1><div class="sub">Over Market Specialist • 10 Leagues High Goals + Corners</div></div></div>
-  <div class="pill" id="datePill">Loading...</div>
-</div>
-<div class="stats" id="statsBar"></div>
-<div class="section">
-  <h2 style="font-size:13px;letter-spacing:.08em">🔥 TODAY'S 10 ODDS ACCAS - DAILY BANKERS</h2>
-  <div style="font-size:11px;color:#777;margin-top:4px">5 Expert Accumulators Built From High Goal Leagues • Share + Add to Slip</div>
-  <div class="acca-grid" id="accas"></div>
-
-  <div class="filters">
-    <select id="countryFilter"><option>All Countries</option></select>
-    <select id="leagueFilter"><option>All Leagues</option></select>
-    <select id="marketFilter"><option value="All">All Markets</option><option>Over 1.5</option><option>Over 2.5</option><option>Home Over 1.5</option><option>Away Over 1.5</option><option>Over 8.5 Corners</option></select>
-    <select id="resultFilter"><option value="All">All Results</option><option value="WIN">WIN Only</option><option value="LOSS">LOSS Only</option><option value="PENDING">PENDING Only</option></select>
-  </div>
-  <div class="tips" id="tips"></div>
-  <div style="text-align:center;color:#333;font-size:10px;margin:40px 0 80px;letter-spacing:.15em">DIVINE-VICK © <span id="yr"></span> • <span id="totalGames">0</span> Games • No affiliate links • WhatsApp only</div>
-</div>
-
-<div id="slipPanel"></div>
-<div class="slip-bar">
-  <div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:10px;background:#1f1f1f;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;font-weight:900" id="slipCount">0</div><div><div style="font-size:11px;font-weight:900">BET SLIP <span id="slipOdd" style="background:#1a1a1a;border:1px solid #222;padding:2px 6px;border-radius:6px;font-size:10px;margin-left:6px">@0.00</span></div><div style="font-size:10px;color:#777" id="slipInfo">Add tips to build 10 odds</div></div></div>
-  <div style="display:flex;gap:8px"><button class="btn" style="background:#1f1f1f" onclick="toggleSlip()" id="openBtn">VIEW SLIP</button><button class="btn btn-y" onclick="shareSlip()">SHARE</button></div>
-</div>
-
+<div class="header"><div class="dv">DV</div><div><div style="font-weight:800">DIVINE-VIC<br><span style="color:#ffcc00">FOOTBALL TIPS</span></div><div class="sub">Over Market Specialist • 10 Leagues High Goals + Corners</div></div></div>
+<div class="stats"><div class="stat"><b id="tipCount">40</b><br><small id="tipDate">Tips</small></div><div class="stat"><b style="color:#2ecc71">0W -</b><br><small>Win Rate</small></div></div>
+<div style="padding:18px 16px 8px"><h2 style="font-size:18px">🔥 TODAY'S 10 ODDS ACCAS</h2><p style="color:#666;font-size:13px">5 Expert Accumulators • Share + Add to Slip</p></div>
+<div id="accas"></div>
 <script>
-let allTips=[], accas={}, slip=[];
 async function load(){
-  try{
-    const res = await fetch('/api/update'); const data = await res.json();
-    allTips = data.tips || []; accas = data.accas || {};
-    document.getElementById('datePill').textContent = data.date || new Date().toLocaleDateString();
-    document.getElementById('yr').textContent = new Date().getFullYear();
-    render();
-  }catch(e){
-    document.getElementById('tips').innerHTML = '<div style="padding:20px;background:#151515;border:1px solid #222;border-radius:12px">API not ready yet. Commit api/update.js first then refresh. Error: '+e+'</div>';
+  const r=await fetch('/api/update'); const data=await r.json();
+  document.getElementById('tipCount').textContent=data.tips?.length||40;
+  document.getElementById('tipDate').textContent=(data.date||'')+' Tips';
+  const titles={over15:'10 ODDS - Over 1.5',over25:'10 ODDS - Over 2.5',mix:'10 ODDS - Mix',team15:'10 ODDS - Team Over 1.5',corners:'10 ODDS - Corners'};
+  let html='';
+  for(const k of Object.keys(data.accas||{})){
+    const acca=data.accas[k]; const total=acca.totalOdd;
+    html+=`<div class="acca-card"><div class="acca-head"><strong>🔥 ${titles[k]||k}</strong><span class="badge">${total} ODD • ${acca.games.length} GAMES</span></div>`;
+    acca.games.forEach(g=>{
+      const name=g.match||`${g.home||''} vs ${g.away||''}`;
+      html+=`<div class="game-row"><div><div class="g-name">${name}</div><div class="g-meta">${g.tip} @${g.odd}</div></div><div style="display:flex;gap:8px"><button class="btn" onclick="navigator.share?navigator.share({text:'${name} - ${g.tip} @${g.odd}'}):alert('Copied')">Share</button><button class="btn" onclick="addSlip('${name}','${g.tip}','${g.odd}')">+Slip</button></div></div>`;
+    });
+    html+=`</div>`;
   }
+  document.getElementById('accas').innerHTML=html;
 }
-function render(){
-  const countries = [...new Set(allTips.map(t=>t.country))]; const leagues=[...new Set(allTips.map(t=>t.league))];
-  const cf=document.getElementById('countryFilter'); const lf=document.getElementById('leagueFilter');
-  if(cf.options.length<=1){countries.forEach(c=>{let o=document.createElement('option');o.textContent=c;cf.appendChild(o);}); leagues.forEach(l=>{let o=document.createElement('option');o.textContent=l;lf.appendChild(o);});}
-  let filtered = allTips.filter(t=>{
-    const c=cf.value; const l=lf.value; const m=document.getElementById('marketFilter').value; const r=document.getElementById('resultFilter').value;
-    if(c!=='All Countries' && t.country!==c) return false;
-    if(l!=='All Leagues' && t.league!==l) return false;
-    if(m!=='All' && !t.tip.includes(m.replace('Home Over 1.5','Over 1.5').replace('Away Over 1.5','Over 1.5'))) { if(m==='Over 1.5' && !t.tip.includes('Over 1.5')) return false; if(m==='Over 2.5' && !t.tip.includes('Over 2.5')) return false; if(m==='Over 8.5 Corners' && !t.tip.includes('Corners')) return false; }
-    if(r!=='All' && t.result!==r) return false;
-    return true;
-  });
-  document.getElementById('totalGames').textContent = filtered.length;
-  const wins = allTips.filter(t=>t.result==='WIN').length; const loss = allTips.filter(t=>t.result==='LOSS').length;
-  document.getElementById('statsBar').innerHTML = `<div class="stat"><b>${allTips.length}</b><small>${new Date().toLocaleDateString()} Tips</small></div><div class="stat"><b style="color:#4ade80">${wins}W - ${loss}L</b><small>Win Rate ${allTips.length?Math.round(wins/(wins+loss||1)*100):0}%</small></div><div class="stat"><b>5</b><small>10 Odds Accas</small></div><div class="stat"><b style="color:#ff4444">LIVE</b><small>Auto WIN/LOSS</small></div>`;
-
-  // accas
-  let accaHtml=''; const keys=[['over15','🔥 10 ODDS - Over 1.5','from-[#0f2a1a] to-[#101010]'],['over25','⚽ 10 ODDS - Over 2.5','from-[#1a2332] to-[#101010]'],['mix','💎 10 ODDS - Mix','from-[#2a1f2e] to-[#101010]'],['team15','🎯 10 ODDS - Team Over 1.5','from-[#2e2a1a] to-[#101010]'],['corners','🚩 10 ODDS - Corners','from-[#1a2e1f] to-[#101010]']];
-  keys.forEach(([k,title,grad])=>{
-    const a=accas[k]; if(!a||!a.games||!a.games.length) return;
-    accaHtml+=`<div class="acca"><div class="acca-head" style="background:linear-gradient(to right, #151515, #101010)"><span>${title}</span><span class="acca-odd">${a.totalOdd} ODD • ${a.count} GAMES</span></div>${a.games.slice(0,8).map(g=>`<div class="game"><div><div style="font-weight:700">${g.match}</div><small>${g.tip} @${g.odd}</small></div><div style="display:flex;gap:4px"><button class="btn" style="height:24px;padding:0 8px;font-size:10px" onclick="shareOne('${g.id}')">Share</button><button class="btn btn-y" style="height:24px;padding:0 8px;font-size:10px" onclick="addSlip('${g.id}')">+Slip</button></div></div>`).join('')}<div class="btns"><button class="btn btn-w" onclick="shareAcca('${k}')">Share Acca</button><button class="btn btn-y" onclick="addAccaToSlip('${k}')">Add All to Slip</button></div></div>`;
-  });
-  document.getElementById('accas').innerHTML = accaHtml || '<div style="padding:16px;background:#151515;border:1px solid #222;border-radius:12px;font-size:12px;color:#777">Accas building... Need 35 games from API</div>';
-
-  // tips
-  document.getElementById('tips').innerHTML = filtered.map(t=>{
-    const cls = t.result==='WIN'?'win':t.result==='LOSS'?'loss':'';
-    const br = t.result==='WIN'?'win':t.result==='LOSS'?'loss':'pending';
-    return `<div class="tip ${cls}"><div class="badge-res ${br}">${t.result==='WIN'?'WIN ✓':t.result==='LOSS'?'LOSS ✗':'PENDING ⏳'}</div><div class="league">${t.country} • ${t.league} • ${t.time} • ${t.status} ${t.score!=='vs'?'• '+t.score:''}</div><div class="match">${t.match}</div><div class="meta"><span>Conf ${t.confidence}%</span><span>${t.date}</span></div><div class="tipbox"><b>${t.tip}</b><span class="oddbox">${t.odd}</span></div><div class="reason">${t.reason}</div><div class="btns" style="margin-top:10px;border:0;padding:0;background:transparent"><button class="btn btn-w" onclick="shareOne('${t.id}')">Share</button><button class="btn btn-y" onclick="addSlip('${t.id}')">+ Add to Slip</button></div></div>`;
-  }).join('') || '<div style="padding:20px;background:#151515;border:1px solid #222;border-radius:12px">No tips for this filter</div>';
-  updateSlipUI();
-}
-function addSlip(id){ const t=allTips.find(x=>String(x.id)===String(id)); if(!t) return; if(!slip.find(s=>String(s.id)===String(id))) slip.push(t); updateSlipUI(); }
-function addAccaToSlip(k){ const a=accas[k]; if(!a) return; a.games.forEach(g=>addSlip(g.id)); }
-function shareOne(id){ const t=allTips.find(x=>String(x.id)===String(id)); if(!t) return; const txt=`DIVINE-VICK TIP 🔥%0A${t.match}%0A${t.league}%0A${t.tip} @${t.odd}%0AReason: ${t.reason}%0Ahttps://divine-vick-football-tip.vercel.app`; window.open('https://wa.me/?text='+txt,'_blank');}
-function shareAcca(k){ const a=accas[k]; if(!a) return; let txt=`DIVINE-VICK ${k.toUpperCase()} 10 ODDS ACCA 💎%0ATotal: ${a.totalOdd} ODD%0A`; a.games.forEach(g=>txt+=`%0A${g.match} - ${g.tip} @${g.odd}`); txt+=`%0Ahttps://divine-vick-football-tip.vercel.app`; window.open('https://wa.me/?text='+txt,'_blank');}
-function toggleSlip(){ const p=document.getElementById('slipPanel'); p.style.display = p.style.display==='block'?'none':'block'; if(p.style.display==='block'){ p.innerHTML = slip.length? slip.map(s=>`<div class="game"><div>${s.match}<br><small>${s.tip} @${s.odd}</small></div><button class="btn" style="height:24px" onclick="removeSlip('${s.id}')">X</button></div>`).join('') + `<div class="btns"><button class="btn btn-w" onclick="shareSlip()">Share Slip</button><button class="btn btn-y" onclick="copySlip()">Copy Slip</button></div>` : '<div style="padding:20px;text-align:center;color:#777">Slip empty - Add games</div>'; } }
-function removeSlip(id){ slip=slip.filter(s=>String(s.id)!==String(id)); updateSlipUI(); toggleSlip(); toggleSlip(); }
-function updateSlipUI(){ const total = slip.reduce((acc,s)=>acc*parseFloat(s.odd),1); document.getElementById('slipCount').textContent=slip.length; document.getElementById('slipOdd').textContent='@'+(slip.length?total.toFixed(2):'0.00'); document.getElementById('slipInfo').textContent=slip.length? slip.length+' selections • Total '+total.toFixed(2) : 'Add tips to build 10 odds'; document.getElementById('openBtn').textContent = slip.length? 'OPEN SLIP ('+slip.length+')' : 'VIEW SLIP';}
-function shareSlip(){ if(!slip.length) return; let total=slip.reduce((a,s)=>a*parseFloat(s.odd),1); let txt=`DIVINE-VICK BET SLIP 🎯%0ATotal Odd: ${total.toFixed(2)}%0A`; slip.forEach(s=>txt+=`%0A${s.match} - ${s.tip} @${s.odd}`); txt+=`%0Ahttps://divine-vick-football-tip.vercel.app`; window.open('https://wa.me/?text='+txt,'_blank');}
-function copySlip(){ if(!slip.length) return; let total=slip.reduce((a,s)=>a*parseFloat(s.odd),1); let txt=`DIVINE-VICK SLIP - ${total.toFixed(2)} ODD\n`; slip.forEach(s=>txt+=`${s.match} - ${s.tip} @${s.odd}\n`); navigator.clipboard.writeText(txt); alert('Slip Copied!');}
-document.getElementById('countryFilter').addEventListener('change',render); document.getElementById('leagueFilter').addEventListener('change',render); document.getElementById('marketFilter').addEventListener('change',render); document.getElementById('resultFilter').addEventListener('change',render);
+let slip=[];function addSlip(m,t,o){slip.push({m,t,o:parseFloat(o)});const total=slip.reduce((a,b)=>a*b.o,1).toFixed(2);document.getElementById('slipCount').textContent=slip.length;document.getElementById('slipOdd').textContent='@'+total;}
 load();
 </script>
-<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+<div class="betbar"><div style="display:flex;gap:10px;align-items:center"><div id="slipCount" style="width:40px;height:40px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;font-weight:800">0</div><div><div style="font-weight:800">BET SLIP <span id="slipOdd" style="background:#222;padding:2px 8px;border-radius:12px;font-size:12px">@0.00</span></div><div style="color:#777;font-size:12px">Add tips to build 10 odds</div></div></div><button class="btn">SHARE</button></div>
+</body>
 </html>
