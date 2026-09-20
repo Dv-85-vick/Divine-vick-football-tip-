@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>DIVINE-VIC FOOTBALL TIPS - Over Market Specialist</title>
+<title>DIVINE-VIC FOOTBALL TIPS</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#e5e5e5;font-family:Inter,system-ui,sans-serif;padding-bottom:90px}
@@ -17,9 +17,10 @@ header{background:#111;border-bottom:1px solid #222;padding:10px 12px;display:fl
 .filters select{background:#151515;border:1px solid #222;color:#ddd;padding:6px 8px;border-radius:8px;font-size:11px;min-width:110px}
 .accas{padding:0 10px 10px}
 .acca{background:#151515;border:1px solid #222;border-radius:16px;margin-bottom:12px;overflow:hidden}
-.acca-head{padding:10px 12px;display:flex;justify-content:space-between;align-items:center;background:#1a1a1a;border-bottom:1px solid #222}
-.acca-head b{font-size:12px}
+.acca-head{padding:10px 12px;display:flex;justify-content:space-between;align-items:center;background:#1a1a1a;border-bottom:1px solid #222;gap:8px}
+.acca-head b{font-size:12px;flex:1}
 .badge{background:#e5e5e5;color:#000;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.btn-acca-share{background:#ffcc00;color:#000;border:none;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .a-game{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #1e1e1e}
 .a-left{flex:1;min-width:0;padding-right:8px}
 .a-match{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -54,7 +55,8 @@ header{background:#111;border-bottom:1px solid #222;padding:10px 12px;display:fl
   .a-match{font-size:13px;white-space:normal}
   .a-btns{gap:6px}
   .btn{padding:7px 12px;font-size:11px;min-width:58px}
-  .badge{font-size:10px;padding:5px 10px;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+  .badge{font-size:10px;padding:5px 10px;max-width:100px;overflow:hidden;text-overflow:ellipsis}
+  .btn-acca-share{padding:6px 10px;font-size:10px}
   .g-card{padding:10px}
   .filters select{font-size:11px;padding:7px 10px;min-width:100px}
 }
@@ -63,33 +65,27 @@ header{background:#111;border-bottom:1px solid #222;padding:10px 12px;display:fl
 <body>
 <header>
 <div class="logo">DV</div>
-<div><div class="h-title">DIVINE-VIC FOOTBALL TIPS</div><div class="h-sub">Over Market Specialist • 10 Leagues High Goals + Corners • Only Upcoming</div></div>
+<div><div class="h-title">DIVINE-VIC FOOTBALL TIPS</div><div class="h-sub">Over Market Specialist • 10 Leagues • Only Upcoming • 2/3/10 Odds Over 1.5</div></div>
 </header>
-
 <div class="stats">
-<div class="stat"><b id="totalTips">60</b><span id="dateLabel">2026-09-20 Tips • Upcoming Only</span></div>
-<div class="stat"><b style="color:#22c55e">OW -</b><span>Win Rate • Over 1.5 90%</span></div>
+<div class="stat"><b id="totalTips">60</b><span id="dateLabel">Tips • Upcoming Only</span></div>
+<div class="stat"><b style="color:#22c55e">OW -</b><span>Over 1.5 90% Win</span></div>
 </div>
-
 <div class="filters">
 <select id="marketFilter"><option>All Markets</option><option>Over 1.5</option><option>Over 2.5</option><option>BTTS Yes</option><option>Corners Over 8.5</option></select>
 <select id="leagueFilter"><option>All Leagues</option></select>
 <select id="countryFilter"><option>All Countries</option></select>
 </div>
-
-<div style="padding:0 10px 6px;font-size:12px;font-weight:800">🔥 TODAY'S ACCAS • Over 1.5 Specialist</div>
+<div style="padding:0 10px 6px;font-size:12px;font-weight:800">🔥 TODAY'S ACCAS • 2/3/10 ODDS Over 1.5 Only • Share Full Acca</div>
 <div class="accas" id="accas"></div>
-
 <div class="tips">
-<div class="section-title"><span>📊 ALL INDIVIDUAL MATCHES • Stats + Reason</span><span id="count" style="font-size:11px;color:#888"></span></div>
+<div class="section-title"><span>📊 ALL INDIVIDUAL MATCHES</span><span id="count" style="font-size:11px;color:#888"></span></div>
 <div id="tips"></div>
 </div>
-
 <div class="bet-slip">
 <div class="slip-info"><div class="slip-count" id="slipCount">0</div><div class="slip-text"><b>BET SLIP <span id="slipOdd">@0.00</span></b><span id="slipInfo">Add tips to build 10 odds</span></div></div>
 <button class="share-slip" onclick="shareSlip()">SHARE</button>
 </div>
-
 <script>
 let allTips=[], accasData={}, slip=[];
 async function load(){
@@ -99,11 +95,11 @@ async function load(){
     allTips=data.tips||[];
     accasData=data.accas||{};
     document.getElementById('totalTips').textContent=allTips.length;
-    document.getElementById('dateLabel').textContent=(data.date||'')+(data.isTomorrow?' (Tomorrow) • Upcoming Only':' • Upcoming Only')+(data.message?' • '+data.message:'');
+    document.getElementById('dateLabel').textContent=(data.date||'')+(data.isTomorrow?' (Tomorrow)':'')+' • Upcoming Only';
     buildFilters();
     renderAccas();
     renderTips();
-  }catch(e){ document.getElementById('tips').innerHTML='<div style="padding:20px;text-align:center;color:#888">Loading... Ensure /api/update.js deployed</div>'; }
+  }catch(e){ document.getElementById('tips').innerHTML='<div style="padding:20px;text-align:center;color:#888">Loading...</div>'; }
 }
 function buildFilters(){
   const leagues=[...new Set(allTips.map(t=>t.league))].sort();
@@ -116,13 +112,19 @@ function renderAccas(){
   container.innerHTML='';
   Object.entries(accasData).forEach(([key, acca])=>{
     if(!acca || !acca.games) return;
-    let name=key.toUpperCase().replace('_',' ').replace('OV15','2/3 ODDS • OVER 1.5');
-    if(key==='ov15_2odds') name='🔥 2 ODDS • STRICTLY OVER 1.5';
-    if(key==='ov15_3odds') name='🔥 3 ODDS • STRICTLY OVER 1.5';
+    let name=key.toUpperCase().replace('_',' ').replace('OV15','OVER 1.5');
+    if(key==='ov15_2odds') name='🔥 2 ODDS • OVER 1.5';
+    if(key==='ov15_3odds') name='🔥 3 ODDS • OVER 1.5';
     if(key==='over15') name='🔥 10 ODDS • OVER 1.5 ONLY';
     const div=document.createElement('div'); div.className='acca';
-    div.innerHTML=`<div class="acca-head"><b>🔥 ${name}</b><span class="badge">${acca.totalOdd} ODD • ${acca.count} GAMES</span></div>
-      ${acca.games.map(g=>`<div class="a-game"><div class="a-left"><div class="a-match">${g.match}</div><div class="a-tip">${g.tip} @${g.odd} • ${g.league||''} ${g.time||''}</div></div><div class="a-btns"><button class="btn" onclick="shareGame('${g.match}','${g.tip}','${g.odd}')">Share</button><button class="btn dark" onclick="addToSlipById(${g.id})">+Slip</button></div></div>`).join('')}`;
+    div.innerHTML=`
+      <div class="acca-head">
+        <b>${name}</b>
+        <span class="badge">${acca.totalOdd} ODD • ${acca.count} GAMES</span>
+        <button class="btn-acca-share" onclick="shareFullAcca('${key}')">📤 Share Acca</button>
+      </div>
+      ${acca.games.map(g=>`<div class="a-game"><div class="a-left"><div class="a-match">${g.match}</div><div class="a-tip">${g.tip} @${g.odd} • ${g.league||''} ${g.time||''}</div></div><div class="a-btns"><button class="btn" onclick="shareGame('${g.match}','${g.tip}','${g.odd}')">Share</button><button class="btn dark" onclick="addToSlipById(${g.id})">+Slip</button></div></div>`).join('')}
+    `;
     container.appendChild(div);
   });
 }
@@ -134,20 +136,20 @@ function renderTips(){
   if(mf!=='All Markets') filtered=filtered.filter(t=>t.market.includes(mf)||t.tip.includes(mf));
   if(lf!=='All Leagues') filtered=filtered.filter(t=>t.league===lf);
   if(cf!=='All Countries') filtered=filtered.filter(t=>t.country===cf);
-  document.getElementById('count').textContent=filtered.length+' tips • Upcoming only';
+  document.getElementById('count').textContent=filtered.length+' tips';
   document.getElementById('tips').innerHTML=filtered.map(t=>`
     <div class="g-card">
       <div class="g-league">🌍 ${t.country} • ${t.league}</div>
-      <div class="g-time">⏰ ${t.time} • ${t.date} • ${t.status} • Kickoff Upcoming</div>
+      <div class="g-time">⏰ ${t.time} • ${t.date} • ${t.status}</div>
       <div class="g-match">${t.match}</div>
-      <div class="g-tip">Tip: <b>${t.tip}</b> • Confidence ${t.confidence}%</div>
-      <div class="g-odd">Odd: @${t.odd} • Market: ${t.market}</div>
+      <div class="g-tip">Tip: <b>${t.tip}</b> • ${t.confidence}%</div>
+      <div class="g-odd">Odd: @${t.odd} • ${t.market}</div>
       <div class="g-reason">💡 <b>Reason:</b> ${t.reason}</div>
       <div class="g-stats">${t.stats.split('•').map(s=>`<span>${s.trim()}</span>`).join('')}</div>
       <div class="g-form">Form: ${t.form}</div>
       <div class="g-btns"><button class="g-btn share" onclick="shareGame('${t.match}','${t.tip}','${t.odd}')">Share Tip</button><button class="g-btn slip" onclick="addToSlipById(${t.id})">Add to Slip @${t.odd}</button></div>
     </div>
-  `).join('')||'<div style="padding:20px;text-align:center;color:#888">No upcoming tips for this filter</div>';
+  `).join('');
 }
 function addToSlipById(id){
   const t=allTips.find(x=>x.id===id); if(!t) return;
@@ -161,8 +163,14 @@ function updateSlip(){
   document.getElementById('slipInfo').textContent=slip.length?slip.length+' tips • '+total.toFixed(2)+' odds':"Add tips to build 10 odds";
 }
 function shareGame(match,tip,odd){
-  const txt=`⚽ ${match}\nTip: ${tip} @${odd}\nVia DIVINE-VIC FOOTBALL TIPS • ${location.origin}`;
+  const txt=`⚽ ${match}\nTip: ${tip} @${odd}\nVia DIVINE-VIC • ${location.origin}`;
   if(navigator.share) navigator.share({text:txt}); else { navigator.clipboard.writeText(txt); alert('Copied!'); }
+}
+function shareFullAcca(key){
+  const acca=accasData[key]; if(!acca) return;
+  const title=key==='ov15_2odds'?'2 ODDS ACCA • STRICTLY OVER 1.5':key==='ov15_3odds'?'3 ODDS ACCA • STRICTLY OVER 1.5':'10 ODDS ACCA • OVER 1.5 ONLY';
+  const txt=`🔥 ${title} • DIVINE-VIC TIPS • ${acca.totalOdd} ODD • ${acca.count} GAMES • Only Upcoming\n\n${acca.games.map(g=>`✅ ${g.match}\n   ${g.tip} @${g.odd} • ${g.league}`).join('\n\n')}\n\n💰 Total: ${acca.totalOdd} ODD\n📊 Over 1.5 hit rate 90% • Safe banker!\n\n${location.origin}`;
+  if(navigator.share) navigator.share({title:title, text:txt}); else { navigator.clipboard.writeText(txt); alert(title+' copied!'); }
 }
 function shareSlip(){
   if(slip.length===0){alert('Add tips first!');return;}
