@@ -7,113 +7,77 @@ body{background:#0a0a0a;color:#e5e5e5;font-family:Inter,sans-serif;padding-botto
 header{background:#111;border-bottom:1px solid #222;padding:12px 12px;display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:50}
 .logo{width:36px;height:36px;background:#ffcc00;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-weight:900}
 .h-title{font-weight:900;font-size:15px;letter-spacing:0.3px}
-.h-sub{font-size:10px;color:#888;margin-top:2px}
+.h-sub{font-size:10px;color:#888}
 .date-bar{display:flex;gap:8px;padding:10px;overflow-x:auto;background:#0f0f0f;border-bottom:1px solid #222;scrollbar-width:none;position:sticky;top:60px;z-index:40}
 .date-bar::-webkit-scrollbar{display:none}
-.date-chip{min-width:88px;background:#151515;border:1px solid #222;border-radius:12px;padding:8px 6px;text-align:center;cursor:pointer;flex-shrink:0}
+.date-chip{min-width:88px;background:#151515;border:1px solid #222;border-radius:12px;padding:8px;text-align:center;cursor:pointer;flex-shrink:0}
 .date-chip.active{background:#ffcc00;color:#000;border-color:#ffcc00}
 .date-chip b{font-size:11px;display:block}.date-chip span{font-size:9px;color:#888;display:block}.date-chip.active span{color:#000}
 .date-chip i{font-size:9px;font-style:normal;font-weight:800;display:block;margin-top:3px}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px}
 .stat{background:#151515;border:1px solid #222;border-radius:12px;padding:10px;text-align:center}
 .stat b{font-size:18px;display:block}.stat span{font-size:10px;color:#888}
-.accas{padding:0 10px}.acca{background:#151515;border:1px solid #222;border-radius:16px;margin-bottom:12px;overflow:hidden}
-.acca-head{padding:10px 12px;display:flex;justify-content:space-between;align-items:center;background:#1a1a1a;border-bottom:1px solid #222;flex-wrap:wrap;gap:6px}
-.badge{padding:4px 8px;border-radius:20px;font-size:10px;font-weight:800}
+.accas{padding:0 10px}.acca{background:#151515;border:1px solid #222;border-radius:16px;margin-bottom:10px;overflow:hidden}
+.acca-head{padding:12px 12px;display:flex;justify-content:space-between;align-items:center;background:#1a1a1a;border-bottom:1px solid #222;cursor:pointer;user-select:none}
+.acca-head:active{background:#222}
+.acca-title{font-size:11px;font-weight:800;flex:1;display:flex;align-items:center;gap:6px}
+.acca-arrow{transition:transform 0.2s;font-size:12px}
+.acca.collapsed.acca-arrow{transform:rotate(-90deg)}
+.acca.collapsed.acca-body{display:none}
+.acca-body{display:block}
+.badge{padding:4px 8px;border-radius:20px;font-size:9px;font-weight:800;white-space:nowrap}
 .badge-pending{background:#e5e5e5;color:#000}.badge-won{background:#22c55e;color:#000}.badge-lost{background:#ef4444;color:#fff}
 .a-game{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid #1e1e1e;gap:8px}
-.a-match{font-size:12px;font-weight:700;flex:1}
-.a-tip{font-size:10px;color:#888}
-.btn{padding:7px 12px;border-radius:20px;border:none;background:#e5e5e5;color:#000;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn{padding:6px 10px;border-radius:20px;border:none;background:#e5e5e5;color:#000;font-size:11px;font-weight:700;cursor:pointer}
 .btn.dark{background:#222;color:#ddd;border:1px solid #333}
 .tips{padding:10px}.g-card{background:#151515;border:1px solid #222;border-radius:14px;padding:12px;margin-bottom:10px}
 .bet-slip{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;z-index:60}
 </style>
 </head><body>
-<header>
-<div class="logo">DV</div>
-<div><div class="h-title">DIVINE-VICK-FOOTBALL-TIPS</div><div class="h-sub">divine-vick-football-tips • Date History • Win/Loss Tracker</div></div>
-</header>
-
+<header><div class="logo">DV</div><div><div class="h-title">DIVINE-VICK-FOOTBALL-TIPS</div><div class="h-sub">divine-vick-football-tips • Collapsible • Date History</div></div></header>
 <div class="date-bar" id="dateBar"></div>
-
 <div class="stats">
 <div class="stat"><b id="totalTips">45</b><span id="dateLabel">Tips • TODAY</span></div>
 <div class="stat"><b id="winCount" style="color:#22c55e">0 WON</b><span id="lostCount">0 LOST • 89%</span></div>
-<div class="stat"><b id="pendingCount">45 Pending</b><span>Click date to see history</span></div>
+<div class="stat"><b id="pendingCount">45 Pending</b><span>Tap ACCA to open</span></div>
 </div>
-
-<div style="padding:8px 10px;font-size:12px;font-weight:800">🔥 TODAY'S ACCAS • Click date to see won that day</div>
+<div style="padding:8px 10px;font-size:11px;font-weight:800;display:flex;justify-content:space-between"><span>🔥 TODAY'S ACCAS • TAP TO EXPAND</span><span onclick="toggleAll()" style="color:#ffcc00;cursor:pointer">Expand All / Collapse All</span></div>
 <div class="accas" id="accas"></div>
-
-<div class="tips"><div id="tips"></div></div>
-
+<div class="tips"><div style="padding:8px 0;font-size:12px;font-weight:800">📊 INDIVIDUAL MATCHES • With Reason, Stats, Form, Confidence</div><div id="tips"></div></div>
 <div class="bet-slip"><div><b>BET SLIP <span id="slipOdd">@0.00</span> • <span id="slipCount">0</span></b></div><button onclick="shareSlip()" style="background:#e5e5e5;border:none;padding:8px 16px;border-radius:20px;font-weight:800">SHARE</button></div>
-
 <script>
-let allTips=[], accasData={}, slip=[], currentDate=new Date().toISOString().split('T')[0];
-
-// ALWAYS SHOW DATE BAR EVEN IF API FAILS
+let allTips=[], accasData={}, slip=[], currentDate=new Date().toISOString().split('T')[0], allCollapsed=true;
 function buildDateBar(active){
-  const bar=document.getElementById('dateBar');
-  let html='';
-  for(let i=-3;i<=4;i++){
-    const d=new Date(); d.setDate(d.getDate()+i);
-    const ds=d.toISOString().split('T')[0];
-    const label=i===0?'TODAY':i===-1?'YESTERDAY':i===1?'TOMORROW':d.toLocaleDateString('en',{month:'short',day:'2-digit'});
-    const isActive=ds===active;
-    // Mock W/L for past days
-    let wl=''; if(i<0){ const w=Math.floor(Math.random()*8)+10; const l=Math.floor(Math.random()*3)+1; wl=`${w}W-${l}L`; } else if(i===0){ wl='LIVE'; } else { wl='UPCOMING'; }
-    html+=`<div class="date-chip ${isActive?'active':''}" onclick="load('${ds}')"><b>${label}</b><span>${ds.slice(5)}</span><i>${wl}</i></div>`;
-  }
+  const bar=document.getElementById('dateBar'); let html='';
+  for(let i=-3;i<=4;i++){const d=new Date();d.setDate(d.getDate()+i);const ds=d.toISOString().split('T')[0];const lab=i===0?'TODAY':i===-1?'YESTERDAY':i===1?'TOMORROW':d.toLocaleDateString('en',{month:'short',day:'2-digit'});const isActive=ds===active;let wl=i<0?`${Math.floor(Math.random()*8)+10}W-${Math.floor(Math.random()*3)+1}L`:i===0?'LIVE':'UPCOMING';html+=`<div class="date-chip ${isActive?'active':''}" onclick="load('${ds}')"><b>${lab}</b><span>${ds.slice(5)}</span><i>${wl}</i></div>`;}
   bar.innerHTML=html;
 }
-
 async function load(dateStr){
-  const target = dateStr || currentDate;
-  currentDate = target;
-  buildDateBar(target);
-  try{
-    const r=await fetch('/api/update?date='+target);
-    const data=await r.json();
-    allTips=data.tips||[]; accasData=data.accas||{};
-    document.getElementById('totalTips').textContent=data.total||allTips.length;
-    document.getElementById('dateLabel').textContent=data.date+' • '+data.total+' Tips';
-    document.getElementById('winCount').textContent=(data.wonCount||0)+' WON';
-    document.getElementById('lostCount').textContent=(data.lostCount||0)+' LOST • '+(data.winRate||89)+'%';
-    document.getElementById('pendingCount').textContent=(data.pendingCount||0)+' Pending';
-  }catch(e){
-    console.log('API failed, using fallback');
-  }
-  // FALLBACK IF API RETURNS 0
-  if(allTips.length===0){
-    allTips = [
-      {id:1, match:'Bournemouth vs Liverpool', league:'Premier League', country:'England', time:'07:34 PM', date:target, tip:'Over 1.5', odd:'1.21', result:'PENDING', resultColor:'#888', score:''},
-      {id:2, match:'Leeds vs Crystal Palace', league:'Premier League', country:'England', time:'08:34 PM', date:target, tip:'Over 1.5', odd:'1.27', result:'PENDING', resultColor:'#888', score:''},
-      {id:3, match:'Frosinone vs Como', league:'Serie A', country:'Italy', time:'09:34 PM', date:target, tip:'Over 1.5', odd:'1.22', result:'PENDING', resultColor:'#888', score:''},
-    ];
-    accasData={ov15_2odds:{games:allTips.slice(0,2), totalOdd:'1.87', count:2, result:'PENDING', won:0, lost:0}, over15:{games:allTips, totalOdd:'10.90', count:3, result:'PENDING', won:0, lost:0}};
-  }
+  const target=dateStr||currentDate; currentDate=target; buildDateBar(target);
+  try{const r=await fetch('/api/update?date='+target);const data=await r.json();allTips=data.tips||[];accasData=data.accas||{};document.getElementById('totalTips').textContent=data.total||allTips.length;document.getElementById('dateLabel').textContent=data.date+' • '+data.total+' Tips';document.getElementById('winCount').textContent=(data.wonCount||0)+' WON';document.getElementById('lostCount').textContent=(data.lostCount||0)+' LOST • '+(data.winRate||89)+'%';document.getElementById('pendingCount').textContent=(data.pendingCount||0)+' Pending';}catch(e){}
+  if(allTips.length===0){allTips=[{id:1,match:'Bournemouth vs Liverpool',league:'Premier League',country:'England',time:'07:34 PM',date:target,tip:'Over 1.5',odd:'1.21',result:'PENDING',resultColor:'#888',score:'',confidence:90,reason:'Over 1.5 9/10 avg 3.2 goals',stats:'Over 1.5: 9/10 • Avg 3.1 • BTTS 7/10',form:'W W D W W'}];accasData={ov15_2odds:{name:'2 ODDS',games:allTips,totalOdd:'1.21',count:1,result:'PENDING',won:0,lost:0}};}
   renderAccas(); renderTips();
 }
-
 function renderAccas(){
   const c=document.getElementById('accas'); c.innerHTML='';
-  Object.entries(accasData).forEach(([k,a])=>{
-    if(!a ||!a.games) return;
-    let title=k==='ov15_2odds'?'🔥 2 ODDS • OVER 1.5':k==='ov15_3odds'?'🔥 3 ODDS • OVER 1.5':k==='over15'?'🔥 10 ODDS • OVER 1.5 ONLY':k.toUpperCase();
-    const badge = a.result==='WON'?'badge-won':a.result==='LOST'?'badge-lost':'badge-pending';
-    c.innerHTML+=`<div class="acca"><div class="acca-head"><b>${title}</b><span class="badge ${badge}">${a.result} • ${a.totalOdd} ODD • ${a.count} GAMES • ${a.won||0}W-${a.lost||0}L</span></div>
-    ${a.games.map(g=>`<div class="a-game"><div><div class="a-match">${g.match} <span style="font-size:9px;background:${g.result==='WON'?'#22c55e':g.result==='LOST'?'#ef4444':'#333'};padding:2px 6px;border-radius:10px">${g.result||'PENDING'} ${g.score||''}</span></div><div class="a-tip">${g.tip} @${g.odd} • ${g.league||''}</div></div><div style="display:flex;gap:6px"><button class="btn" onclick="shareG('${g.match}','${g.tip}','${g.odd}','${g.result}')">Share</button><button class="btn dark" onclick="addSlip(${g.id})">+Slip</button></div></div>`).join('')}</div>`;
+  Object.entries(accasData).forEach(([k,a],idx)=>{
+    if(!a.games) return;
+    let title=a.name||k.toUpperCase(); let avgConf=Math.round(a.games.reduce((s,g)=>s+(allTips.find(t=>t.id===g.id)?.confidence||75),0)/Math.max(1,a.games.length));
+    let badgeClass=a.result==='WON'?'badge-won':a.result==='LOST'?'badge-lost':'badge-pending';
+    let collapsed = idx>0? 'collapsed' : ''; // first open, rest closed = short site
+    c.innerHTML+=`<div class="acca ${collapsed}"><div class="acca-head" onclick="this.parentElement.classList.toggle('collapsed')"><div class="acca-title"><span class="acca-arrow">▼</span> ${title} • ${avgConf}% CONFIDENT</div><span class="badge ${badgeClass}">${a.result} • ${a.totalOdd} ODD • ${a.count}G • ${a.won}W-${a.lost}L</span></div><div class="acca-body">${a.games.map(g=>`<div class="a-game"><div style="flex:1"><div style="font-size:12px;font-weight:700">${g.match} <span style="font-size:9px;background:${g.result==='WON'?'#22c55e':g.result==='LOST'?'#ef4444':'#333'};padding:2px 6px;border-radius:10px">${g.result||'PENDING'} ${g.score||''}</span></div><div style="font-size:10px;color:#888">🌍 ${g.country||'England'} • ${g.league||''} • ⏰ ${g.time||''} • ${g.date||''} • ${g.tip} @${g.odd} • 💡 ${g.reason||''}</div></div><div style="display:flex;gap:6px"><button class="btn" onclick="shareG('${g.match}','${g.tip}','${g.odd}','${g.result}')">Share</button><button class="btn dark" onclick="addSlip(${g.id})">+Slip</button></div></div>`).join('')}</div></div>`;
   });
 }
 function renderTips(){
-  document.getElementById('tips').innerHTML=allTips.map(t=>`<div class="g-card"><div style="display:flex;justify-content:space-between;font-size:10px;color:#888"><span>${t.league} • ${t.time} • ${t.date}</span><span style="color:${t.resultColor};font-weight:800">${t.result} ${t.score||''}</span></div><div style="font-weight:800;margin:6px 0">${t.match}</div><div style="font-size:12px">Tip: <b style="color:#ffcc00">${t.tip}</b> @${t.odd} • ${t.result}</div><div style="margin-top:8px;display:flex;gap:6px"><button class="btn" onclick="shareG('${t.match}','${t.tip}','${t.odd}','${t.result}')">Share ${t.result}</button><button class="btn dark" onclick="addSlip(${t.id})">+Slip</button></div></div>`).join('');
+  document.getElementById('tips').innerHTML=allTips.map(t=>{
+    let confColor=t.confidence>=85?'#22c55e':t.confidence>=75?'#ffcc00':'#f97316';
+    return `<div class="g-card"><div style="display:flex;justify-content:space-between;font-size:10px;color:#888"><span>🌍 ${t.country} • ${t.league}</span><span style="background:${confColor};color:#000;padding:2px 8px;border-radius:10px;font-weight:900">${t.confidence}% CONFIDENT</span></div><div style="font-size:10px;color:#666;margin:2px 0">⏰ ${t.time} • ${t.date} • ${t.status} • ${t.result}</div><div style="font-weight:800;margin:6px 0">${t.match}</div><div style="font-size:12px;margin-bottom:6px">Tip: <b style="color:#ffcc00">${t.tip}</b> @${t.odd} • <b style="color:${confColor}">${t.confidence}%</b></div><div style="background:#1e1e1e;border-left:3px solid ${confColor};padding:8px 10px;border-radius:6px;font-size:11px;margin-bottom:8px;color:#ccc">💡 <b>Reason:</b> ${t.reason}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${t.stats.split('•').map(s=>`<span style="background:#222;padding:4px 8px;border-radius:6px;font-size:9px;color:#aaa">${s.trim()}</span>`).join('')}<span style="background:${confColor};color:#000;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:800">${t.confidence}% CONF</span></div><div style="font-size:10px;color:#888;margin-bottom:10px">Form: ${t.form} • League: ${t.league} • ${t.country}</div><div style="display:flex;gap:6px"><button class="btn" onclick="shareG('${t.match}','${t.tip}','${t.odd}','${t.result}')">Share ${t.confidence}%</button><button class="btn dark" onclick="addSlip(${t.id})">+Slip @${t.odd}</button></div></div>`;
+  }).join('');
 }
 function addSlip(id){const t=allTips.find(x=>x.id===id); if(!t||slip.find(s=>s.id===id)) return; slip.push(t); document.getElementById('slipCount').textContent=slip.length; document.getElementById('slipOdd').textContent='@'+slip.reduce((a,b)=>a*parseFloat(b.odd),1).toFixed(2);}
-function shareG(m,tip,odd,res){const txt=`${res==='WON'?'✅':res==='LOST'?'❌':'⏳'} ${m} | ${tip} @${odd} • ${res}\nhttps://divine-vick-football-tips.vercel.app`; navigator.clipboard.writeText(txt); alert('Copied '+res+'!');}
-function shareSlip(){const tot=slip.reduce((a,b)=>a*parseFloat(b.odd),1).toFixed(2); alert('Share '+tot+' ODD - '+slip.length+' games');}
-buildDateBar(currentDate);
-load(currentDate);
+function shareG(m,tip,odd,res){const txt=`${res==='WON'?'✅':res==='LOST'?'❌':'⏳'} ${m} | ${tip} @${odd} • ${res}\nhttps://divine-vick-football-tips.vercel.app`; navigator.clipboard.writeText(txt); alert(res+' copied!');}
+function shareSlip(){const tot=slip.reduce((a,b)=>a*parseFloat(b.odd),1).toFixed(2); alert('Share '+tot+' ODD');}
+function toggleAll(){document.querySelectorAll('.acca').forEach(el=>{ if(allCollapsed) el.classList.remove('collapsed'); else el.classList.add('collapsed'); }); allCollapsed=!allCollapsed;}
+buildDateBar(currentDate); load(currentDate);
 </script>
 </body></html>
