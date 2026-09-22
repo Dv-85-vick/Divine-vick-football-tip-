@@ -3,147 +3,221 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GoalPredict - 25 HIGH GOALS • LIVE • 100 Tips</title>
+<title>GoalPredict247 - 25 HIGH GOALS • 24/7 • LIVE • REAL</title>
+<meta name="description" content="GoalPredict247 - Nigeria's #1 REAL HIGH GOALS prediction - 25 matches daily = 100 tips - 7 ACCAs 2 to 10 odds - Over 1.5, Over 2.5, BTTS, Corners - LIVE scores [3-0] WON - WhatsApp Share + Bet Slip">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 html,body{overflow-x:hidden; max-width:100vw}
 .scrollbar-hide::-webkit-scrollbar{display:none}
 .scrollbar-hide{-ms-overflow-style:none; scrollbar-width:none}
-.acca-scroll{display:flex; gap:12px; overflow-x:auto; padding-bottom:10px}
-.acca-card{min-width:360px; max-width:360px}
+.acca-scroll{display:flex; gap:12px; overflow-x:auto; padding-bottom:12px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch}
+.acca-card{min-width:360px; max-width:360px; scroll-snap-align:start; flex-shrink:0; transition:all 0.3s ease}
 @media(max-width:767px){
 .acca-card{min-width:88vw!important; max-width:88vw!important}
-.acca-title{white-space:normal!important; line-height:1.25!important}
-.acca-sub{white-space:normal!important; line-height:1.3!important}
-.source-badge-mobile{display:none!important}
 }
-@keyframes pulse{0%,100%{opacity:1} 50%{opacity:.5}}.live-dot{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.live-dot{animation:pulse 2s infinite}
+.toast{position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#22c55e; color:#000; padding:8px 14px; border-radius:6px; font-size:11px; font-weight:bold; z-index:9999; display:none}
+.collapse-content{overflow:hidden; transition:grid-template-rows 0.3s ease; display:grid}
+.collapse-content.collapsed{grid-template-rows:0fr}
+.collapse-content.expanded{grid-template-rows:1fr}
+.collapse-inner{overflow:hidden}
+.chevron{transition:transform 0.3s ease}
+.chevron.rotated{transform:rotate(180deg)}
 </style>
 </head>
 <body class="bg-[#0f0f0f] text-white">
+<div id="toast" class="toast"></div>
 <header class="sticky top-0 z-50 bg-[#0f0f0f] border-b border-[#222] px-4 py-3">
   <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
-    <div class="flex items-center gap-3 flex-1 min-w-0">
-      <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center font-bold text-black flex-shrink-0">G</div>
-      <div class="min-w-0 flex-1"><h1 class="font-bold text-[18px] leading-none">GoalPredict</h1><p class="text-[11px] text-gray-400 truncate">25 HIGH GOALS • 100 Tips • LIVE • OVER-BTTS-CORNER-MARKET</p></div>
-    </div>
+    <div class="flex items-center gap-3 flex-1 min-w-0"><div class="w-10 h-10 bg-green-500 rounded-[6px] flex items-center justify-center font-bold text-black">G247</div><div class="min-w-0 flex-1"><h1 class="font-bold text-[18px] leading-none">GoalPredict247</h1><p class="text-[11px] text-gray-400 truncate">25 HIGH GOALS • 24/7 • LIVE • REAL • 100 Tips</p></div></div>
     <div class="flex items-center gap-2 flex-shrink-0">
-      <span class="flex items-center gap-1 text-[10px] bg-[#1a1a1a] px-2 py-1 rounded-full"><span class="w-2 h-2 bg-green-500 rounded-full live-dot"></span>LIVE</span>
-      <span id="source" class="source-badge-mobile hidden md:inline text-[10px] bg-[#1a1a1a] px-3 py-1 rounded-full text-gray-400">REAL HIGH GOALS</span>
-      <button onclick="fetchTips(currentDate,true)" class="w-9 h-9 bg-[#1a1a1a] rounded-full flex items-center justify-center"><i class="fas fa-rotate text-[12px]"></i></button>
+      <a href="/about.html" class="text-[10px] bg-[#1a1a1a] px-3 py-1.5 rounded-[4px] font-bold">ABOUT</a>
+      <span class="flex items-center gap-1 text-[10px] bg-[#1a1a1a] px-2 py-1 rounded-[4px]"><span class="w-2 h-2 bg-green-500 rounded-full live-dot"></span>LIVE</span>
+      <button onclick="fetchTips(currentDate,true)" class="w-9 h-9 bg-[#1a1a1a] rounded-[6px] flex items-center justify-center"><i class="fas fa-rotate text-[12px]"></i></button>
     </div>
   </div>
 </header>
 
-<div class="max-w-7xl mx-auto px-4 py-4">
-  <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-3" id="dates"></div>
-  <div class="grid grid-cols-5 gap-2 mb-4">
-    <div class="bg-[#1a1a1a] rounded-2xl p-3 text-center"><p class="text-[11px] text-gray-400">TOTAL</p><p id="total" class="font-bold">100</p></div>
-    <div class="bg-[#1a1a1a] rounded-2xl p-3 text-center"><p class="text-[11px] text-gray-400">WON</p><p id="won" class="font-bold text-green-500">0</p></div>
-    <div class="bg-[#1a1a1a] rounded-2xl p-3 text-center"><p class="text-[11px] text-gray-400">LOST</p><p id="lost" class="font-bold text-red-500">0</p></div>
-    <div class="bg-[#1a1a1a] rounded-2xl p-3 text-center"><p class="text-[11px] text-gray-400">PEND</p><p id="pending" class="font-bold text-yellow-500">0</p></div>
-    <div class="bg-[#1a1a1a] rounded-2xl p-3 text-center"><p class="text-[11px] text-gray-400">WIN%</p><p id="winrate" class="font-bold text-green-400">90%</p></div>
+<div class="max-w-7xl mx-auto px-3 md:px-4 py-4">
+  <div class="grid grid-cols-4 md:grid-cols-5 gap-2 mb-4">
+    <div class="bg-[#1a1a1a] rounded-[6px] p-3 text-center"><p class="text-[11px] text-gray-400">TOTAL</p><p id="total" class="font-bold">100</p></div>
+    <div class="bg-[#1a1a1a] rounded-[6px] p-3 text-center"><p class="text-[11px] text-gray-400">WON</p><p id="won" class="font-bold text-green-500">0</p></div>
+    <div class="bg-[#1a1a1a] rounded-[6px] p-3 text-center"><p class="text-[11px] text-gray-400">LOST</p><p id="lost" class="font-bold text-red-500">0</p></div>
+    <div class="bg-[#1a1a1a] rounded-[6px] p-3 text-center"><p class="text-[11px] text-gray-400">PEND</p><p id="pending" class="font-bold text-yellow-500">0</p></div>
+    <div class="bg-[#1a1a1a] rounded-[6px] p-3 text-center hidden md:block"><p class="text-[11px] text-gray-400">WIN%</p><p id="winrate" class="font-bold text-green-400">90%</p></div>
   </div>
 
-  <div class="bg-[#1a1a1a] rounded-2xl p-4 mb-4 overflow-hidden">
+  <div class="bg-[#1a1a1a] rounded-[6px] p-3 md:p-4 mb-4">
     <div class="flex items-center justify-between gap-2 mb-3">
-      <h2 class="font-bold text-[13px] md:text-[14px] flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> 7 ACCAs • LIVE • HIGH GOALS</h2>
-      <button onclick="shareCompleteAcca()" class="bg-[#25D366] text-black text-[10px] md:text-[11px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap"><i class="fab fa-whatsapp"></i> COMPLETE ACCA SHARE</button>
+      <h2 class="font-bold text-[13px] flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> 7 ACCAs • SLIDE • COLLAPSE • RECTANGLE</h2>
+      <button onclick="shareCompleteAcca()" class="bg-[#25D366] text-black text-[10px] font-bold px-3 py-1.5 rounded-[4px]"><i class="fab fa-whatsapp"></i> COMPLETE SHARE</button>
     </div>
     <div class="acca-scroll scrollbar-hide" id="accas"></div>
+    <p class="text-[9px] text-gray-500 mt-2 text-center"><i class="fas fa-arrows-left-right"></i> Slide left/right • Click acca to expand/collapse • Rectangle shape</p>
   </div>
 
   <div class="flex gap-2 overflow-x-auto scrollbar-hide mb-4" id="markets">
-    <button data-market="all" class="market-tab active bg-white text-black px-4 py-2 rounded-full text-[12px] font-bold whitespace-nowrap">ALL (100)</button>
-    <button data-market="Over 1.5" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-full text-[12px] font-bold whitespace-nowrap">OVER 1.5</button>
-    <button data-market="Over 2.5" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-full text-[12px] font-bold whitespace-nowrap">OVER 2.5</button>
-    <button data-market="BTTS Yes" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-full text-[12px] font-bold whitespace-nowrap">BTTS</button>
-    <button data-market="Corners" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-full text-[12px] font-bold whitespace-nowrap">CORNERS</button>
+    <button data-market="all" class="market-tab active bg-white text-black px-4 py-2 rounded-[4px] text-[12px] font-bold whitespace-nowrap">ALL (100)</button>
+    <button data-market="Over 1.5" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-[4px] text-[12px] font-bold whitespace-nowrap">OVER 1.5</button>
+    <button data-market="Over 2.5" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-[4px] text-[12px] font-bold whitespace-nowrap">OVER 2.5</button>
+    <button data-market="BTTS Yes" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-[4px] text-[12px] font-bold whitespace-nowrap">BTTS</button>
+    <button data-market="Corners" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-[4px] text-[12px] font-bold whitespace-nowrap">CORNERS</button>
   </div>
 
   <div id="tips" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+
+  <div class="mt-8 bg-[#1a1a1a] rounded-[6px] p-4">
+    <h3 class="font-bold text-[13px] mb-3">ABOUT GOALPREDICT247 - REAL HIGH GOALS</h3>
+    <p class="text-[11px] text-gray-300 leading-relaxed">GoalPredict247 is Nigeria's #1 REAL HIGH GOALS 24/7 prediction - 25 matches daily = 100 tips - 7 ACCAs from 2 to 10 odds - Over 1.5, Over 2.5, BTTS, Corners - LIVE scores [3-0] WON - We keep it REAL with 13 API calls/day, avg 3.2 goals/game leagues, transparent WON/LOST/PEND. Rectangle design like SportyBet, slideable 88vw snap, collapsible, WhatsApp Share + Bet Slip. <a href="/about.html" class="text-green-500 font-bold underline">Read Full About → 7 ACCAs Explained</a></p>
+  </div>
+
+  <div class="mt-4 text-center text-[9px] text-gray-500 pb-20">
+    <p>For 18+ | Gamble Responsibly | © 2026 GoalPredict247</p>
+  </div>
 </div>
+
+<div id="slipBtn" onclick="openSlip()" class="fixed bottom-4 right-4 bg-white text-black rounded-[8px] px-4 py-3 font-bold text-[12px] shadow-xl cursor-pointer z-40 hidden items-center gap-2"><i class="fas fa-receipt"></i><span id="slipCount">SLIP (0)</span><span id="slipOdds" class="bg-black text-white px-1.5 py-0.5 rounded-[3px] text-[10px]">@1.00</span></div>
+
+<div id="slipModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end md:items-center justify-center p-3"><div class="bg-[#1a1a1a] rounded-[6px] w-full max-w-md max-h-[80vh] flex flex-col"><div class="p-4 border-b border-[#222] flex justify-between items-center"><h3 class="font-bold text-[14px]">BET SLIP • <span id="slipModalCount">0</span> games</h3><button onclick="closeSlip()" class="w-7 h-7 bg-[#222] rounded-[4px] flex items-center justify-center"><i class="fas fa-xmark text-[12px]"></i></button></div><div id="slipList" class="flex-1 overflow-y-auto p-3 space-y-2"></div><div class="p-4 border-t border-[#222] space-y-2"><div class="flex justify-between font-bold text-[13px]"><span>Total Odds:</span><span id="slipTotalOdds">@1.00</span></div><div class="flex gap-2"><button onclick="clearSlip()" class="flex-1 bg-[#222] text-white py-2.5 rounded-[6px] font-bold text-[11px]">CLEAR</button><button onclick="shareSlip()" class="flex-[2] bg-[#25D366] text-black py-2.5 rounded-[6px] font-bold text-[11px]"><i class="fab fa-whatsapp"></i> SHARE SLIP VIA WHATSAPP</button></div></div></div></div>
 
 <script>
 let currentDate = new Date().toISOString().split('T')[0];
-let allTips = []; let allAccas = {}; let currentMarket = 'all';
-let liveInterval;
-
-async function fetchTips(date, forceLive=false){
-  currentDate = date || currentDate;
-  if(!forceLive) document.getElementById('tips').innerHTML = `<div class="col-span-full text-center py-16"><i class="fas fa-spinner fa-spin"></i><p class="text-[11px] text-gray-400 mt-2">Loading 25 HIGH GOALS LIVE...</p></div>`;
+let allTips = []; let allAccas = {}; let currentMarket = 'all'; let slip = []; let liveInterval;
+function toast(m){const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2000);}
+async function fetchTips(date,force){
+  currentDate = date||currentDate;
+  if(!force) document.getElementById('tips').innerHTML = `<div class="col-span-full text-center py-16"><i class="fas fa-spinner fa-spin"></i><p class="text-[11px] text-gray-400 mt-2">Loading 25 HIGH GOALS LIVE...</p></div>`;
   try{
     const r = await fetch(`/api/update?date=${currentDate}`);
     const j = await r.json();
-    allTips = j.tips || []; allAccas = j.accas || {};
-    document.getElementById('total').textContent = j.total || 100;
-    document.getElementById('won').textContent = j.wonCount || 0;
-    document.getElementById('lost').textContent = j.lostCount || 0;
-    document.getElementById('pending').textContent = j.pendingCount || 0;
-    document.getElementById('winrate').textContent = (j.winRate||90)+'%';
-    document.getElementById('source').textContent = j.liveUpdated? `LIVE ${new Date().toLocaleTimeString()}` : (j.source||'REAL').substring(0,35);
+    allTips=j.tips||[]; allAccas=j.accas||[];
+    document.getElementById('total').textContent=j.total||100;
+    document.getElementById('won').textContent=j.wonCount||0;
+    document.getElementById('lost').textContent=j.lostCount||0;
+    document.getElementById('pending').textContent=j.pendingCount||0;
+    document.getElementById('winrate').textContent=(j.winRate||90)+'%';
     renderAccas(); renderTips();
   }catch(e){}
 }
-
 function renderAccas(){
-  const c = document.getElementById('accas');
-  const order = ['ov15_2odds','ov15_3odds','ov25_5odds','btts_5odds','corners_5odds','over15_10odds','mixed_10odds'];
-  c.innerHTML = order.map(key=>{
-    const a = allAccas[key]; if(!a||!a.games||a.games.length===0) return '';
-    const color = a.result==='WON'?'border-green-500':a.result==='LOST'?'border-red-500':'border-[#2a2a2a]';
-    const pendingAcca = a.games.length - (a.won||0) - (a.lost||0);
-    return `<div class="acca-card bg-[#0f0f0f] border ${color} rounded-2xl p-3 flex-shrink-0">
-      <div class="flex justify-between items-start gap-2 cursor-pointer" onclick="this.nextElementSibling.classList.toggle('hidden')">
+  const c=document.getElementById('accas');
+  const order=['ov15_2odds','ov15_3odds','ov25_5odds','btts_5odds','corners_5odds','over15_10odds','mixed_10odds'];
+  c.innerHTML=order.map(key=>{
+    const a=allAccas[key]; if(!a||!a.games||a.games.length===0) return '';
+    const col=a.result==='WON'?'border-green-500':a.result==='LOST'?'border-red-500':'border-[#2a2a2a]';
+    const pend=a.games.length-(a.won||0)-(a.lost||0);
+    return `<div class="acca-card bg-[#0f0f0f] border ${col} rounded-[6px] p-3">
+      <div class="flex justify-between items-start gap-2 cursor-pointer" onclick="toggleAcca(this)">
         <div class="flex-1 min-w-0">
-          <p class="acca-title font-bold text-[12px] leading-tight">${a.name}</p>
-          <p class="acca-sub text-[10px] text-gray-400 mt-1 leading-tight">
-            ${a.count} games • ${a.totalOdd} odds<br class="md:hidden">
-            <span class="text-green-500 font-bold">WON ${a.won||0}</span> - <span class="text-red-500 font-bold">LOST ${a.lost||0}</span> - <span class="text-yellow-500 font-bold">PEND ${pendingAcca}</span> • <span class="${a.result==='WON'?'text-green-500':a.result==='LOST'?'text-red-500':'text-yellow-500'} font-bold">${a.result}</span>
-            ${a.games.some(g=>g.status!=='FT'&&g.status!=='NS')?'<span class="ml-1 w-2 h-2 bg-green-500 rounded-full inline-block live-dot"></span>':''}
-          </p>
+          <p class="font-bold text-[12px] leading-tight flex items-center gap-1.5">${a.name} <i class="fas fa-chevron-down chevron text-[9px] text-gray-400"></i></p>
+          <p class="text-[10px] text-gray-400 mt-1 leading-tight">${a.count} games • ${a.totalOdd} odds<br><span class="text-green-500 font-bold">WON ${a.won||0}</span> - <span class="text-red-500 font-bold">LOST ${a.lost||0}</span> - <span class="text-yellow-500 font-bold">PEND ${pend}</span> • <span class="${a.result==='WON'?'text-green-500':a.result==='LOST'?'text-red-500':'text-yellow-500'} font-bold">${a.result}</span></p>
         </div>
-        <div class="flex items-center gap-1.5 flex-shrink-0"><button onclick="event.stopPropagation();shareAcca('${key}')" class="w-7 h-7 bg-[#25D366] rounded-full flex items-center justify-center"><i class="fab fa-whatsapp text-black text-[12px]"></i></button><i class="fas fa-chevron-down text-[10px] text-gray-500"></i></div>
+        <div class="flex gap-1 flex-shrink-0" onclick="event.stopPropagation()">
+          <button onclick="addAccaToSlip('${key}')" class="w-7 h-7 bg-[#222] rounded-[4px] flex items-center justify-center"><i class="fas fa-plus text-[10px]"></i></button>
+          <button onclick="shareAcca('${key}')" class="w-7 h-7 bg-[#25D366] rounded-[4px] flex items-center justify-center"><i class="fab fa-whatsapp text-black text-[11px]"></i></button>
+        </div>
       </div>
-      <div class="hidden mt-3 space-y-1.5">
-        ${a.games.map(g=>{
-          const gc = g.result==='WON'?'text-green-500':g.result==='LOST'?'text-red-500':'text-yellow-500';
-          const isLive = g.status!=='FT' && g.status!=='NS' && g.result==='PENDING';
-          return `<div class="bg-[#1a1a1a] rounded-lg p-2 flex justify-between gap-2"><div class="min-w-0 flex-1"><p class="text-[11px] font-bold truncate">${g.match}</p><p class="text-[9px] text-gray-400 truncate">${g.league} • ${g.tip} @${g.odd} • ${g.score||''} <span class="${gc} font-bold">${g.result||'PENDING'}</span> ${g.status||''} ${isLive?'<span class="w-1 h-1 bg-green-500 rounded-full inline-block live-dot"></span>':''}</p></div><span class="text-[10px] font-bold">${g.odd}</span></div>`;
-        }).join('')}
-        <div class="flex justify-between pt-2 border-t border-[#222] text-[11px] font-bold"><span>Total: ${a.totalOdd}</span><span><span class="text-green-500">WON ${a.won||0}</span> <span class="text-red-500">LOST ${a.lost||0}</span> <span class="text-yellow-500">PEND ${pendingAcca}</span></span></div>
+      <div class="collapse-content collapsed">
+        <div class="collapse-inner">
+          <div class="mt-3 space-y-2">
+            ${a.games.map(g=>{
+              const gc=g.result==='WON'?'text-green-500':g.result==='LOST'?'text-red-500':'text-yellow-500';
+              const live=g.status!=='FT'&&g.status!=='NS'&&g.result==='PENDING'?'<span class="w-1.5 h-1.5 bg-green-500 rounded-full inline-block live-dot ml-1"></span>':'';
+              return `<div class="bg-[#1a1a1a] rounded-[4px] p-2.5 flex justify-between items-center gap-2 border-l-[3px]" style="border-color:${g.result==='WON'?'#22c55e':g.result==='LOST'?'#ef4444':'#eab308'}">
+                <div class="flex-1 min-w-0">
+                  <p class="text-[11px] font-bold leading-tight">${g.match}</p>
+                  <p class="text-[9px] text-gray-400 mt-0.5">${g.league} • ${g.time} • ${g.date}</p>
+                  <p class="text-[10px] mt-1 flex flex-wrap gap-1 items-center"><span class="bg-white text-black px-1.5 py-0.5 rounded-[3px] text-[9px] font-bold">${g.tip}</span> <span class="bg-[#222] px-1.5 py-0.5 rounded-[3px] text-[9px] font-bold">@${g.odd}</span> <span class="${gc} font-bold text-[10px]">${g.score||'[0-0]'} ${g.result||'PENDING'}${live}</span> <span class="text-[9px] text-gray-400">${g.status||''}</span></p>
+                </div>
+                <div class="flex flex-col items-end gap-1 flex-shrink-0">
+                  <div class="text-right"><p class="text-[10px] font-bold">${g.odd}</p><p class="text-[9px] ${gc} font-bold">${g.result||'PENDING'}</p><p class="text-[9px] text-gray-400">${g.score||'[0-0]'}</p></div>
+                  <div class="flex gap-1">
+                    <button onclick="addToSlip('${g.match.replace(/'/g,'')}', '${g.tip}', '${g.odd}', '${g.league}')" class="w-6 h-6 bg-[#222] rounded-[3px] flex items-center justify-center"><i class="fas fa-plus text-[8px]"></i></button>
+                    <button onclick="shareAccaGame('${g.match.replace(/'/g,'')}', '${g.tip}', '${g.odd}', '${g.score||''}', '${g.result||'PENDING'}', '${g.league}')" class="w-6 h-6 bg-[#25D366] rounded-[3px] flex items-center justify-center"><i class="fab fa-whatsapp text-black text-[9px]"></i></button>
+                  </div>
+                </div>
+              </div>`;
+            }).join('')}
+            <div class="flex justify-between pt-2 border-t border-[#222] text-[11px] font-bold"><span>Total: ${a.totalOdd}</span><span><span class="text-green-500">WON ${a.won||0}</span> <span class="text-red-500">LOST ${a.lost||0}</span> <span class="text-yellow-500">PEND ${pend}</span></span></div>
+          </div>
+        </div>
       </div>
     </div>`;
   }).join('');
 }
-
+function toggleAcca(header){
+  const content = header.nextElementSibling;
+  const chev = header.querySelector('.chevron');
+  if(content.classList.contains('collapsed')){
+    content.classList.remove('collapsed');
+    content.classList.add('expanded');
+    chev.classList.add('rotated');
+    chev.classList.remove('fa-chevron-down'); chev.classList.add('fa-chevron-up');
+  }else{
+    content.classList.add('collapsed');
+    content.classList.remove('expanded');
+    chev.classList.remove('rotated');
+    chev.classList.add('fa-chevron-down'); chev.classList.remove('fa-chevron-up');
+  }
+}
 function renderTips(){
-  const c = document.getElementById('tips');
-  let filtered = currentMarket==='all'? allTips : allTips.filter(t=> t.market===currentMarket);
-  c.innerHTML = filtered.map(t=>{
-    const col = t.result==='WON'?'#22c55e':t.result==='LOST'?'#ef4444':'#eab308';
-    const isLive = t.status!=='FT' && t.status!=='NS' && t.result==='PENDING';
-    return `<div class="bg-[#1a1a1a] rounded-2xl p-3 border-l-4" style="border-color:${col}">
-      <div class="flex justify-between gap-2 mb-1"><span class="text-[10px] bg-[#222] px-2 py-0.5 rounded-full truncate max-w-[60%]">${t.league} • ${t.country}</span>
-      <span class="text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1" style="background:${col}20;color:${col}">${t.result||'PENDING'} ${t.score||''} ${isLive?'<span class="w-1.5 h-1.5 bg-green-500 rounded-full inline-block live-dot"></span>':''}</span></div>
-      <p class="font-bold text-[13px]">${t.match}</p>
-      <p class="text-[11px] text-gray-400"><i class="far fa-clock"></i> ${t.time} • ${t.date} • ${t.status||''} ${isLive?'• LIVE':''}</p>
-      <div class="flex flex-wrap gap-1.5 mt-2"><span class="bg-white text-black text-[11px] font-bold px-2.5 py-1 rounded-full">${t.market}</span><span class="bg-[#222] text-[11px] font-bold px-2.5 py-1 rounded-full">${t.tip} @${t.odd}</span><span class="bg-green-500/20 text-green-400 text-[10px] font-bold px-2 py-1 rounded-full">${t.confidence}%</span></div>
-      <div class="mt-2 bg-[#0f0f0f] rounded-lg p-2"><p class="text-[10px] text-gray-300"><i class="fas fa-chart-line text-green-500"></i> ${t.reason||''}</p><p class="text-[9px] text-gray-500 mt-1">${t.stats||''} • <span class="${t.result==='WON'?'text-green-500':t.result==='LOST'?'text-red-500':'text-yellow-500'} font-bold">${t.result||'PENDING'}</span> ${t.score||''} ${t.status||''}</p></div>
+  const c=document.getElementById('tips');
+  let f=currentMarket==='all'?allTips:allTips.filter(t=>t.market===currentMarket);
+  c.innerHTML=f.map(t=>{
+    const col=t.result==='WON'?'#22c55e':t.result==='LOST'?'#ef4444':'#eab308';
+    const live=t.status!=='FT'&&t.status!=='NS'&&t.result==='PENDING';
+    return `<div class="bg-[#1a1a1a] rounded-[6px] p-3 border-l-[4px]" style="border-color:${col}">
+      <div class="flex justify-between gap-2 mb-1.5"><span class="text-[10px] bg-[#222] px-2 py-1 rounded-[4px] truncate max-w-[60%]">${t.league} • ${t.country}</span><span class="text-[10px] px-2 py-1 rounded-[4px] font-bold flex items-center gap-1" style="background:${col}20;color:${col}">${t.result||'PENDING'} ${t.score||'[0-0]'} ${live?'<span class="w-1.5 h-1.5 bg-green-500 rounded-full inline-block live-dot"></span>':''}</span></div>
+      <p class="font-bold text-[14px] leading-tight">${t.match}</p>
+      <p class="text-[11px] text-gray-400 mt-1"><i class="far fa-clock"></i> ${t.time} • ${t.date} • ${t.status||''} ${live?'• LIVE':''}</p>
+      <div class="flex flex-wrap gap-1.5 mt-2.5">
+        <span class="bg-white text-black text-[11px] font-bold px-3 py-1.5 rounded-[4px]">${t.market}</span>
+        <span class="bg-[#222] text-[11px] font-bold px-3 py-1.5 rounded-[4px]">${t.tip} @${t.odd}</span>
+        <span class="bg-green-500/20 text-green-400 text-[10px] font-bold px-2.5 py-1.5 rounded-[4px]">${t.confidence}% • ${t.result||'PENDING'} ${t.score||''}</span>
+      </div>
+      <div class="mt-2.5 bg-[#0f0f0f] rounded-[4px] p-2.5"><p class="text-[10px] text-gray-300 leading-snug"><i class="fas fa-chart-line text-green-500"></i> ${t.reason||''}</p><p class="text-[9px] text-gray-500 mt-1.5"><span class="${t.result==='WON'?'text-green-500':t.result==='LOST'?'text-red-500':'text-yellow-500'} font-bold">${t.result||'PENDING'} ${t.score||'[0-0]'}</span> • ${t.stats||''} • ${t.status||''} • LIVESCORE ${t.score||'[0-0]'}</p></div>
+      <div class="flex gap-2 mt-3">
+        <button onclick="addToSlip('${t.match.replace(/'/g,'')}', '${t.tip}', '${t.odd}', '${t.league}')" class="flex-1 bg-[#222] text-white py-2 rounded-[4px] font-bold text-[11px]"><i class="fas fa-plus"></i> ADD TO SLIP</button>
+        <button onclick="shareIndividual('${t.match.replace(/'/g,'')}', '${t.tip}', '${t.odd}', '${t.score||''}', '${t.result||'PENDING'}', '${t.league}', '${t.confidence}')" class="flex-1 bg-[#25D366] text-black py-2 rounded-[4px] font-bold text-[11px]"><i class="fab fa-whatsapp"></i> SHARE</button>
+      </div>
     </div>`;
   }).join('');
 }
-
-function shareAcca(k){ const a=allAccas[k]; if(!a)return; const p=a.games.length-(a.won||0)-(a.lost||0); let m=`🔥 ${a.name} - ${a.totalOdd} ODDS%0AWON ${a.won} LOST ${a.lost} PEND ${p} - ${a.result}%0A%0A`; a.games.forEach((g,i)=>{m+=`${i+1}. ${g.match} - ${g.tip} @${g.odd} ${g.score||''} ${g.result||'PENDING'}%0A`}); m+=`%0A👉 ${location.origin}`; window.open(`https://wa.me/?text=${m}`,'_blank');}
-function shareCompleteAcca(){ let m=`🔥 COMPLETE ACCA - 7 ACCAs - 25 HIGH GOALS LIVE%0A%0A`; Object.values(allAccas).forEach(a=>{ if(!a.games)return; const p=a.games.length-(a.won||0)-(a.lost||0); m+=`*${a.name} ${a.totalOdd} odds*%0AWON ${a.won} LOST ${a.lost} PEND ${p} - ${a.result}%0A%0A`;}); m+=`👉 ${location.origin}`; window.open(`https://wa.me/?text=${m}`,'_blank');}
-
-document.getElementById('markets').addEventListener('click',e=>{ const b=e.target.closest('.market-tab'); if(!b)return; document.querySelectorAll('.market-tab').forEach(x=>{x.classList.remove('active','bg-white','text-black'); x.classList.add('bg-[#1a1a1a]')}); b.classList.add('active','bg-white','text-black'); b.classList.remove('bg-[#1a1a1a]'); currentMarket=b.dataset.market; renderTips();});
-
+function addToSlip(match,tip,odd,league){
+  if(slip.find(s=>s.match===match && s.tip===tip)) {toast('Already in slip'); return;}
+  slip.push({match,tip,odd:parseFloat(odd),league});
+  updateSlipUI(); toast(`Added to Slip: ${match}`);
+}
+function addAccaToSlip(key){
+  const a=allAccas[key]; if(!a) return;
+  a.games.forEach(g=>{ if(!slip.find(s=>s.match===g.match && s.tip===g.tip)) slip.push({match:g.match,tip:g.tip,odd:parseFloat(g.odd),league:g.league}); });
+  updateSlipUI(); toast(`Added ACCA ${a.name} to Slip`);
+}
+function updateSlipUI(){
+  const btn=document.getElementById('slipBtn');
+  if(slip.length===0){btn.classList.add('hidden'); btn.classList.remove('flex'); return;}
+  btn.classList.remove('hidden'); btn.classList.add('flex');
+  document.getElementById('slipCount').textContent=`SLIP (${slip.length})`;
+  const total = slip.reduce((acc,s)=>acc*s.odd,1).toFixed(2);
+  document.getElementById('slipOdds').textContent=`@${total}`;
+  document.getElementById('slipModalCount').textContent=slip.length;
+  document.getElementById('slipTotalOdds').textContent=`@${total}`;
+  document.getElementById('slipList').innerHTML=slip.map((s,i)=>`<div class="bg-[#0f0f0f] rounded-[4px] p-2.5 flex justify-between gap-2"><div class="flex-1 min-w-0"><p class="text-[11px] font-bold truncate">${s.match}</p><p class="text-[9px] text-gray-400">${s.league} • ${s.tip} @${s.odd}</p></div><button onclick="removeFromSlip(${i})" class="w-6 h-6 bg-[#222] rounded-[3px] flex items-center justify-center flex-shrink-0"><i class="fas fa-xmark text-[9px]"></i></button></div>`).join('');
+}
+function removeFromSlip(i){slip.splice(i,1); updateSlipUI();}
+function clearSlip(){slip=[]; updateSlipUI(); closeSlip(); toast('Slip cleared');}
+function openSlip(){document.getElementById('slipModal').classList.remove('hidden');}
+function closeSlip(){document.getElementById('slipModal').classList.add('hidden');}
+function shareIndividual(match,tip,odd,score,result,league,conf){let m=`🔥 GoalPredict TIP%0A${match}%0A${league} • ${tip} @${odd}%0A${score} ${result} • ${conf}% • HIGH GOALS%0A👉 ${location.origin}`; window.open(`https://wa.me/?text=${m}`,'_blank');}
+function shareAccaGame(match,tip,odd,score,result,league){let m=`🔥 ACCA Game: ${match} - ${tip} @${odd} ${score} ${result} • ${league} 👉 ${location.origin}`; window.open(`https://wa.me/?text=${m}`,'_blank');}
+function shareAcca(k){const a=allAccas[k];if(!a)return;const p=a.games.length-(a.won||0)-(a.lost||0);let m=`🔥 ${a.name} - ${a.totalOdd} ODDS%0AWON ${a.won} LOST ${a.lost} PEND ${p} - ${a.result}%0A%0A`;a.games.forEach((g,i)=>{m+=`${i+1}. ${g.match} - ${g.tip} @${g.odd} ${g.score||'[0-0]'} ${g.result||'PENDING'}%0A`});m+=`%0A👉 ${location.origin}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
+function shareCompleteAcca(){let m=`🔥 COMPLETE ACCA - 7 ACCAs - 25 HIGH GOALS LIVE%0A%0A`;Object.values(allAccas).forEach(a=>{if(!a.games)return;const p=a.games.length-(a.won||0)-(a.lost||0);m+=`*${a.name} ${a.totalOdd}* WON ${a.won} LOST ${a.lost} PEND ${p} ${a.result}%0A`;});m+=`%0A👉 ${location.origin}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
+function shareSlip(){if(slip.length===0)return;const total=slip.reduce((acc,s)=>acc*s.odd,1).toFixed(2);let m=`🔥 MY BET SLIP - ${slip.length} games @${total}%0A%0A`;slip.forEach((s,i)=>{m+=`${i+1}. ${s.match} - ${s.tip} @${s.odd}%0A`});m+=`%0ATotal: @${total}%0A👉 ${location.origin}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
+document.getElementById('markets').addEventListener('click',e=>{const b=e.target.closest('.market-tab');if(!b)return;document.querySelectorAll('.market-tab').forEach(x=>{x.classList.remove('active','bg-white','text-black');x.classList.add('bg-[#1a1a1a]')});b.classList.add('active','bg-white','text-black');b.classList.remove('bg-[#1a1a1a]');currentMarket=b.dataset.market;renderTips();});
 fetchTips(currentDate);
 if(liveInterval) clearInterval(liveInterval);
-liveInterval = setInterval(()=>{ fetchTips(currentDate,true); }, 60*1000);
-document.addEventListener('visibilitychange', ()=>{ if(document.hidden){ clearInterval(liveInterval); } else { fetchTips(currentDate,true); liveInterval=setInterval(()=>fetchTips(currentDate,true),60*1000); } });
+liveInterval=setInterval(()=>fetchTips(currentDate,true),60*1000);
 </script>
 </body>
 </html>
