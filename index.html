@@ -1,94 +1,181 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DIVINE-VICK-FOOTBALL-TIPS</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#0a0a0a;color:#e5e5e5;font-family:Inter,system-ui,sans-serif;padding-bottom:90px;font-size:13px;line-height:1.5}
-header{background:#111;border-bottom:1px solid #222;padding:12px 12px;display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:50}
-.logo{width:38px;height:38px;background:#ffcc00;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-weight:900;font-size:15px}
-.h-title{font-weight:900;font-size:15px;letter-spacing:0.3px}
-.h-sub{font-size:11px;color:#888}
-.date-bar{display:flex;gap:8px;padding:10px;overflow-x:auto;background:#0f0f0f;border-bottom:1px solid #222;position:sticky;top:62px;z-index:40}
-.date-bar::-webkit-scrollbar{display:none}
-.date-chip{min-width:92px;background:#151515;border:1px solid #222;border-radius:12px;padding:9px;text-align:center;cursor:pointer;flex-shrink:0}
-.date-chip.active{background:#ffcc00;color:#000;border-color:#ffcc00}
-.date-chip b{font-size:12px;display:block}.date-chip span{font-size:10px;color:#888;display:block}.date-chip.active span{color:#000}
-.date-chip i{font-size:10px;font-style:normal;font-weight:800;display:block;margin-top:3px}
-.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px}
-.stat{background:#151515;border:1px solid #222;border-radius:12px;padding:12px;text-align:center}
-.stat b{font-size:20px;display:block}.stat span{font-size:11px;color:#888}
-.accas{padding:0 10px}.acca{background:#151515;border:1px solid #222;border-radius:16px;margin-bottom:10px;overflow:hidden;transition:all 0.2s}
-.acca-head{padding:14px 12px;display:flex;justify-content:space-between;align-items:center;background:#1a1a1a;cursor:pointer;user-select:none}
-.acca-head:hover{background:#202020}
-.acca-title{font-size:13px;font-weight:800;flex:1;display:flex;align-items:center;gap:8px}
-.acca-arrow{transition:transform 0.25s ease;display:inline-block;font-size:14px}
-.acca.collapsed.acca-body{display:none!important}
-.acca.collapsed.acca-arrow{transform:rotate(-90deg)}
-.acca-body{display:block}
-.badge{padding:5px 10px;border-radius:20px;font-size:10px;font-weight:800;white-space:nowrap}
-.badge-pending{background:#2a2a2a;color:#ddd;border:1px solid #333}.badge-won{background:#22c55e;color:#000}.badge-lost{background:#ef4444;color:#fff}
-.a-game{display:flex;justify-content:space-between;align-items:center;padding:12px 12px;border-bottom:1px solid #1e1e1e;gap:10px}
-.a-match{font-size:13px;font-weight:700;line-height:1.4}
-.a-tip{font-size:11px;color:#aaa;margin-top:3px;line-height:1.4}
-/* FIXED SHARE BUTTON - NOT TOO WHITISH */
-.btn-share{background:#ffcc00;color:#000;border:none;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 2px 6px rgba(255,204,0,0.3)}
-.btn-share:hover{background:#ffdb4d}
-.btn-slip{background:#262626;color:#ddd;border:1px solid #333;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer}
-.btn-slip:hover{background:#333;color:#fff}
-.tips{padding:10px}.g-card{background:#151515;border:1px solid #222;border-radius:14px;padding:14px;margin-bottom:12px}
-.bet-slip{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;padding:12px 12px;display:flex;justify-content:space-between;align-items:center;z-index:60}
 
-/* DESKTOP MODE - BIGGER TEXT */
-@media(min-width:768px){
-  body{font-size:15px}
- .h-title{font-size:18px}
- .acca-title{font-size:14px}
- .a-match{font-size:14px}
- .a-tip{font-size:12px}
- .g-card{padding:16px}
- .date-chip{min-width:110px;padding:10px}
- .stats{max-width:900px;margin:0 auto}
- .accas,.tips{max-width:900px;margin:0 auto}
-  header{padding:14px 20px}
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoalPredict - 25 HIGH GOALS Matches - 100 Tips</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+ .scrollbar-hide::-webkit-scrollbar{display:none}.scrollbar-hide{-ms-overflow-style:none; scrollbar-width:none}
+ .acca-scroll{display:flex; gap:12px; overflow-x:auto; padding-bottom:12px; scroll-snap-type:x mandatory}
+ .acca-card{min-width:320px; scroll-snap-align:start}
+  @media(min-width:768px){.acca-card{min-width:360px} }
 </style>
-</head><body>
-<header><div class="logo">DV</div><div><div class="h-title">DIVINE-VICK-FOOTBALL-TIPS</div><div class="h-sub">divine-vick-football-tips • Collapsible Fixed • Desktop Bigger</div></div></header>
-<div class="date-bar" id="dateBar"></div>
-<div class="stats">
-<div class="stat"><b id="totalTips">60</b><span id="dateLabel">Tips • TODAY</span></div>
-<div class="stat"><b id="winCount" style="color:#22c55e">0 WON</b><span id="lostCount">0 LOST • 89%</span></div>
-<div class="stat"><b id="pendingCount">60 Pending</b><span>Tap ACCA to open</span></div>
+</head>
+<body class="bg-[#0f0f0f] text-white min-h-screen">
+<!-- HEADER OVER-BTTS-CORNER-MARKET -->
+<header class="sticky top-0 z-50 bg-[#0f0f0f] border-b border-[#222] px-4 py-3">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 bg-green-500 rounded-lg flex items-center justify-center font-bold text-black">G</div>
+      <div>
+        <h1 class="font-bold text-[16px] leading-none">GoalPredict</h1>
+        <p class="text-[11px] text-gray-400">25 HIGH GOALS • 100 Tips • OVER-BTTS-CORNER-MARKET</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span id="source" class="text-[10px] bg-[#1a1a1a] px-2 py-1 rounded-full text-gray-400">REAL • 13 calls/day</span>
+      <button onclick="fetchTips(currentDate)" class="w-8 h-8 bg-[#1a1a1a] rounded-full flex items-center justify-center"><i class="fas fa-rotate text-[12px]"></i></button>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-7xl mx-auto px-3 md:px-4 py-4">
+  <!-- DATE SELECTOR -3 to +6 -->
+  <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-3" id="dates"></div>
+
+  <!-- STATS -->
+  <div class="grid grid-cols-4 md:grid-cols-5 gap-2 mb-4">
+    <div class="bg-[#1a1a1a] rounded-xl p-3 text-center"><p class="text-[11px] text-gray-400">TOTAL</p><p id="total" class="font-bold text-[18px]">100</p></div>
+    <div class="bg-[#1a1a1a] rounded-xl p-3 text-center"><p class="text-[11px] text-gray-400">WON</p><p id="won" class="font-bold text-[18px] text-green-500">0</p></div>
+    <div class="bg-[#1a1a1a] rounded-xl p-3 text-center"><p class="text-[11px] text-gray-400">LOST</p><p id="lost" class="font-bold text-[18px] text-red-500">0</p></div>
+    <div class="bg-[#1a1a1a] rounded-xl p-3 text-center"><p class="text-[11px] text-gray-400">PENDING</p><p id="pending" class="font-bold text-[18px] text-yellow-500">0</p></div>
+    <div class="bg-[#1a1a1a] rounded-xl p-3 text-center hidden md:block"><p class="text-[11px] text-gray-400">WIN RATE</p><p id="winrate" class="font-bold text-[18px] text-green-400">90%</p></div>
+  </div>
+
+  <!-- 7 ACCAs HORIZONTAL SCROLL -->
+  <div class="bg-[#1a1a1a] rounded-2xl p-4 mb-4">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-bold text-[14px]"><i class="fas fa-fire text-orange-500"></i> 7 ACCAs • HORIZONTAL • HIGH GOALS</h2>
+      <button onclick="shareCompleteAcca()" class="bg-[#25D366] text-black text-[11px] font-bold px-3 py-1.5 rounded-full"><i class="fab fa-whatsapp"></i> COMPLETE ACCA SHARE</button>
+    </div>
+    <div class="acca-scroll scrollbar-hide" id="accas">
+      <!-- ACCAs injected here -->
+    </div>
+  </div>
+
+  <!-- MARKET TABS HEADER OVER-BTTS-CORNER-MARKET -->
+  <div class="flex gap-2 overflow-x-auto scrollbar-hide mb-4" id="markets">
+    <button data-market="all" class="market-tab active bg-white text-black px-4 py-2 rounded-full text-[12px] font-bold whitespace-nowrap">ALL (100)</button>
+    <button data-market="Over 1.5" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-full text-[12px] font-bold whitespace-nowrap">OVER 1.5</button>
+    <button data-market="Over 2.5" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-full text-[12px] font-bold whitespace-nowrap">OVER 2.5</button>
+    <button data-market="BTTS Yes" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-full text-[12px] font-bold whitespace-nowrap">BTTS</button>
+    <button data-market="Corners" class="market-tab bg-[#1a1a1a] px-4 py-2 rounded-full text-[12px] font-bold whitespace-nowrap">CORNERS</button>
+  </div>
+
+  <!-- TIPS GRID -->
+  <div id="tips" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
 </div>
-<div style="padding:10px 12px;font-size:12px;font-weight:800;display:flex;justify-content:space-between;max-width:900px;margin:0 auto"><span>🔥 TODAY'S ACCAS • TAP HEADER TO COLLAPSE</span><span onclick="toggleAll()" style="color:#ffcc00;cursor:pointer">Expand All / Collapse All</span></div>
-<div class="accas" id="accas"></div>
-<div class="tips"><div style="padding:8px 0;font-size:13px;font-weight:800;max-width:900px;margin:0 auto">📊 INDIVIDUAL MATCHES • Reason • Stats • Form • Confidence • League/Country • Date/Time</div><div id="tips" style="max-width:900px;margin:0 auto"></div></div>
-<div class="bet-slip"><div><b>BET SLIP <span id="slipOdd">@0.00</span> • <span id="slipCount">0</span></b></div><button onclick="shareSlip()" style="background:#ffcc00;color:#000;border:none;padding:10px 18px;border-radius:20px;font-weight:900">SHARE</button></div>
+
 <script>
-let allTips=[], accasData={}, slip=[], currentDate=new Date().toISOString().split('T')[0], allCollapsed=false;
-function buildDateBar(active){const bar=document.getElementById('dateBar');let html='';for(let i=-3;i<=5;i++){const d=new Date();d.setDate(d.getDate()+i);const ds=d.toISOString().split('T')[0];const lab=i===0?'TODAY':i===-1?'YESTERDAY':i===1?'TOMORROW':d.toLocaleDateString('en',{month:'short',day:'2-digit'});const isActive=ds===active;let wl=i<0?`${Math.floor(Math.random()*8)+10}W-${Math.floor(Math.random()*3)+1}L`:i===0?'LIVE':'UPCOMING';html+=`<div class="date-chip ${isActive?'active':''}" onclick="load('${ds}')"><b>${lab}</b><span>${ds.slice(5)}</span><i>${wl}</i></div>`;}bar.innerHTML=html;}
-async function load(dateStr){const target=dateStr||currentDate;currentDate=target;buildDateBar(target);try{const r=await fetch('/api/update?date='+target,{cache:'no-store'});const data=await r.json();allTips=data.tips||[];accasData=data.accas||{};document.getElementById('totalTips').textContent=data.total||allTips.length;document.getElementById('dateLabel').textContent=data.date+' • '+data.total+' Tips';document.getElementById('winCount').textContent=(data.wonCount||0)+' WON';document.getElementById('lostCount').textContent=(data.lostCount||0)+' LOST • '+(data.winRate||89)+'%';document.getElementById('pendingCount').textContent=(data.pendingCount||0)+' Pending';}catch(e){}renderAccas();renderTips();}
-function renderAccas(){
-  const c=document.getElementById('accas'); c.innerHTML='';
-  Object.entries(accasData).forEach(([k,a],idx)=>{
-    if(!a.games) return;
-    let title=a.name||k.toUpperCase(); let avgConf=Math.round(a.games.reduce((s,g)=>s+(allTips.find(t=>t.id===g.id)?.confidence||75),0)/Math.max(1,a.games.length));
-    let badgeClass=a.result==='WON'?'badge-won':a.result==='LOST'?'badge-lost':'badge-pending';
-    let collapsed = idx>=1? 'collapsed' : ''; // first open, rest collapsed = short site
-    c.innerHTML+=`<div class="acca ${collapsed}"><div class="acca-head" onclick="toggleAcca(this)"><div class="acca-title"><span class="acca-arrow">▼</span> ${title} • ${avgConf}% CONFIDENT</div><span class="badge ${badgeClass}">${a.result} • ${a.totalOdd} ODD • ${a.count}G • ${a.won}W-${a.lost}L</span></div><div class="acca-body">${a.games.map(g=>`<div class="a-game"><div style="flex:1;min-width:0"><div class="a-match">${g.match} <span style="font-size:10px;background:${g.result==='WON'?'#22c55e':g.result==='LOST'?'#ef4444':'#333'};color:${g.result==='PENDING'?'#aaa':'#000'};padding:2px 7px;border-radius:10px;margin-left:6px">${g.result||'PENDING'} ${g.score||''}</span></div><div class="a-tip">🌍 ${g.country||'England'} • ${g.league||'Premier League'} • ⏰ ${g.time||''} • ${g.date||''} • ${g.tip} @${g.odd}<br>💡 ${g.reason||''}</div></div><div style="display:flex;gap:8px;flex-shrink:0"><button class="btn-share" onclick="event.stopPropagation();shareG('${g.match}','${g.tip}','${g.odd}','${g.result}')">Share</button><button class="btn-slip" onclick="event.stopPropagation();addSlip(${g.id})">+Slip</button></div></div>`).join('')}</div></div>`;
-  });
+let currentDate = new Date().toISOString().split('T')[0];
+let allTips = [];
+let allAccas = {};
+let currentMarket = 'all';
+
+async function fetchTips(date){
+  currentDate = date || currentDate;
+  document.getElementById('tips').innerHTML = `<div class="col-span-full text-center py-20"><i class="fas fa-spinner fa-spin text-2xl"></i><p class="text-[12px] text-gray-400 mt-2">Loading 25 HIGH GOALS matches (100 tips)... 13 calls/day</p></div>`;
+  try{
+    const r = await fetch(`/api/update?date=${currentDate}`);
+    const j = await r.json();
+    allTips = j.tips || [];
+    allAccas = j.accas || {};
+    document.getElementById('total').textContent = j.total || 100;
+    document.getElementById('won').textContent = j.wonCount || 0;
+    document.getElementById('lost').textContent = j.lostCount || 0;
+    document.getElementById('pending').textContent = j.pendingCount || 0;
+    document.getElementById('winrate').textContent = (j.winRate||90) + '%';
+    document.getElementById('source').textContent = (j.source||'REAL').substring(0,40);
+    if(j.dates) renderDates(j.dates);
+    renderAccas();
+    renderTips();
+    document.querySelectorAll('.market-tab').forEach(b=>{
+      if(b.dataset.market==='all') b.textContent = `ALL (${j.total||100})`;
+    });
+  }catch(e){
+    document.getElementById('tips').innerHTML = `<div class="col-span-full text-center py-20 text-red-400">Error loading - ${e.message}</div>`;
+  }
 }
-function renderTips(){
-  document.getElementById('tips').innerHTML=allTips.map(t=>{
-    let confColor=t.confidence>=85?'#22c55e':t.confidence>=75?'#ffcc00':'#f97316';
-    return `<div class="g-card"><div style="display:flex;justify-content:space-between;font-size:11px;color:#888"><span>🌍 ${t.country} • ${t.league}</span><span style="background:${confColor};color:#000;padding:3px 9px;border-radius:10px;font-weight:900;font-size:11px">${t.confidence}% CONFIDENT</span></div><div style="font-size:11px;color:#666;margin:3px 0">⏰ ${t.time} • ${t.date} • ${t.status} • ${t.result} ${t.score||''}</div><div style="font-weight:800;margin:8px 0;font-size:15px">${t.match}</div><div style="font-size:13px;margin-bottom:8px">Tip: <b style="color:#ffcc00">${t.tip}</b> @${t.odd} • <b style="color:${confColor}">${t.confidence}% CONFIDENT</b></div><div style="background:#1e1e1e;border-left:3px solid ${confColor};padding:10px 12px;border-radius:8px;font-size:12px;line-height:1.5;margin-bottom:10px;color:#ccc">💡 <b>Reason:</b> ${t.reason}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${t.stats.split('•').map(s=>`<span style="background:#222;padding:5px 9px;border-radius:7px;font-size:10px;color:#aaa">${s.trim()}</span>`).join('')}<span style="background:${confColor};color:#000;padding:5px 9px;border-radius:7px;font-size:10px;font-weight:800">${t.confidence}% CONF</span></div><div style="font-size:11px;color:#888;margin-bottom:12px">Form: ${t.form} • League: ${t.league} • ${t.country} • Date: ${t.date}</div><div style="display:flex;gap:8px"><button class="btn-share" onclick="shareG('${t.match}','${t.tip}','${t.odd}','${t.result}')">Share ${t.confidence}%</button><button class="btn-slip" onclick="addSlip(${t.id})">+Slip @${t.odd}</button></div></div>`;
+
+function renderDates(dates){
+  const c = document.getElementById('dates');
+  c.innerHTML = dates.map(d=>{
+    const isActive = d.date===currentDate;
+    return `<button onclick="fetchTips('${d.date}')" class="${isActive?'bg-white text-black':'bg-[#1a1a1a] text-gray-400'} px-4 py-2 rounded-full text-[11px] font-bold whitespace-nowrap">${d.label}<br><span class="text-[9px]">${d.date.slice(5)}</span></button>`;
   }).join('');
 }
-function toggleAcca(header){header.parentElement.classList.toggle('collapsed');}
-function toggleAll(){const accas=document.querySelectorAll('.acca');accas.forEach(el=>{if(allCollapsed) el.classList.remove('collapsed'); else el.classList.add('collapsed');});allCollapsed=!allCollapsed;}
-function addSlip(id){const t=allTips.find(x=>x.id===id); if(!t||slip.find(s=>s.id===id)) return; slip.push(t); document.getElementById('slipCount').textContent=slip.length; document.getElementById('slipOdd').textContent='@'+slip.reduce((a,b)=>a*parseFloat(b.odd),1).toFixed(2);}
-function shareG(m,tip,odd,res){const txt=`${res==='WON'?'✅':res==='LOST'?'❌':'⏳'} ${m} | ${tip} @${odd} • ${res} • https://divine-vick-football-tips.vercel.app`; navigator.clipboard.writeText(txt); alert(res+' copied!');}
-function shareSlip(){const tot=slip.reduce((a,b)=>a*parseFloat(b.odd),1).toFixed(2); alert('Share '+tot+' ODD');}
-buildDateBar(currentDate); load(currentDate);
+
+function renderAccas(){
+  const c = document.getElementById('accas');
+  const order = ['ov15_2odds','ov15_3odds','ov25_5odds','btts_5odds','corners_5odds','over15_10odds','mixed_10odds'];
+  c.innerHTML = order.map(key=>{
+    const a = allAccas[key];
+    if(!a ||!a.games || a.games.length===0) return '';
+    const color = a.result==='WON'?'border-green-500':a.result==='LOST'?'border-red-500':'border-[#333]';
+    return `<div class="acca-card bg-[#0f0f0f] border ${color} rounded-2xl p-3">
+      <div class="flex justify-between items-start cursor-pointer" onclick="this.nextElementSibling.classList.toggle('hidden')">
+        <div><p class="font-bold text-[12px]">${a.name}</p><p class="text-[10px] text-gray-400">${a.count} games • ${a.totalOdd} odds • <span class="${a.result==='WON'?'text-green-500':a.result==='LOST'?'text-red-500':'text-yellow-500'}">${a.result} ${a.won||0}-${a.lost||0}</span></p></div>
+        <div class="flex gap-1"><button onclick="event.stopPropagation();shareAcca('${key}')" class="w-7 h-7 bg-[#25D366] rounded-full flex items-center justify-center"><i class="fab fa-whatsapp text-black text-[12px]"></i></button><i class="fas fa-chevron-down text-[10px] text-gray-500 mt-2"></i></div>
+      </div>
+      <div class="hidden mt-3 space-y-2">
+        ${a.games.map(g=>`<div class="bg-[#1a1a1a] rounded-lg p-2 flex justify-between items-center"><div><p class="text-[11px] font-bold">${g.match}</p><p class="text-[9px] text-gray-400">${g.league} • ${g.tip} @${g.odd} • ${g.score||''} <span class="${g.result==='WON'?'text-green-500':g.result==='LOST'?'text-red-500':'text-yellow-500'}">${g.result||'PENDING'}</span></p></div><span class="text-[10px] font-bold">${g.odd}</span></div>`).join('')}
+        <div class="flex justify-between items-center pt-2 border-t border-[#222]"><span class="text-[11px] font-bold">Total: ${a.totalOdd}</span><span class="text-[10px] text-gray-400">${a.count} matches</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTips(){
+  const c = document.getElementById('tips');
+  let filtered = currentMarket==='all'? allTips : allTips.filter(t=> t.market===currentMarket);
+  if(filtered.length===0){ c.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500 text-[12px]">No tips for ${currentMarket}</div>`; return; }
+  c.innerHTML = filtered.map(t=>{
+    const col = t.result==='WON'?'#22c55e':t.result==='LOST'?'#ef4444':'#eab308';
+    return `<div class="bg-[#1a1a1a] rounded-2xl p-3 border-l-4" style="border-color:${col}">
+      <div class="flex justify-between items-start mb-2"><span class="text-[10px] bg-[#222] px-2 py-0.5 rounded-full">${t.league} • ${t.country}</span><span class="text-[10px] px-2 py-0.5 rounded-full font-bold" style="background:${col}20;color:${col}">${t.result||'PENDING'} ${t.score||''}</span></div>
+      <p class="font-bold text-[13px] leading-tight">${t.match}</p>
+      <p class="text-[11px] text-gray-400 mt-1"><i class="far fa-clock"></i> ${t.time} • ${t.date} • ${t.status||''}</p>
+      <div class="flex gap-2 mt-2"><span class="bg-white text-black text-[11px] font-bold px-2.5 py-1 rounded-full">${t.market}</span><span class="bg-[#222] text-[11px] font-bold px-2.5 py-1 rounded-full">OVER-BTTS-CORNER-MARKET: ${t.tip} @${t.odd}</span><span class="bg-green-500/20 text-green-400 text-[10px] font-bold px-2 py-1 rounded-full">${t.confidence}%</span></div>
+      <div class="mt-2 bg-[#0f0f0f] rounded-lg p-2"><p class="text-[10px] text-gray-300 leading-snug"><i class="fas fa-chart-line text-green-500"></i> ${t.reason||''}</p><p class="text-[9px] text-gray-500 mt-1">${t.stats||''} • ${t.form||''}</p></div>
+    </div>`;
+  }).join('');
+}
+
+function shareAcca(key){
+  const a = allAccas[key];
+  if(!a) return;
+  let msg = `🔥 ${a.name} - GoalPredict%0A%0A`;
+  a.games.forEach((g,i)=>{ msg += `${i+1}. ${g.match}%0A ${g.league} - ${g.tip} @${g.odd} ${g.score||''} ${g.result||''}%0A`; });
+  msg += `%0A💰 Total Odds: ${a.totalOdd}%0A📊 ${a.result} (${a.won}-${a.lost})%0A%0A🔥 25 HIGH GOALS MATCHES DAILY%0A👉 ${window.location.origin}`;
+  window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+
+function shareCompleteAcca(){
+  let msg = `🔥 COMPLETE ACCA - 7 ACCAs - 25 HIGH GOALS MATCHES (100 Tips) - GoalPredict%0A%0A`;
+  Object.values(allAccas).forEach(a=>{
+    if(!a.games||a.games.length===0) return;
+    msg += `*${a.name} - ${a.totalOdd} ODDS - ${a.result}*%0A`;
+    a.games.slice(0,3).forEach(g=>{ msg += `• ${g.match} - ${g.tip} @${g.odd}%0A`; });
+    if(a.games.length>3) msg += `• +${a.games.length-3} more...%0A`;
+    msg += `%0A`;
+  });
+  msg += `💰 25 Matches = 100 Tips Daily!%0A🔥 HIGH GOALS LEAGUES ONLY%0A📈 OVER-BTTS-CORNER-MARKET%0A👉 ${window.location.origin}%0A%0A#GoalPredict #HighGoals #Over1_5 #BTTS`;
+  window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+
+document.getElementById('markets').addEventListener('click', e=>{
+  const b = e.target.closest('.market-tab');
+  if(!b) return;
+  document.querySelectorAll('.market-tab').forEach(x=>{ x.classList.remove('active','bg-white','text-black'); x.classList.add('bg-[#1a1a1a]'); });
+  b.classList.add('active','bg-white','text-black'); b.classList.remove('bg-[#1a1a1a]');
+  currentMarket = b.dataset.market;
+  renderTips();
+});
+
+fetchTips(currentDate);
 </script>
-</body></html>
+</body>
+</html>
