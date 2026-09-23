@@ -4,15 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GoalPredict247 - 25 HIGH GOALS • 24/7 • LIVE • REAL</title>
-<meta name="description" content="GoalPredict247 - Nigeria's #1 REAL HIGH GOALS prediction - 25 matches daily = 100 tips - 7 ACCAs 2 to 10 odds - Over 1.5, Over 2.5, BTTS, Corners - LIVE scores [3-0] WON - WhatsApp Share + Bet Slip">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 html,body{overflow-x:hidden; max-width:100vw}
 .scrollbar-hide::-webkit-scrollbar{display:none}
-.scrollbar-hide{-ms-overflow-style:none; scrollbar-width:none}
 .acca-scroll{display:flex; gap:12px; overflow-x:auto; padding-bottom:12px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch}
-.acca-card{min-width:360px; max-width:360px; scroll-snap-align:start; flex-shrink:0; transition:all 0.3s ease}
+.acca-card{min-width:360px; max-width:360px; scroll-snap-align:start; flex-shrink:0}
 @media(max-width:767px){.acca-card{min-width:88vw!important; max-width:88vw!important}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.live-dot{animation:pulse 2s infinite}
 .toast{position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#22c55e; color:#000; padding:8px 14px; border-radius:6px; font-size:11px; font-weight:bold; z-index:9999; display:none}
@@ -22,8 +20,8 @@ html,body{overflow-x:hidden; max-width:100vw}
 .collapse-inner{overflow:hidden}
 .chevron{transition:transform 0.3s ease}
 .chevron.rotated{transform:rotate(180deg)}
-.date-scroll{display:flex; gap:8px; overflow-x:auto; padding:8px 0; scrollbar-width:none; -webkit-overflow-scrolling:touch}
-.date-card{min-width:68px; max-width:68px; text-align:center; padding:8px 6px; border-radius:6px; background:#1a1a1a; border:1px solid #2a2a2a; cursor:pointer; flex-shrink:0; scroll-snap-align:start}
+.date-scroll{display:flex; gap:8px; overflow-x:auto; padding:8px 0; scrollbar-width:none}
+.date-card{min-width:68px; max-width:68px; text-align:center; padding:8px 6px; border-radius:6px; background:#1a1a1a; border:1px solid #2a2a2a; cursor:pointer; flex-shrink:0}
 .date-card.active{background:#fff; color:#000; border-color:#fff; font-weight:bold}
 .date-card.today{border-color:#22c55e}
 </style>
@@ -33,12 +31,8 @@ html,body{overflow-x:hidden; max-width:100vw}
 <header class="sticky top-0 z-50 bg-[#0f0f0f] border-b border-[#222] px-3 md:px-4 py-2.5">
   <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
     <div class="flex items-center gap-2 flex-1 min-w-0">
-      <div class="w-9 h-9 md:w-10 md:h-10 bg-green-500 rounded-[6px] flex items-center justify-center font-bold text-black text-[12px] md:text-[13px] flex-shrink-0">G247</div>
-      <div class="min-w-0 flex-1">
-        <h1 class="font-bold text-[15px] md:text-[18px] leading-none">GoalPredict247</h1>
-        <p class="text-[9px] md:text-[11px] text-gray-400 truncate hidden md:block">25 HIGH GOALS • 24/7 • LIVE • REAL • <span id="todayDate">Today</span></p>
-        <p class="text-[9px] text-gray-500 md:hidden" id="todayDateMobile">24/7 LIVE</p>
-      </div>
+      <div class="w-9 h-9 md:w-10 md:h-10 bg-green-500 rounded-[6px] flex items-center justify-center font-bold text-black text-[12px] flex-shrink-0">G247</div>
+      <div class="min-w-0 flex-1"><h1 class="font-bold text-[15px] md:text-[18px] leading-none">GoalPredict247</h1><p class="text-[9px] md:text-[11px] text-gray-400 truncate hidden md:block">25 HIGH GOALS • 24/7 • LIVE • REAL • <span id="todayDate">Today</span></p><p class="text-[9px] text-gray-500 md:hidden" id="todayDateMobile">24/7 LIVE</p></div>
     </div>
     <div class="flex items-center gap-1.5 flex-shrink-0">
       <a href="/about.html" class="text-[9px] md:text-[10px] bg-[#1a1a1a] px-2.5 py-1.5 rounded-[4px] font-bold">ABOUT</a>
@@ -47,9 +41,7 @@ html,body{overflow-x:hidden; max-width:100vw}
     </div>
   </div>
 </header>
-
 <div class="max-w-7xl mx-auto px-3 md:px-4 py-3">
-  <!-- DATE TRACKER -->
   <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 md:p-3 mb-3">
     <div class="flex items-center justify-between mb-2">
       <p class="text-[11px] font-bold flex items-center gap-1.5"><i class="far fa-calendar text-green-500"></i> DATE TRACKER • <span id="selectedDateLabel" class="text-green-400"></span></p>
@@ -57,14 +49,12 @@ html,body{overflow-x:hidden; max-width:100vw}
     </div>
     <div class="date-scroll scrollbar-hide" id="dateTracker"></div>
   </div>
-
   <div class="grid grid-cols-4 gap-2 mb-3">
     <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 text-center"><p class="text-[9px] text-gray-400">TOTAL</p><p id="total" class="font-bold text-[14px]">100</p></div>
     <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 text-center"><p class="text-[9px] text-gray-400">WON</p><p id="won" class="font-bold text-green-500 text-[14px]">0</p></div>
     <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 text-center"><p class="text-[9px] text-gray-400">LOST</p><p id="lost" class="font-bold text-red-500 text-[14px]">0</p></div>
     <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 text-center"><p class="text-[9px] text-gray-400">PEND</p><p id="pending" class="font-bold text-yellow-500 text-[14px]">0</p></div>
   </div>
-
   <div class="bg-[#1a1a1a] rounded-[6px] p-3 md:p-4 mb-3">
     <div class="flex items-center justify-between gap-2 mb-3">
       <h2 class="font-bold text-[12px] md:text-[13px] flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> 7 ACCAs • SLIDE • COLLAPSE • RECTANGLE</h2>
@@ -72,7 +62,6 @@ html,body{overflow-x:hidden; max-width:100vw}
     </div>
     <div class="acca-scroll scrollbar-hide" id="accas"></div>
   </div>
-
   <div class="flex gap-2 overflow-x-auto scrollbar-hide mb-3" id="markets">
     <button data-market="all" class="market-tab active bg-white text-black px-3 py-1.5 rounded-[4px] text-[11px] font-bold whitespace-nowrap">ALL (100)</button>
     <button data-market="Over 1.5" class="market-tab bg-[#1a1a1a] px-3 py-1.5 rounded-[4px] text-[11px] font-bold whitespace-nowrap">OVER 1.5</button>
@@ -80,13 +69,10 @@ html,body{overflow-x:hidden; max-width:100vw}
     <button data-market="BTTS Yes" class="market-tab bg-[#1a1a1a] px-3 py-1.5 rounded-[4px] text-[11px] font-bold whitespace-nowrap">BTTS</button>
     <button data-market="Corners" class="market-tab bg-[#1a1a1a] px-3 py-1.5 rounded-[4px] text-[11px] font-bold whitespace-nowrap">CORNERS</button>
   </div>
-
   <div id="tips" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-3"></div>
 </div>
-
 <div id="slipBtn" onclick="openSlip()" class="fixed bottom-4 right-4 bg-white text-black rounded-[8px] px-4 py-3 font-bold text-[12px] shadow-xl cursor-pointer z-40 hidden items-center gap-2"><i class="fas fa-receipt"></i><span id="slipCount">SLIP (0)</span><span id="slipOdds" class="bg-black text-white px-1.5 py-0.5 rounded-[3px] text-[10px]">@1.00</span></div>
-<div id="slipModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end md:items-center justify-center p-3"><div class="bg-[#1a1a1a] rounded-[6px] w-full max-w-md max-h-[80vh] flex flex-col"><div class="p-4 border-b border-[#222] flex justify-between items-center"><h3 class="font-bold text-[14px]">BET SLIP • <span id="slipModalCount">0</span> games</h3><button onclick="closeSlip()" class="w-7 h-7 bg-[#222] rounded-[4px] flex items-center justify-center"><i class="fas fa-xmark text-[12px]"></i></button></div><div id="slipList" class="flex-1 overflow-y-auto p-3 space-y-2"></div><div class="p-4 border-t border-[#222] space-y-2"><div class="flex justify-between font-bold text-[13px]"><span>Total Odds:</span><span id="slipTotalOdds">@1.00</span></div><div class="flex gap-2"><button onclick="clearSlip()" class="flex-1 bg-[#222] text-white py-2.5 rounded-[6px] font-bold text-[11px]">CLEAR</button><button onclick="shareSlip()" class="flex-[2] bg-[#25D366] text-black py-2.5 rounded-[6px] font-bold text-[11px]"><i class="fab fa-whatsapp"></i> SHARE SLIP VIA WHATSAPP</button></div></div></div></div>
-
+<div id="slipModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end md:items-center justify-center p-3"><div class="bg-[#1a1a1a] rounded-[6px] w-full max-w-md max-h-[80vh] flex flex-col"><div class="p-4 border-b border-[#222] flex justify-between items-center"><h3 class="font-bold text-[14px]">BET SLIP • <span id="slipModalCount">0</span> games</h3><button onclick="closeSlip()" class="w-7 h-7 bg-[#222] rounded-[4px] flex items-center justify-center"><i class="fas fa-xmark text-[12px]"></i></button></div><div id="slipList" class="flex-1 overflow-y-auto p-3 space-y-2"></div><div class="p-4 border-t border-[#222] space-y-2"><div class="flex justify-between font-bold text-[13px]"><span>Total Odds:</span><span id="slipTotalOdds">@1.00</span></div><div class="flex gap-2"><button onclick="clearSlip()" class="flex-1 bg-[#222] text-white py-2.5 rounded-[6px] font-bold text-[11px]">CLEAR</button><button onclick="shareSlip()" class="flex-[2] bg-[#25D366] text-black py-2.5 rounded-[6px] font-bold text-[11px]"><i class="fab fa-whatsapp"></i> SHARE SLIP</button></div></div></div></div>
 <script>
 let currentDate = new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
 let allTips = []; let allAccas = {}; let currentMarket = 'all'; let slip = []; let liveInterval;
@@ -131,17 +117,15 @@ async function fetchTips(date,force){
 function getLeagueStats(league, market, home, away){
   const statsMap = {
     'Premier League': {avg: '3.8', btts: '78%', corners: '11.2', over15: '9/10', over25: '8/10'},
-    'Liga 1': {avg: '3.4', btts: '72%', corners: '10.5', over15: '8/10', over25: '7/10'},
-    'Bundesliga': {avg: '3.6', btts: '75%', corners: '10.8', over15: '9/10', over25: '8/10'},
     'default': {avg: '3.2', btts: '74%', corners: '10.2', over15: '8/10', over25: '7/10'}
   };
   const key = Object.keys(statsMap).find(k=> league && league.includes(k)) || 'default';
   const s = statsMap[key];
-  if(market==='Over 1.5') return `🔥 HIGH GOALS LEAGUE: ${league} avg ${s.avg} goals/game • ${home} vs ${away} • Over 1.5 ${s.over15} home • H2H 8/10 • ID ${Math.floor(Math.random()*900000+100000)}`;
-  if(market==='Over 2.5') return `🔥 HIGH GOALS: ${league} Over 2.5 in ${s.over25} • ${home} vs ${away} avg ${s.avg} goals H2H`;
-  if(market==='BTTS Yes') return `🔥 HIGH GOALS = BTTS: ${league} BTTS ${s.btts} • ${home} scores 9/10 home • ${away} scores 8/10 away`;
-  if(market==='Corners') return `🔥 HIGH CORNERS: ${league} avg ${s.corners} corners • Attacking football • Over 8.5 ${s.over15}`;
-  return `${league} avg ${s.avg} • ${home} ${s.over15} • ${away} ${s.over25}`;
+  if(market==='Over 1.5') return `🔥 HIGH GOALS LEAGUE: ${league} avg ${s.avg} goals/game • ${home} vs ${away} • Over 1.5 ${s.over15} • ID 1640${Math.floor(Math.random()*900+100)}`;
+  if(market==='Over 2.5') return `🔥 HIGH GOALS: ${league} Over 2.5 in ${s.over25} • ${home} vs ${away} avg ${s.avg}`;
+  if(market==='BTTS Yes') return `🔥 HIGH GOALS = BTTS: ${league} BTTS ${s.btts} • ${home} scores 9/10 • ${away} scores 8/10`;
+  if(market==='Corners') return `🔥 HIGH CORNERS: ${league} avg ${s.corners} corners • Over 8.5 ${s.over15}`;
+  return `${league} avg ${s.avg} • ${home} ${s.over15}`;
 }
 function renderAccas(){
   const c=document.getElementById('accas'); const order=['ov15_2odds','ov15_3odds','ov25_5odds','btts_5odds','corners_5odds','over15_10odds','mixed_10odds'];
@@ -150,7 +134,7 @@ function renderAccas(){
     const a=allAccas[key]; if(!a||!a.games||a.games.length===0) return '';
     const col=a.result==='WON'?'border-green-500':a.result==='LOST'?'border-red-500':'border-[#2a2a2a]';
     const pend=a.games.length-(a.won||0)-(a.lost||0);
-    return `<div class="acca-card bg-[#0f0f0f] border ${col} rounded-[6px] p-3"><div class="flex justify-between items-start gap-2 cursor-pointer" onclick="toggleAcca(this)"><div class="flex-1 min-w-0"><p class="font-bold text-[12px] leading-tight flex items-center gap-1.5">${a.name} <i class="fas fa-chevron-down chevron text-[9px] text-gray-400"></i></p><p class="text-[10px] text-gray-400 mt-1">${a.count} games • ${a.totalOdd} odds<br><span class="text-green-500 font-bold">WON ${a.won||0}</span> - <span class="text-red-500 font-bold">LOST ${a.lost||0}</span> - <span class="text-yellow-500 font-bold">PEND ${pend}</span> • ${a.result} • ${currentDate}</p></div><div class="flex gap-1 flex-shrink-0" onclick="event.stopPropagation()"><button onclick="addAccaToSlip('${key}')" class="w-7 h-7 bg-[#222] rounded-[4px] flex items-center justify-center"><i class="fas fa-plus text-[10px]"></i></button><button onclick="shareAcca('${key}')" class="w-7 h-7 bg-[#25D366] rounded-[4px] flex items-center justify-center"><i class="fab fa-whatsapp text-black text-[11px]"></i></button></div></div><div class="collapse-content collapsed"><div class="collapse-inner"><div class="mt-3 space-y-2">${a.games.map(g=>{const gc=g.result==='WON'?'text-green-500':g.result==='LOST'?'text-red-500':'text-yellow-500'; return `<div class="bg-[#1a1a1a] rounded-[4px] p-2.5 flex justify-between items-center gap-2 border-l-[3px]" style="border-color:${g.result==='WON'?'#22c55e':g.result==='LOST'?'#ef4444':'#eab308'}"><div class="flex-1 min-w-0"><p class="text-[11px] font-bold">${g.match}</p><p class="text-[9px] text-gray-400">${g.league} • ${g.time} • ${g.date||currentDate}</p><p class="text-[10px] mt-1"><span class="bg-white text-black px-1.5 py-0.5 rounded-[3px] text-[9px] font-bold">${g.tip}</span> <span class="bg-[#222] px-1.5 py-0.5 rounded-[3px] text-[9px] font-bold">@${g.odd}</span> <span class="${gc} font-bold text-[10px]">${g.score||'[0-0]'} ${g.result||'PENDING'}</span></p></div><div class="flex gap-1"><button onclick="addToSlip('${(g.match||'').replace(/'/g,'')}', '${g.tip}', '${g.odd}', '${g.league}')" class="w-6 h-6 bg-[#222] rounded-[3px] flex items-center justify-center"><i class="fas fa-plus text-[8px]"></i></button><button onclick="shareAccaGame('${(g.match||'').replace(/'/g,'')}', '${g.tip}', '${g.odd}', '${g.score||''}', '${g.result||'PENDING'}', '${g.league}')" class="w-6 h-6 bg-[#25D366] rounded-[3px] flex items-center justify-center"><i class="fab fa-whatsapp text-black text-[9px]"></i></button></div></div>`;}).join('')}</div></div></div></div>`;
+    return `<div class="acca-card bg-[#0f0f0f] border ${col} rounded-[6px] p-3"><div class="flex justify-between items-start gap-2 cursor-pointer" onclick="toggleAcca(this)"><div class="flex-1 min-w-0"><p class="font-bold text-[12px] leading-tight flex items-center gap-1.5">${a.name} <i class="fas fa-chevron-down chevron text-[9px] text-gray-400"></i></p><p class="text-[10px] text-gray-400 mt-1">${a.count} games • ${a.totalOdd} odds<br><span class="text-green-500 font-bold">WON ${a.won||0}</span> - <span class="text-red-500 font-bold">LOST ${a.lost||0}</span> - <span class="text-yellow-500 font-bold">PEND ${pend}</span> • ${a.result} • ${currentDate}</p></div><div class="flex gap-1 flex-shrink-0" onclick="event.stopPropagation()"><button onclick="addAccaToSlip('${key}')" class="w-7 h-7 bg-[#222] rounded-[4px] flex items-center justify-center"><i class="fas fa-plus text-[10px]"></i></button><button onclick="shareAcca('${key}')" class="w-7 h-7 bg-[#25D366] rounded-[4px] flex items-center justify-center"><i class="fab fa-whatsapp text-black text-[11px]"></i></button></div></div><div class="collapse-content collapsed"><div class="collapse-inner"><div class="mt-3 space-y-2">${a.games.map(g=>{return `<div class="bg-[#1a1a1a] rounded-[4px] p-2.5 flex justify-between items-center gap-2 border-l-[3px]" style="border-color:${g.result==='WON'?'#22c55e':g.result==='LOST'?'#ef4444':'#eab308'}"><div class="flex-1 min-w-0"><p class="text-[11px] font-bold">${g.match}</p><p class="text-[9px] text-gray-400">${g.league} • ${g.time} • ${g.date||currentDate} • ${g.market||''}</p><p class="text-[10px] mt-1"><span class="bg-white text-black px-1.5 py-0.5 rounded-[3px] text-[9px] font-bold">${g.tip}</span> <span class="bg-[#222] px-1.5 py-0.5 rounded-[3px] text-[9px] font-bold">@${g.odd}</span> <span class="font-bold text-[10px]">${g.score||'[0-0]'} ${g.result||'PENDING'}</span></p></div><div class="flex gap-1"><button onclick="addToSlip('${(g.match||'').replace(/'/g,'')}', '${g.tip}', '${g.odd}', '${g.league}')" class="w-6 h-6 bg-[#222] rounded-[3px] flex items-center justify-center"><i class="fas fa-plus text-[8px]"></i></button><button onclick="shareAccaGame('${(g.match||'').replace(/'/g,'')}', '${g.tip}', '${g.odd}', '${g.score||''}', '${g.result||'PENDING'}', '${g.league}')" class="w-6 h-6 bg-[#25D366] rounded-[3px] flex items-center justify-center"><i class="fab fa-whatsapp text-black text-[9px]"></i></button></div></div>`;}).join('')}</div></div></div></div>`;
   }).join('');
 }
 function toggleAcca(header){const content = header.nextElementSibling; const chev = header.querySelector('.chevron'); if(!content) return; if(content.classList.contains('collapsed')){content.classList.remove('collapsed'); content.classList.add('expanded'); chev.classList.add('rotated');}else{content.classList.add('collapsed'); content.classList.remove('expanded'); chev.classList.remove('rotated');}}
@@ -171,7 +155,6 @@ function clearSlip(){slip=[]; updateSlipUI(); closeSlip();}
 function openSlip(){document.getElementById('slipModal').classList.remove('hidden');}
 function closeSlip(){document.getElementById('slipModal').classList.add('hidden');}
 function shareIndividual(m,t,o,s,r,l,c){let msg=`🔥 GoalPredict247 ${currentDate}%0A${m}%0A${l} • ${t} @${o}%0A${s} ${r} • ${c}%`; window.open(`https://wa.me/?text=${msg}`,'_blank');}
-function shareAccaGame(m,t,o,s,r,l){let msg=`🔥 ACCA ${currentDate}: ${m} - ${t} @${o} ${s} ${r}`; window.open(`https://wa.me/?text=${msg}`,'_blank');}
 function shareAcca(k){const a=allAccas[k]; if(!a)return; let msg=`🔥 ${a.name} ${currentDate} - ${a.totalOdd} ODDS`; window.open(`https://wa.me/?text=${msg}`,'_blank');}
 function shareCompleteAcca(){let msg=`🔥 COMPLETE ACCA 7 ACCAs - ${currentDate}`; window.open(`https://wa.me/?text=${msg}`,'_blank');}
 function shareSlip(){if(slip.length===0)return; const tot=slip.reduce((a,s)=>a*s.odd,1).toFixed(2); let msg=`🔥 SLIP ${currentDate} ${slip.length} games @${tot}`; window.open(`https://wa.me/?text=${msg}`,'_blank');}
