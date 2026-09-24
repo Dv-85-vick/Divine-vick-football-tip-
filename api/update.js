@@ -1,9 +1,4 @@
-// /api/update.js - GoalPredict247 FINAL - WITH TEAM OVER 1.5 + FIXED LEAGUE MAPPING
-// 1. Fixed league mapping: South Africa U20 = COSAFA, not Bundesliga
-// 2. Mixed must have 4 markets: Ov1.5, Ov2.5, BTTS, Corner
-// 3. Odds must be >= threshold
-// 4. NEW: Team Over 1.5 market added
-
+// /api/update.js - GoalPredict247 FINAL - WITH TEAM OVER 1.5 + FIXED LEAGUE + ODDS THRESHOLD + MIXED 4 MARKETS
 export default async function handler(req, res) {
   const { date } = req.query;
   const targetDate = date || new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
@@ -69,7 +64,6 @@ export default async function handler(req, res) {
     const markets = ['Over 1.5','Over 2.5','BTTS Yes','Corners','Team Over 1.5'];
     const score = ['[0-0]','[1-0]','[2-0]','[2-1]','[3-0]'][Math.floor(Math.random()*5)];
     const result = Math.random()>0.6? 'WON' : Math.random()>0.4? 'PENDING' : 'LOST';
-
     markets.forEach(market=>{
       tips.push({
         match: `${f.home} vs ${f.away}`,
@@ -119,21 +113,8 @@ export default async function handler(req, res) {
       name: name,
       count: selected.length,
       totalOdd: total.toFixed(2),
-      games: selected.map(g=>({
-        match: g.match,
-        league: g.league,
-        time: g.time,
-        date: g.date,
-        tip: g.tip,
-        odd: g.odd,
-        score: g.score,
-        result: g.result,
-        status: g.status,
-        market: g.market
-      })),
-      won: won,
-      lost: lost,
-      result: result
+      games: selected.map(g=>({match: g.match, league: g.league, time: g.time, date: g.date, tip: g.tip, odd: g.odd, score: g.score, result: g.result, status: g.status, market: g.market})),
+      won: won, lost: lost, result: result
     };
   }
 
@@ -144,17 +125,11 @@ export default async function handler(req, res) {
     needed.forEach(market=>{
       const pool = tips.filter(t=> t.market===market).sort((a,b)=> parseFloat(b.odd)-parseFloat(a.odd));
       const pick = pool.find(p=>!mixedGames.find(s=> s.match===p.match)) || pool[0];
-      if(pick){
-        mixedGames.push({...pick});
-        totalOdd *= parseFloat(pick.odd);
-      }
+      if(pick){ mixedGames.push({...pick}); totalOdd *= parseFloat(pick.odd); }
     });
     if(totalOdd < 10.00){
       const extra = tips.filter(t=>!mixedGames.find(s=> s.match===t.match)).sort((a,b)=> parseFloat(b.odd)-parseFloat(a.odd))[0];
-      if(extra){
-        mixedGames.push({...extra});
-        totalOdd *= parseFloat(extra.odd);
-      }
+      if(extra){ mixedGames.push({...extra}); totalOdd *= parseFloat(extra.odd); }
     }
     const won = mixedGames.filter(s=> s.result==='WON').length;
     const lost = mixedGames.filter(s=> s.result==='LOST').length;
@@ -163,21 +138,8 @@ export default async function handler(req, res) {
       name: '10 ODDS MIXED • OV1.5+OV2.5+BTTS+CORNER • HIGH GOALS',
       count: mixedGames.length,
       totalOdd: totalOdd.toFixed(2),
-      games: mixedGames.map(g=>({
-        match: g.match,
-        league: g.league,
-        time: g.time,
-        date: g.date,
-        tip: g.tip,
-        odd: g.odd,
-        score: g.score,
-        result: g.result,
-        status: g.status,
-        market: g.market
-      })),
-      won: won,
-      lost: lost,
-      result: result
+      games: mixedGames.map(g=>({match: g.match, league: g.league, time: g.time, date: g.date, tip: g.tip, odd: g.odd, score: g.score, result: g.result, status: g.status, market: g.market})),
+      won: won, lost: lost, result: result
     };
   }
 
@@ -197,14 +159,5 @@ export default async function handler(req, res) {
   const pendingCount = tips.filter(t=> t.result==='PENDING').length;
 
   res.setHeader('Cache-Control', 'no-store');
-  res.json({
-    date: targetDate,
-    total: tips.length,
-    wonCount,
-    lostCount,
-    pendingCount,
-    winRate: Math.round((wonCount/tips.length)*100),
-    tips,
-    accas
-  });
+  res.json({date: targetDate, total: tips.length, wonCount, lostCount, pendingCount, winRate: Math.round((wonCount/tips.length)*100), tips, accas});
 }
