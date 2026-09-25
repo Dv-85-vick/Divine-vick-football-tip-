@@ -1,35 +1,70 @@
-// /api/update.js - GoalPredict247 FINAL - WITH TEAM OVER 1.5 + FIXED LEAGUE + ODDS THRESHOLD + MIXED 4 MARKETS
+// /api/update.js - GoalPredict247 REAL API + FALLBACK + TEAM OVER 1.5 + FIXED LEAGUE
 export default async function handler(req, res) {
   const { date } = req.query;
   const targetDate = date || new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
 
-  const fixtures = [
-    {home: 'Lesotho U20', away: 'Angola U20', league: 'COSAFA U20 Championship', country: 'Africa', avg: '3.4'},
-    {home: 'South Africa U20', away: 'Eswatini U20', league: 'COSAFA U20 Championship', country: 'Africa', avg: '3.4'},
-    {home: 'Malawi U20', away: 'Comoros U20', league: 'COSAFA U20 Championship', country: 'Africa', avg: '3.4'},
-    {home: 'Rubin Kazan U20', away: 'Krasnodar U19', league: 'Russia Youth Championship', country: 'Russia', avg: '3.2'},
-    {home: 'Bosnia-Herzegovina U17', away: 'Greece U17', league: 'UEFA U17 Championship - Qualification', country: 'Europe', avg: '3.3'},
-    {home: 'Iceland U17', away: 'Gibraltar U17', league: 'UEFA U17 Championship - Qualification', country: 'Europe', avg: '3.1'},
-    {home: 'Arnett Gardens', away: 'Dunbeholden', league: 'Premier League', country: 'Jamaica', avg: '3.8'},
-    {home: 'RTC', away: 'Tsirang', league: 'Premier League', country: 'Bhutan', avg: '4.1'},
-    {home: 'Thimphu City', away: 'Transport United', league: 'Premier League', country: 'Bhutan', avg: '4.0'},
-    {home: 'Man City', away: 'Arsenal', league: 'Premier League', country: 'England', avg: '3.2'},
-    {home: 'Liverpool', away: 'Chelsea', league: 'Premier League', country: 'England', avg: '3.2'},
-    {home: 'Bayern', away: 'Dortmund', league: 'Bundesliga', country: 'Germany', avg: '3.6'},
-    {home: 'Ajax', away: 'PSV', league: 'Eredivisie', country: 'Netherlands', avg: '3.9'},
-    {home: 'Al Ahly', away: 'Zamalek', league: 'Premier League', country: 'Egypt', avg: '2.9'},
-    {home: 'Flamengo', away: 'Palmeiras', league: 'Brasileiro Serie A', country: 'Brazil', avg: '2.8'},
-    {home: 'Boca Juniors', away: 'River Plate', league: 'Liga Profesional', country: 'Argentina', avg: '2.7'},
-    {home: 'Esperance', away: 'Wydad', league: 'CAF Champions League', country: 'Africa', avg: '2.9'},
-    {home: 'Urawa Reds', away: 'Al Nassr', league: 'AFC Champions League', country: 'Asia', avg: '3.1'},
-    {home: 'Sydney FC', away: 'Melbourne City', league: 'A-League', country: 'Australia', avg: '3.3'},
-    {home: 'Enyimba', away: 'Rangers', league: 'NPFL', country: 'Nigeria', avg: '2.8'},
-    {home: 'Young Africans', away: 'Simba', league: 'Ligi Kuu Bara', country: 'Tanzania', avg: '2.9'},
-    {home: 'Hearts of Oak', away: 'Asante Kotoko', league: 'Ghana Premier League', country: 'Ghana', avg: '2.7'},
-    {home: 'KCCA', away: 'Vipers', league: 'Uganda Premier League', country: 'Uganda', avg: '2.8'},
-    {home: 'Gor Mahia', away: 'AFC Leopards', league: 'FKF Premier League', country: 'Kenya', avg: '2.9'},
-    {home: 'Al Duhail', away: 'Al Sadd', league: 'Qatar Stars League', country: 'Qatar', avg: '3.2'}
-  ];
+  const API_KEY = process.env.API_FOOTBALL_KEY || process.env.FOOTBALL_API_KEY || process.env.API_FOOTBALL_KEY_FALLBACK || "8b9a415f6490dfe105e8af8e761f512f";
+  const USE_REAL_API =!!API_KEY;
+
+  let fixtures = [];
+
+  // TRY REAL API FIRST - api-football v3
+  if (USE_REAL_API) {
+    try {
+      const apiRes = await fetch(`https://v3.football.api-sports.io/fixtures?date=${targetDate}`, {
+        headers: { 'x-apisports-key': API_KEY, 'x-rapidapi-key': API_KEY }
+      });
+      const apiData = await apiRes.json();
+
+      if (apiData.response && apiData.response.length > 0) {
+        const real = apiData.response.slice(0, 40);
+        fixtures = real.map(f => ({
+          home: f.teams.home.name,
+          away: f.teams.away.name,
+          league: f.league.name,
+          country: f.league.country,
+          avg: '3.2',
+          time: new Date(f.fixture.date).toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Lagos'}),
+          fixtureId: f.fixture.id,
+          status: f.fixture.status.short
+        })).filter((_, i) => i < 25);
+        console.log(`REAL API: Got ${fixtures.length} real fixtures for ${targetDate}`);
+      }
+    } catch (e) {
+      console.log('REAL API FAILED, using mock:', e.message);
+    }
+  }
+
+  // FALLBACK TO MOCK IF REAL API FAILED OR NO KEY
+  if (fixtures.length === 0) {
+    fixtures = [
+      {home: 'Lesotho U20', away: 'Angola U20', league: 'COSAFA U20 Championship', country: 'Africa', avg: '3.4'},
+      {home: 'South Africa U20', away: 'Eswatini U20', league: 'COSAFA U20 Championship', country: 'Africa', avg: '3.4'},
+      {home: 'Malawi U20', away: 'Comoros U20', league: 'COSAFA U20 Championship', country: 'Africa', avg: '3.4'},
+      {home: 'Rubin Kazan U20', away: 'Krasnodar U19', league: 'Russia Youth Championship', country: 'Russia', avg: '3.2'},
+      {home: 'Bosnia-Herzegovina U17', away: 'Greece U17', league: 'UEFA U17 Championship - Qualification', country: 'Europe', avg: '3.3'},
+      {home: 'Iceland U17', away: 'Gibraltar U17', league: 'UEFA U17 Championship - Qualification', country: 'Europe', avg: '3.1'},
+      {home: 'Arnett Gardens', away: 'Dunbeholden', league: 'Premier League', country: 'Jamaica', avg: '3.8'},
+      {home: 'RTC', away: 'Tsirang', league: 'Premier League', country: 'Bhutan', avg: '4.1'},
+      {home: 'Thimphu City', away: 'Transport United', league: 'Premier League', country: 'Bhutan', avg: '4.0'},
+      {home: 'Man City', away: 'Arsenal', league: 'Premier League', country: 'England', avg: '3.2'},
+      {home: 'Liverpool', away: 'Chelsea', league: 'Premier League', country: 'England', avg: '3.2'},
+      {home: 'Bayern', away: 'Dortmund', league: 'Bundesliga', country: 'Germany', avg: '3.6'},
+      {home: 'Ajax', away: 'PSV', league: 'Eredivisie', country: 'Netherlands', avg: '3.9'},
+      {home: 'Al Ahly', away: 'Zamalek', league: 'Premier League', country: 'Egypt', avg: '2.9'},
+      {home: 'Flamengo', away: 'Palmeiras', league: 'Brasileiro Serie A', country: 'Brazil', avg: '2.8'},
+      {home: 'Boca Juniors', away: 'River Plate', league: 'Liga Profesional', country: 'Argentina', avg: '2.7'},
+      {home: 'Esperance', away: 'Wydad', league: 'CAF Champions League', country: 'Africa', avg: '2.9'},
+      {home: 'Urawa Reds', away: 'Al Nassr', league: 'AFC Champions League', country: 'Asia', avg: '3.1'},
+      {home: 'Sydney FC', away: 'Melbourne City', league: 'A-League', country: 'Australia', avg: '3.3'},
+      {home: 'Enyimba', away: 'Rangers', league: 'NPFL', country: 'Nigeria', avg: '2.8'},
+      {home: 'Young Africans', away: 'Simba', league: 'Ligi Kuu Bara', country: 'Tanzania', avg: '2.9'},
+      {home: 'Hearts of Oak', away: 'Asante Kotoko', league: 'Ghana Premier League', country: 'Ghana', avg: '2.7'},
+      {home: 'KCCA', away: 'Vipers', league: 'Uganda Premier League', country: 'Uganda', avg: '2.8'},
+      {home: 'Gor Mahia', away: 'AFC Leopards', league: 'FKF Premier League', country: 'Kenya', avg: '2.9'},
+      {home: 'Al Duhail', away: 'Al Sadd', league: 'Qatar Stars League', country: 'Qatar', avg: '3.2'}
+    ];
+  }
 
   function getOddForMarket(market){
     if(market==='Over 1.5') return (1.42 + Math.random()*0.18).toFixed(2);
@@ -60,7 +95,7 @@ export default async function handler(req, res) {
   let tips = [];
   for(let i=0; i<fixtures.length; i++){
     const f = fixtures[i];
-    const time = `${String(Math.floor(Math.random()*12)+8).padStart(2,'0')}:${String([0,15,30,45][Math.floor(Math.random()*4)]).padStart(2,'0')} AM`;
+    const time = f.time || `${String(Math.floor(Math.random()*12)+8).padStart(2,'0')}:${String([0,15,30,45][Math.floor(Math.random()*4)]).padStart(2,'0')} AM`;
     const markets = ['Over 1.5','Over 2.5','BTTS Yes','Corners','Team Over 1.5'];
     const score = ['[0-0]','[1-0]','[2-0]','[2-1]','[3-0]'][Math.floor(Math.random()*5)];
     const result = Math.random()>0.6? 'WON' : Math.random()>0.4? 'PENDING' : 'LOST';
@@ -159,5 +194,16 @@ export default async function handler(req, res) {
   const pendingCount = tips.filter(t=> t.result==='PENDING').length;
 
   res.setHeader('Cache-Control', 'no-store');
-  res.json({date: targetDate, total: tips.length, wonCount, lostCount, pendingCount, winRate: Math.round((wonCount/tips.length)*100), tips, accas});
+  res.json({
+    date: targetDate,
+    total: tips.length,
+    wonCount,
+    lostCount,
+    pendingCount,
+    winRate: Math.round((wonCount/tips.length)*100),
+    tips,
+    accas,
+    source: fixtures.length > 0 && fixtures[0].fixtureId? 'REAL_API' : 'MOCK_FALLBACK',
+    apiKeySet: USE_REAL_API
+  });
 }
