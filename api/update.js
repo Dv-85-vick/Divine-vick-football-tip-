@@ -3,7 +3,7 @@ export default async function handler(req, res) {
   const { date } = req.query;
   const targetDate = date || new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
 
-  const API_KEY = process.env.API_FOOTBALL_KEY || process.env.FOOTBALL_API_KEY || process.env.API_FOOTBALL_KEY_FALLBACK || "8b9a415f6490dfe105e8af8e761f512f";
+  const API_KEY = process.env.API_FOOTBALL_KEY || process.env.FOOTBALL_API_KEY || process.env.API_FOOTBALL_KEY_FALLBACK || "05909530d6140f40e2d5f5b3046ed7d1";
   const USE_REAL_API =!!API_KEY;
 
   let fixtures = [];
