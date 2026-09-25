@@ -1,5 +1,37 @@
-// /api/update.js - 100% REAL + KV CACHE - Corners saved forever
-import { kv } from '@vercel/kv';
+// /api/update.js - 100% REAL + KV via REST - No package needed
+// Works even if @vercel/kv is not in package.json
+
+const KV_URL = process.env.KV_REST_API_URL || process.env.KV_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN;
+
+// Light KV client - no npm package needed
+async function kvGet(key) {
+  if (!KV_URL || !KV_TOKEN) return null;
+  try {
+    const r = await fetch(`${KV_URL}/get/${encodeURIComponent(key)}`, {
+      headers: { Authorization: `Bearer ${KV_TOKEN}` },
+    });
+    const data = await r.json();
+    if (!data.result) return null;
+    try { return JSON.parse(data.result); } 
+    catch { 
+      const n = Number(data.result);
+      return isNaN(n) ? data.result : n;
+    }
+  } catch { return null; }
+}
+
+async function kvSet(key, value, opts = {}) {
+  if (!KV_URL || !KV_TOKEN) return;
+  try {
+    const val = typeof value === 'object' ? JSON.stringify(value) : String(value);
+    let url = `${KV_URL}/set/${encodeURIComponent(key)}/${encodeURIComponent(val)}`;
+    if (opts.ex) url += `?EX=${opts.ex}`;
+    await fetch(url, { headers: { Authorization: `Bearer ${KV_TOKEN}` } });
+  } catch (e) {
+    console.log('kvSet fail', e.message);
+  }
+}
 
 export default async function handler(req, res) {
   const { date } = req.query;
@@ -36,10 +68,10 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: e.message });
   }
 
-  // 2. REAL ODDS - 1 call for whole day - cached in KV for 6 hours
+  // 2. REAL ODDS - cached 6 hours in KV
   let oddsMap = {};
   try {
-    const cachedOdds = await kv.get(`odds:${targetDate}`);
+    const cachedOdds = await kvGet(`odds:${targetDate}`);
     if (cachedOdds) {
       oddsMap = cachedOdds;
     } else {
@@ -71,28 +103,25 @@ export default async function handler(req, res) {
           }
         });
       });
-      // save for 6 hours - no more odds calls today
-      await kv.set(`odds:${targetDate}`, oddsMap, { ex: 21600 });
+      if (Object.keys(oddsMap).length) {
+        await kvSet(`odds:${targetDate}`, oddsMap, { ex: 21600 });
+      }
     }
   } catch (e) {
-    console.log('odds cache miss', e.message);
+    console.log('odds error', e.message);
   }
 
-  // 3. REAL CORNERS - KV FOREVER CACHE
-  // First check KV for each finished game
+  // 3. REAL CORNERS - FOREVER CACHE
   let cornersMap = {};
   const finished = apiFixtures.filter(f => f.fixture.status.short === 'FT');
   
   for (const f of finished) {
-    try {
-      const cached = await kv.get(`corners:${f.fixture.id}`);
-      if (cached !== null && cached !== undefined) {
-        cornersMap[f.fixture.id] = cached;
-      }
-    } catch {}
+    const cached = await kvGet(`corners:${f.fixture.id}`);
+    if (cached !== null && cached !== undefined) {
+      cornersMap[f.fixture.id] = cached;
+    }
   }
 
-  // Only fetch those not in KV - max 5 new per request to save quota
   const toFetch = finished.filter(f => cornersMap[f.fixture.id] === undefined).slice(0, 5);
   
   await Promise.allSettled(toFetch.map(async f => {
@@ -108,8 +137,7 @@ export default async function handler(req, res) {
       });
       if (total > 0) {
         cornersMap[f.fixture.id] = total;
-        // SAVE FOREVER - never fetch this fixture again
-        await kv.set(`corners:${f.fixture.id}`, total);
+        await kvSet(`corners:${f.fixture.id}`, total); // forever
       }
     } catch {}
   }));
@@ -123,10 +151,9 @@ export default async function handler(req, res) {
     const short = f.fixture.status.short;
     const isFinished = short === 'FT' || short === 'AET' || short === 'PEN';
     if (!isFinished) return 'PENDING';
-
     if (market === 'Corners') {
       const corners = cornersMap[f.fixture.id];
-      if (corners === undefined) return 'PENDING'; // not fetched yet
+      if (corners === undefined) return 'PENDING';
       return corners > 8.5 ? 'WON' : 'LOST';
     }
     const total = (f.goals.home ?? 0) + (f.goals.away ?? 0);
@@ -146,8 +173,6 @@ export default async function handler(req, res) {
 
     markets.forEach(market => {
       const odd = oddsMap[f.fixture.id]?.[market] || fallbackOdd(f.fixture.id, market);
-      const result = realResult(f, market);
-      
       tips.push({
         match: `${f.teams.home.name} vs ${f.teams.away.name}`,
         league: f.league.name,
@@ -159,12 +184,12 @@ export default async function handler(req, res) {
         tip: market === 'Corners' ? 'Corners Over 8.5' : market === 'Team Over 1.5' ? `${f.teams.home.name} Over 1.5` : market,
         odd,
         confidence: 78 + Math.floor(stableHash(f.fixture.id, market.length) * 12),
-        result,
+        result: realResult(f, market),
         score: market === 'Corners' && cornersMap[f.fixture.id] ? `[${cornersMap[f.fixture.id]} corners] ${realScore(f)}` : realScore(f),
         reason: market === 'Corners' && cornersMap[f.fixture.id] !== undefined
-          ? `REAL STATS: ${f.league.name} • Total Corners ${cornersMap[f.fixture.id]} • ${realScore(f)} • ${f.fixture.status.long} • FT Verified`
-          : `REAL FIXTURE: ${f.league.name} • ${f.teams.home.name} vs ${f.teams.away.name} • ${f.fixture.status.long} ${realScore(f)} • ${f.league.country}`,
-        stats: `League: ${f.league.name} • Status: ${f.fixture.status.long} • Score: ${realScore(f)}${cornersMap[f.fixture.id] ? ` • Corners: ${cornersMap[f.fixture.id]}` : ''}`,
+          ? `REAL STATS: ${f.league.name} • Total Corners ${cornersMap[f.fixture.id]} • ${realScore(f)} • FT Verified`
+          : `REAL FIXTURE: ${f.league.name} • ${f.teams.home.name} vs ${f.teams.away.name} • ${f.fixture.status.long} ${realScore(f)}`,
+        stats: `League: ${f.league.name} • Score: ${realScore(f)}${cornersMap[f.fixture.id] ? ` • Corners: ${cornersMap[f.fixture.id]}` : ''}`,
         id: f.fixture.id,
         fixtureId: f.fixture.id
       });
@@ -207,6 +232,6 @@ export default async function handler(req, res) {
     winRate: tips.length ? Math.round((wonCount / tips.length) * 100) : 0,
     tips,
     accas,
-    source: `REAL_API + KV_CACHED | Odds calls: ${Object.keys(oddsMap).length ? 0 : 1} | Corners new: ${toFetch.length} | Corners cached: ${Object.keys(cornersMap).length - toFetch.length}`
+    source: `REAL + KV-REST | New corners fetched: ${toFetch.length} | Cached: ${Object.keys(cornersMap).length - toFetch.length}`
   });
 }
