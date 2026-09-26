@@ -49,6 +49,14 @@ html,body{overflow-x:hidden; max-width:100vw}
 </header>
 
 <div class="max-w-7xl mx-auto px-3 md:px-4 py-3">
+  <div id="fallbackBanner" class="hidden bg-yellow-500/20 border border-yellow-500 rounded-[6px] p-3 mb-3">
+    <p class="text-[11px] font-bold text-yellow-400 flex items-center gap-2"><i class="fas fa-history"></i> <span id="fallbackText"></span></p>
+    <p class="text-[9px] text-gray-400 mt-1">Real games - No mock - Showing previous day because today has no games or API limit reached</p>
+  </div>
+  <div id="noApiBanner" class="hidden bg-red-500/20 border border-red-500 rounded-[6px] p-3 mb-3">
+    <p class="text-[11px] font-bold text-red-400"><i class="fas fa-exclamation-triangle"></i> NO API KEY SET - No mock games</p>
+    <p class="text-[10px] text-gray-300 mt-1">Please add FOOTBALL_API_KEY in Vercel Environment Variables. Go to Vercel → Settings → Environment Variables → Add FOOTBALL_API_KEY → Redeploy. Real games only, no mock.</p>
+  </div>
   <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 md:p-3 mb-3">
     <div class="flex items-center justify-between mb-2">
       <p class="text-[11px] font-bold flex items-center gap-1.5"><i class="far fa-calendar text-green-500"></i> DATE TRACKER • <span id="selectedDateLabel" class="text-green-400"></span></p>
@@ -91,7 +99,15 @@ html,body{overflow-x:hidden; max-width:100vw}
 <div id="slipModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end md:items-center justify-center p-3"><div class="bg-[#1a1a1a] rounded-[6px] w-full max-w-md max-h-[80vh] flex flex-col"><div class="p-4 border-b border-[#222] flex justify-between items-center"><h3 class="font-bold text-[14px]">BET SLIP • <span id="slipModalCount">0</span> games</h3><button onclick="closeSlip()" class="w-7 h-7 bg-[#222] rounded-[4px] flex items-center justify-center"><i class="fas fa-xmark text-[12px]"></i></button></div><div id="slipList" class="flex-1 overflow-y-auto p-3 space-y-2"></div><div class="p-4 border-t border-[#222] space-y-2"><div class="flex justify-between font-bold text-[13px]"><span>Total Odds:</span><span id="slipTotalOdds">@1.00</span></div><div class="flex gap-2"><button onclick="clearSlip()" class="flex-1 bg-[#222] text-white py-2.5 rounded-[6px] font-bold text-[11px]">CLEAR</button><button onclick="shareSlip()" class="flex-[2] bg-[#25D366] text-black py-2.5 rounded-[6px] font-bold text-[11px]"><i class="fab fa-whatsapp"></i> SHARE SLIP</button></div></div></div></div>
 
 <script>
-let currentDate = new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
+function getInitialDate(){
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlDate = urlParams.get('date');
+  if(urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate)){
+    return urlDate;
+  }
+  return new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
+}
+let currentDate = getInitialDate();
 let allTips = []; let allAccas = {}; let currentMarket = 'all'; let slip = []; let liveInterval;
 let selectedMarkets = {};
 
@@ -100,6 +116,7 @@ function getTodayFormatted(){return new Date().toLocaleDateString('en-GB', {time
 function buildDateTracker(){
   const container = document.getElementById('dateTracker');
   const todayStr = getTodayWAT();
+  document.title = currentDate===todayStr? `GoalPredict247 V4 - TODAY ${getTodayFormatted()} - 25 GAMES • LIVE` : `GoalPredict247 V4 - ${currentDate} - 25 GAMES • LIVE`;
   const today = new Date(todayStr);
   let html = '';
   for(let i=-1; i<=5; i++){
@@ -117,15 +134,55 @@ function buildDateTracker(){
   const t = document.getElementById('todayDate'); if(t) t.textContent = getTodayFormatted();
   const m = document.getElementById('todayDateMobile'); if(m) m.textContent = getTodayFormatted();
 }
-function selectDate(iso){ currentDate = iso; buildDateTracker(); fetchTips(iso, true); }
+function selectDate(iso){
+  currentDate = iso;
+  const url = new URL(window.location);
+  url.searchParams.set('date', iso);
+  window.history.pushState({}, '', url);
+  buildDateTracker();
+  fetchTips(iso, true);
+}
 function toast(m){const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2200);}
 
 async function fetchTips(date,force){
-  currentDate = date||currentDate; buildDateTracker();
+  currentDate = date||currentDate;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(currentDate)){
+    currentDate = new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
+  }
+  buildDateTracker();
+  document.getElementById('fallbackBanner')?.classList.add('hidden');
+  document.getElementById('noApiBanner')?.classList.add('hidden');
   if(!force) document.getElementById('tips').innerHTML = `<div class="col-span-full text-center py-16"><i class="fas fa-spinner fa-spin"></i><p class="text-[11px] text-gray-400 mt-2">Loading ${currentDate}...</p></div>`;
   try{
     const r = await fetch(`/api/update?date=${currentDate}`);
     const j = await r.json();
+
+    if(j.source==='NO_API_KEY_SET' || j.error?.includes('No API key')){
+      document.getElementById('noApiBanner').classList.remove('hidden');
+      document.getElementById('total').textContent='0';
+      document.getElementById('won').textContent='0';
+      document.getElementById('lost').textContent='0';
+      document.getElementById('pending').textContent='0';
+      document.getElementById('tips').innerHTML=`<div class="col-span-full text-center py-12"><p class="text-[13px] font-bold text-red-400"><i class="fas fa-key"></i> NO API KEY</p><p class="text-[11px] text-gray-400 mt-2">Add FOOTBALL_API_KEY in Vercel → Settings → Env Variables → Redeploy</p><p class="text-[9px] text-gray-500 mt-2">${j.error||''}</p><p class="text-[9px] text-green-400 mt-3">No mock games - Real games only</p></div>`;
+      document.getElementById('accas').innerHTML='<p class="text-[11px] text-gray-500">No ACCAs - API key required</p>';
+      return;
+    }
+
+    if(j.fallbackUsed){
+      document.getElementById('fallbackBanner').classList.remove('hidden');
+      document.getElementById('fallbackText').textContent=j.fallbackMessage||`Showing games from ${j.actualDate} - ${j.fallbackDays} day(s) ago - Real games, no mock`;
+    }
+
+    if((j.tips||[]).length===0 && j.source?.startsWith('REAL_API_FAILED')){
+      document.getElementById('tips').innerHTML=`<div class="col-span-full text-center py-12"><p class="text-[13px] font-bold text-yellow-400">No real games found for ${j.date} + previous 7 days</p><p class="text-[11px] text-gray-400 mt-2">Last error: ${j.lastError||j.error}</p><p class="text-[9px] text-gray-500 mt-2">API limit may be reached or no fixtures. Try again later. No mock games shown.</p></div>`;
+      document.getElementById('accas').innerHTML='<p class="text-[11px] text-gray-500">No ACCAs - No real games available</p>';
+      document.getElementById('total').textContent='0';
+      document.getElementById('won').textContent='0';
+      document.getElementById('lost').textContent='0';
+      document.getElementById('pending').textContent='0';
+      return;
+    }
+
     allTips=j.tips||[]; allAccas=j.accas||{};
     document.getElementById('total').textContent=j.total||allTips.length||0;
     document.getElementById('won').textContent=j.wonCount||0;
