@@ -1,7 +1,18 @@
 {
+  "cleanUrls": true,
   "rewrites": [
-    {"source": "/about", "destination": "/about.html"},
-    {"source": "/about/", "destination": "/about.html"}
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/about/",
+      "destination": "/about.html"
+    }
   ],
-  "cleanUrls": true
+  "functions": {
+    "api/update.js": {
+      "maxDuration": 10
+    }
+  }
 }
