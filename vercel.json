@@ -1,18 +1,13 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    {
-      "source": "/about",
-      "destination": "/about.html"
-    },
-    {
-      "source": "/about/",
-      "destination": "/about.html"
-    }
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/about/", "destination": "/about.html" },
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/admin/", "destination": "/admin.html" }
   ],
   "functions": {
-    "api/update.js": {
-      "maxDuration": 10
-    }
+    "api/update.js": { "maxDuration": 10 },
+    "api/visit.js": { "maxDuration": 5 }
   }
 }
