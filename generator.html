@@ -1,1 +1,81 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GoalPredict247 - Booking Code Generator</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen">
+<header class="sticky top-0 z-40 bg-[#0a0a0a]/90 backdrop-blur border-b border-[#1a1a1a]">
+<div class="max-w-[1280px] mx-auto px-4 h-[64px] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-[#00c853] flex items-center justify-center font-bold text-black">GP</div>
+<div><div class="font-bold text-[14px]">GoalPredict247</div><div class="text-[10px] text-neutral-500 uppercase">Booking Code Generator</div></div>
+</div>
+</div>
+<div class="border-t border-[#111]">
+<div class="max-w-[1280px] mx-auto px-4 h-[44px] flex items-center gap-2">
+<span class="text-[11px] text-neutral-500 font-bold mr-2">DATE TRACKER</span>
+<div id="dateRow" class="flex gap-1.5"></div>
+</div>
+</div>
+</header>
+<main class="max-w-[1280px] mx-auto px-4 py-5 grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-5">
+<div class="space-y-4">
+<div class="rounded-[16px] bg-[#141414] border border-[#222] overflow-hidden">
+<div class="p-4 border-b border-[#1e1e1e] flex justify-between"><h2 class="text-[13px] font-semibold">Admin Panel</h2><span id="gameCount" class="text-[11px] px-2 py-1 rounded-full bg-[#0a0a0a] border border-[#222] text-neutral-400">0 games</span></div>
+<div class="p-4 space-y-3">
+<div class="grid grid-cols-2 gap-2">
+<div><label class="text-[11px] text-neutral-500">Home</label><input id="home" placeholder="Arsenal" class="mt-1 w-full h-9 rounded-lg px-3 text-[13px] bg-[#111] border border-[#222]"></div>
+<div><label class="text-[11px] text-neutral-500">Away</label><input id="away" placeholder="Man City" class="mt-1 w-full h-9 rounded-lg px-3 text-[13px] bg-[#111] border border-[#222]"></div>
+</div>
+<div><label class="text-[11px] text-neutral-500">League</label><input id="league" placeholder="Premier League" class="mt-1 w-full h-9 rounded-lg px-3 text-[13px] bg-[#111] border border-[#222]"></div>
+<div class="grid grid-cols-[1fr_90px] gap-2">
+<div><label class="text-[11px] text-neutral-500">Tip</label><select id="tip" class="mt-1 w-full h-9 rounded-lg px-2 text-[13px] bg-[#111] border border-[#222]"><option>Over 1.5</option><option>Over 2.5</option><option>BTTS Yes</option><option>1X</option><option>X2</option><option>Home Win</option></select></div>
+<div><label class="text-[11px] text-neutral-500">Odd</label><input id="odd" type="number" step="0.01" placeholder="1.85" class="mt-1 w-full h-9 rounded-lg px-3 text-[13px] bg-[#111] border border-[#222]"></div>
+</div>
+<button id="addBtn" class="w-full h-10 rounded-xl bg-white text-black font-semibold text-[13px]">+ Add Game</button>
+<div id="currentList" class="space-y-2"></div>
+<div class="pt-3 border-t border-[#1e1e1e] space-y-3">
+<div class="flex justify-between"><span class="text-[12px] text-neutral-400">Total Odds</span><span id="totalOdds" class="text-[16px] font-bold text-[#00c853]">1.00</span></div>
+<div class="grid grid-cols-2 gap-2 p-1 rounded-xl bg-[#0a0a0a] border border-[#1e1e1e]">
+<button id="catSporty" class="h-8 rounded-lg bg-[#00c853] text-black font-semibold text-[12px]">SportyBet</button>
+<button id="catBet" class="h-8 rounded-lg text-neutral-400 text-[12px]">Bet365</button>
+</div>
+<button id="genBtn" class="w-full h-11 rounded-xl bg-[#00c853] text-black font-bold text-[13px]">⚡ GENERATE BOOKING CODE</button>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<h2 class="text-[14px] font-semibold">Public Tickets <span id="ticketCount" class="ml-2 text-[11px] px-2 py-1 rounded-full bg-[#141414] border border-[#222]">2 active</span></h2>
+<div id="ticketsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+</div>
+</main>
+<div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 hidden bg-[#1a1a1a] border border-[#333] px-4 py-2 rounded-full text-[12px]"></div>
+<script>
+const DATES=[25,26,27,28,29,30,1,2];let selectedDate=28;let currentGames=[];let category='SportyBet';
+let tickets=[
+{id:'1',category:'SportyBet',code:'8K3M9P',odds:1.78,dateLabel:'Today',createdAt:'09:24',games:[{home:'Kallithea',away:'Asteras Tripolis II',league:'Super League 2',tip:'Over 1.5',odd:1.32},{home:'Markos',away:'Panthrakikos',league:'Greek Cup',tip:'Over 1.5',odd:1.35}]},
+{id:'2',category:'SportyBet',code:'7F3K9P',odds:2.71,dateLabel:'Today',createdAt:'08:15',games:[{home:'Man City',away:'Arsenal',league:'Premier League',tip:'Over 1.5',odd:1.25}]}
+];
+function genSporty(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';let r='';for(let i=0;i<6;i++)r+=c[Math.floor(Math.random()*c.length)];return r;}
+function genBet365(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';let r='';for(let i=0;i<4;i++)r+=c[Math.floor(Math.random()*c.length)];return 'BET365-GP247-'+r;}
+function calcOdds(g){return g.reduce((a,b)=>a*parseFloat(b.odd),1)||1;}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),2500);}
+function renderDates(){const row=document.getElementById('dateRow');row.innerHTML=DATES.map(d=>`<button onclick="selectDate(${d})" class="${d===selectedDate?'bg-white text-black':'bg-[#141414] text-neutral-400 border border-[#222]'} h-7 min-w-[36px] px-2.5 rounded-full text-[12px] font-semibold">${d}</button>`).join('');}
+function selectDate(d){selectedDate=d;renderDates();}
+function renderCurrent(){document.getElementById('gameCount').textContent=currentGames.length+' games';document.getElementById('totalOdds').textContent=calcOdds(currentGames).toFixed(2);const list=document.getElementById('currentList');if(!currentGames.length){list.innerHTML='<div class="py-4 text-center text-[11px] text-neutral-600 border border-dashed border-[#1e1e1e] rounded-xl">No games yet</div>';return;}list.innerHTML=currentGames.map((g,i)=>`<div class="flex justify-between items-center p-2 rounded-xl bg-[#0a0a0a] border border-[#1e1e1e] text-[11px]"><span>${g.home} vs ${g.away} - ${g.tip} @${g.odd}</span><button onclick="removeGame(${i})">✕</button></div>`).join('');}
+function removeGame(i){currentGames.splice(i,1);renderCurrent();}
+function renderTickets(){const grid=document.getElementById('ticketsGrid');document.getElementById('ticketCount').textContent=tickets.length+' active';grid.innerHTML=tickets.map(t=>`<div class="rounded-[16px] bg-[#141414] border border-[#222] overflow-hidden"><div class="p-4 flex justify-between"><div class="flex gap-2 items-center"><span class="text-[10px] font-bold px-2 py-1 rounded-full ${t.category==='SportyBet'?'bg-[#00c853] text-black':'bg-white text-black'}">${t.category}</span><span class="text-[11px] text-neutral-500">${t.dateLabel} ${t.createdAt}</span></div><span class="text-[11px] px-2 py-1 rounded-full bg-[#0a0a0a] border border-[#1e1e1e]">ODDS ${t.odds.toFixed(2)}</span></div><div class="px-4 pb-2 flex items-center gap-2"><div class="text-[20px] font-bold tracking-widest">${t.code}</div><button onclick="copyCode('${t.code}')" class="ml-auto h-8 px-3 rounded-lg bg-[#1a1a1a] border border-[#222] text-[11px]">Copy</button><button onclick="openSporty('${t.code}')" class="h-8 px-3 rounded-lg bg-[#00c853] text-black text-[11px] font-bold">Open in SportyBet →</button></div><div class="px-4 pb-4 space-y-1">${t.games.map(g=>`<div class="flex justify-between py-2 border-t border-[#1a1a1a] text-[12px]"><span>${g.home} vs ${g.away}</span><span class="text-[#00c853] font-bold">${g.tip} @${g.odd}</span></div>`).join('')}</div></div>`).join('');}
+function copyCode(c){navigator.clipboard.writeText(c);showToast('Copied '+c);}
+function openSporty(c){window.open('https://www.sportybet.com/ng/m/betslip/share?code='+c,'_blank');}
+document.getElementById('addBtn').addEventListener('click',()=>{const home=document.getElementById('home').value.trim();const away=document.getElementById('away').value.trim();const league=document.getElementById('league').value||'Friendly';const tip=document.getElementById('tip').value;const odd=document.getElementById('odd').value;if(!home||!away||!odd){showToast('Fill home, away & odd');return;}currentGames.push({home,away,league,tip,odd});document.getElementById('home').value='';document.getElementById('away').value='';document.getElementById('odd').value='';renderCurrent();});
+document.getElementById('catSporty').addEventListener('click',()=>{category='SportyBet';document.getElementById('catSporty').className='h-8 rounded-lg bg-[#00c853] text-black font-semibold text-[12px]';document.getElementById('catBet').className='h-8 rounded-lg text-neutral-400 text-[12px]';});
+document.getElementById('catBet').addEventListener('click',()=>{category='Bet365';document.getElementById('catBet').className='h-8 rounded-lg bg-[#00c853] text-black font-semibold text-[12px]';document.getElementById('catSporty').className='h-8 rounded-lg text-neutral-400 text-[12px]';});
+document.getElementById('genBtn').addEventListener('click',()=>{if(!currentGames.length){showToast('Add at least 1 game');return;}const code=category==='SportyBet'?genSporty():genBet365();const odds=calcOdds(currentGames);tickets.unshift({id:Date.now().toString(),category,code,odds,dateLabel:'Today',createdAt:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),games:JSON.parse(JSON.stringify(currentGames))});currentGames=[];renderCurrent();renderTickets();showToast('Generated '+code);});
+renderDates();renderCurrent();renderTickets();
+</script>
+</body>
+</html>
