@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GoalPredict247 V4 FINAL - 25 GAMES • FULL ACCA SUITE • WIN PROB • CLICKABLE MARKETS</title>
-<meta name="description" content="GoalPredict247 V4 - 25 games 1 card per game - Full ACCA slide 2/3/5 odds per market + mixed 10 odds - Best win prob selection - Clickable markets">
+<title>GoalPredict247 V7 - 30 GAMES • FULL ACCA • WIN PROB • VISITOR TRACKER</title>
+<meta name="description" content="GoalPredict247 V7 - 30 games 1 card per game - Full ACCA slide 2/3/5 odds per market + mixed 10 odds - Best win prob - 1 hour stable - Visitor tracker">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -35,12 +35,14 @@ html,body{overflow-x:hidden; max-width:100vw}
     <div class="flex items-center gap-2 flex-1 min-w-0">
       <div class="w-9 h-9 bg-green-500 rounded-[6px] flex items-center justify-center font-bold text-black text-[12px] flex-shrink-0">G247</div>
       <div class="min-w-0 flex-1">
-        <h1 class="font-bold text-[15px] md:text-[18px] leading-none">GoalPredict247 V4</h1>
-        <p class="text-[9px] md:text-[11px] text-gray-400 truncate hidden md:block">25 GAMES • 1 CARD/GAME • FULL ACCA 2/3/5 ODDS • CLICKABLE MARKETS</p>
-        <p class="text-[9px] text-gray-500 md:hidden" id="todayDateMobile">FULL ACCA • CLICKABLE • LIVE</p>
+        <h1 class="font-bold text-[15px] md:text-[18px] leading-none">GoalPredict247 V7</h1>
+        <p class="text-[9px] md:text-[11px] text-gray-400 truncate hidden md:block">30 GAMES • 1 CARD/GAME • FULL ACCA 2/3/5/10 ODDS • 1H STABLE • VISITOR TRACKER</p>
+        <p class="text-[9px] text-gray-500 md:hidden" id="todayDateMobile">30 GAMES • STABLE • LIVE</p>
       </div>
     </div>
     <div class="flex items-center gap-1.5 flex-shrink-0">
+      <span id="visitorCount" class="text-[8px] md:text-[9px] bg-green-500/20 border border-green-500 px-2 py-1 rounded-[4px] font-bold text-green-400"><i class="fas fa-eye"></i> <span id="todayVisitCount">0</span> today</span>
+      <a href="/admin.html" class="text-[9px] md:text-[10px] bg-[#1a1a1a] px-2.5 py-1.5 rounded-[4px] font-bold">ADMIN</a>
       <a href="/about.html" class="text-[9px] md:text-[10px] bg-[#1a1a1a] px-2.5 py-1.5 rounded-[4px] font-bold">ABOUT</a>
       <span class="flex items-center gap-1 text-[8px] md:text-[10px] bg-[#1a1a1a] px-2 py-1 rounded-[4px]"><span class="w-1.5 h-1.5 bg-green-500 rounded-full live-dot"></span>LIVE</span>
       <button onclick="fetchTips(currentDate,true)" class="w-8 h-8 bg-[#1a1a1a] rounded-[6px] flex items-center justify-center"><i class="fas fa-rotate text-[10px]"></i></button>
@@ -51,7 +53,7 @@ html,body{overflow-x:hidden; max-width:100vw}
 <div class="max-w-7xl mx-auto px-3 md:px-4 py-3">
   <div id="fallbackBanner" class="hidden bg-yellow-500/20 border border-yellow-500 rounded-[6px] p-3 mb-3">
     <p class="text-[11px] font-bold text-yellow-400 flex items-center gap-2"><i class="fas fa-history"></i> <span id="fallbackText"></span></p>
-    <p class="text-[9px] text-gray-400 mt-1">Real games - No mock - Showing previous day because today has no games or API limit reached</p>
+    <p class="text-[9px] text-gray-400 mt-1">Real games - No mock - Showing previous day because today has no games or API limit reached - 30 games</p>
   </div>
   <div id="noApiBanner" class="hidden bg-red-500/20 border border-red-500 rounded-[6px] p-3 mb-3">
     <p class="text-[11px] font-bold text-red-400"><i class="fas fa-exclamation-triangle"></i> NO API KEY SET - No mock games</p>
@@ -59,14 +61,14 @@ html,body{overflow-x:hidden; max-width:100vw}
   </div>
   <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 md:p-3 mb-3">
     <div class="flex items-center justify-between mb-2">
-      <p class="text-[11px] font-bold flex items-center gap-1.5"><i class="far fa-calendar text-green-500"></i> DATE TRACKER • <span id="selectedDateLabel" class="text-green-400"></span></p>
-      <p class="text-[9px] text-gray-500">WAT • Africa/Lagos</p>
+      <p class="text-[11px] font-bold flex items-center gap-1.5"><i class="far fa-calendar text-green-500"></i> DATE TRACKER • <span id="selectedDateLabel" class="text-green-400"></span> • V7 30 GAMES STABLE</p>
+      <p class="text-[9px] text-gray-500">WAT • Africa/Lagos • 1h refresh</p>
     </div>
     <div class="date-scroll scrollbar-hide" id="dateTracker"></div>
   </div>
 
   <div class="grid grid-cols-4 gap-2 mb-3">
-    <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 text-center"><p class="text-[9px] text-gray-400">GAMES</p><p id="total" class="font-bold text-[14px]">25</p></div>
+    <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 text-center"><p class="text-[9px] text-gray-400">GAMES</p><p id="total" class="font-bold text-[14px]">30</p></div>
     <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 text-center"><p class="text-[9px] text-gray-400">WON</p><p id="won" class="font-bold text-green-500 text-[14px]">0</p></div>
     <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 text-center"><p class="text-[9px] text-gray-400">LOST</p><p id="lost" class="font-bold text-red-500 text-[14px]">0</p></div>
     <div class="bg-[#1a1a1a] rounded-[6px] p-2.5 text-center"><p class="text-[9px] text-gray-400">PEND</p><p id="pending" class="font-bold text-yellow-500 text-[14px]">0</p></div>
@@ -74,15 +76,15 @@ html,body{overflow-x:hidden; max-width:100vw}
 
   <div class="bg-[#1a1a1a] rounded-[6px] p-3 md:p-4 mb-3">
     <div class="flex items-center justify-between gap-2 mb-3">
-      <h2 class="font-bold text-[11px] md:text-[12px] flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> 10 ACCAs • 2/3/5 ODDS PER MARKET • SLIDE • BEST WIN PROB</h2>
+      <h2 class="font-bold text-[11px] md:text-[12px] flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> 10 ACCAs • 30 GAMES • 2/3/5/10 ODDS • STABLE ALL DAY</h2>
       <button onclick="shareCompleteAcca()" class="bg-[#25D366] text-black text-[9px] md:text-[10px] font-bold px-2.5 py-1.5 rounded-[4px]"><i class="fab fa-whatsapp"></i> COMPLETE SHARE</button>
     </div>
     <div class="acca-scroll scrollbar-hide" id="accas"></div>
-    <p class="text-[8px] text-gray-500 mt-2 text-center"><i class="fas fa-arrows-left-right"></i> Slide left/right • Each ACCA selected by best win probability • No duplicate matches • Click to expand</p>
+    <p class="text-[8px] text-gray-500 mt-2 text-center"><i class="fas fa-arrows-left-right"></i> Slide • STABLE ALL DAY • Tips same all day, only scoreline updates hourly • 1h refresh = 24 API calls/day not 1,440</p>
   </div>
 
   <div class="flex gap-2 overflow-x-auto scrollbar-hide mb-3" id="markets">
-    <button data-market="all" class="market-tab active bg-white text-black px-3 py-1.5 rounded-[4px] text-[11px] font-bold whitespace-nowrap">ALL (25)</button>
+    <button data-market="all" class="market-tab active bg-white text-black px-3 py-1.5 rounded-[4px] text-[11px] font-bold whitespace-nowrap">ALL (30)</button>
     <button data-market="our" class="market-tab bg-green-500 text-black px-3 py-1.5 rounded-[4px] text-[11px] font-bold whitespace-nowrap">🔥 OUR TIPS</button>
     <button data-market="Over 1.5" class="market-tab bg-[#1a1a1a] px-3 py-1.5 rounded-[4px] text-[11px] font-bold whitespace-nowrap">OVER 1.5</button>
     <button data-market="Over 2.5" class="market-tab bg-[#1a1a1a] px-3 py-1.5 rounded-[4px] text-[11px] font-bold whitespace-nowrap">OVER 2.5</button>
@@ -102,9 +104,7 @@ html,body{overflow-x:hidden; max-width:100vw}
 function getInitialDate(){
   const urlParams = new URLSearchParams(window.location.search);
   const urlDate = urlParams.get('date');
-  if(urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate)){
-    return urlDate;
-  }
+  if(urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate)) return urlDate;
   return new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
 }
 let currentDate = getInitialDate();
@@ -116,7 +116,7 @@ function getTodayFormatted(){return new Date().toLocaleDateString('en-GB', {time
 function buildDateTracker(){
   const container = document.getElementById('dateTracker');
   const todayStr = getTodayWAT();
-  document.title = currentDate===todayStr? `GoalPredict247 V4 - TODAY ${getTodayFormatted()} - 25 GAMES • LIVE` : `GoalPredict247 V4 - ${currentDate} - 25 GAMES • LIVE`;
+  document.title = currentDate===todayStr? `GoalPredict247 V7 - TODAY ${getTodayFormatted()} - 30 GAMES • STABLE` : `GoalPredict247 V7 - ${currentDate} - 30 GAMES`;
   const today = new Date(todayStr);
   let html = '';
   for(let i=-1; i<=5; i++){
@@ -130,9 +130,8 @@ function buildDateTracker(){
     html += `<div class="date-card ${isToday?'today':''} ${isActive?'active':''}" onclick="selectDate('${iso}')"><p class="text-[9px] font-bold">${label}</p><p class="text-[14px] font-bold leading-none mt-1">${dayNum}</p><p class="text-[9px] mt-0.5">${monthShort}</p>${isToday?'<p class="text-[7px] bg-green-500 text-black px-1 rounded-[3px] mt-1 font-bold">LIVE</p>':''}</div>`;
   }
   container.innerHTML = html;
-  document.getElementById('selectedDateLabel').textContent = currentDate===todayStr? 'TODAY - '+getTodayFormatted() : currentDate;
-  const t = document.getElementById('todayDate'); if(t) t.textContent = getTodayFormatted();
-  const m = document.getElementById('todayDateMobile'); if(m) m.textContent = getTodayFormatted();
+  document.getElementById('selectedDateLabel').textContent = currentDate===todayStr? 'TODAY - '+getTodayFormatted()+' - 30 GAMES' : currentDate+' - 30 GAMES';
+  const m = document.getElementById('todayDateMobile'); if(m) m.textContent = getTodayFormatted()+' - 30 GAMES';
 }
 function selectDate(iso){
   currentDate = iso;
@@ -144,6 +143,19 @@ function selectDate(iso){
 }
 function toast(m){const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2200);}
 
+async function trackVisit(){
+  try{
+    await fetch('/api/visit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page: window.location.pathname + window.location.search })
+    });
+    const r = await fetch('/api/visit');
+    const j = await r.json();
+    document.getElementById('todayVisitCount').textContent = j.today || 0;
+  }catch(e){ console.log('visit tracker error', e); }
+}
+
 async function fetchTips(date,force){
   currentDate = date||currentDate;
   if(!/^\d{4}-\d{2}-\d{2}$/.test(currentDate)){
@@ -152,7 +164,7 @@ async function fetchTips(date,force){
   buildDateTracker();
   document.getElementById('fallbackBanner')?.classList.add('hidden');
   document.getElementById('noApiBanner')?.classList.add('hidden');
-  if(!force) document.getElementById('tips').innerHTML = `<div class="col-span-full text-center py-16"><i class="fas fa-spinner fa-spin"></i><p class="text-[11px] text-gray-400 mt-2">Loading ${currentDate}...</p></div>`;
+  if(!force) document.getElementById('tips').innerHTML = `<div class="col-span-full text-center py-16"><i class="fas fa-spinner fa-spin"></i><p class="text-[11px] text-gray-400 mt-2">Loading ${currentDate} - 30 games...</p></div>`;
   try{
     const r = await fetch(`/api/update?date=${currentDate}`);
     const j = await r.json();
@@ -163,19 +175,19 @@ async function fetchTips(date,force){
       document.getElementById('won').textContent='0';
       document.getElementById('lost').textContent='0';
       document.getElementById('pending').textContent='0';
-      document.getElementById('tips').innerHTML=`<div class="col-span-full text-center py-12"><p class="text-[13px] font-bold text-red-400"><i class="fas fa-key"></i> NO API KEY</p><p class="text-[11px] text-gray-400 mt-2">Add FOOTBALL_API_KEY in Vercel → Settings → Env Variables → Redeploy</p><p class="text-[9px] text-gray-500 mt-2">${j.error||''}</p><p class="text-[9px] text-green-400 mt-3">No mock games - Real games only</p></div>`;
-      document.getElementById('accas').innerHTML='<p class="text-[11px] text-gray-500">No ACCAs - API key required</p>';
+      document.getElementById('tips').innerHTML=`<div class="col-span-full text-center py-12"><p class="text-[13px] font-bold text-red-400"><i class="fas fa-key"></i> NO API KEY - 30 GAMES MODE</p><p class="text-[11px] text-gray-400 mt-2">Add FOOTBALL_API_KEY in Vercel → Settings → Env Variables → Redeploy</p><p class="text-[9px] text-gray-500 mt-2">${j.error||''}</p><p class="text-[9px] text-green-400 mt-3">No mock - Real games only - 30 games per fetch</p></div>`;
+      document.getElementById('accas').innerHTML='<p class="text-[11px] text-gray-500">No ACCAs - API key required for 30 games</p>';
       return;
     }
 
     if(j.fallbackUsed){
       document.getElementById('fallbackBanner').classList.remove('hidden');
-      document.getElementById('fallbackText').textContent=j.fallbackMessage||`Showing games from ${j.actualDate} - ${j.fallbackDays} day(s) ago - Real games, no mock`;
+      document.getElementById('fallbackText').textContent=j.fallbackMessage||`Showing 30 games from ${j.actualDate} - ${j.fallbackDays} day(s) ago`;
     }
 
     if((j.tips||[]).length===0 && j.source?.startsWith('REAL_API_FAILED')){
-      document.getElementById('tips').innerHTML=`<div class="col-span-full text-center py-12"><p class="text-[13px] font-bold text-yellow-400">No real games found for ${j.date} + previous 7 days</p><p class="text-[11px] text-gray-400 mt-2">Last error: ${j.lastError||j.error}</p><p class="text-[9px] text-gray-500 mt-2">API limit may be reached or no fixtures. Try again later. No mock games shown.</p></div>`;
-      document.getElementById('accas').innerHTML='<p class="text-[11px] text-gray-500">No ACCAs - No real games available</p>';
+      document.getElementById('tips').innerHTML=`<div class="col-span-full text-center py-12"><p class="text-[13px] font-bold text-yellow-400">No real games found for ${j.date} + previous 7 days (30 games mode)</p><p class="text-[11px] text-gray-400 mt-2">Last error: ${j.lastError||j.error}</p><p class="text-[9px] text-gray-500 mt-2">API limit may be reached. Try again later. No mock.</p></div>`;
+      document.getElementById('accas').innerHTML='<p class="text-[11px] text-gray-500">No ACCAs - No real games</p>';
       document.getElementById('total').textContent='0';
       document.getElementById('won').textContent='0';
       document.getElementById('lost').textContent='0';
@@ -188,6 +200,7 @@ async function fetchTips(date,force){
     document.getElementById('won').textContent=j.wonCount||0;
     document.getElementById('lost').textContent=j.lostCount||0;
     document.getElementById('pending').textContent=j.pendingCount||0;
+    document.querySelector('[data-market="all"]').textContent = `ALL (${allTips.length})`;
     renderAccas(); renderTips();
   }catch(e){ document.getElementById('tips').innerHTML=`<div class="col-span-full text-center py-8 text-[11px] text-red-400">Error: ${e.message}</div>`; }
 }
@@ -196,7 +209,7 @@ function renderAccas(){
   const c=document.getElementById('accas');
   const order=['ov15_2odds','ov15_3odds','ov15_5odds','ov25_5odds','btts_5odds','corners_5odds','teamHome_5odds','teamAway_5odds','our_10odds','mixed_10odds'];
   if(!c) return;
-  if(Object.keys(allAccas).length===0){ c.innerHTML='<p class="text-[11px] text-gray-500">Loading 10 ACCAs - Best Win Prob...</p>'; return; }
+  if(Object.keys(allAccas).length===0){ c.innerHTML='<p class="text-[11px] text-gray-500">Loading 10 ACCAs - 30 games - Best Win Prob - Stable...</p>'; return; }
   c.innerHTML=order.map(key=>{
     const a=allAccas[key]; if(!a||!a.games||a.games.length===0) return '';
     const col=a.result==='WON'?'border-green-500':a.result==='LOST'?'border-red-500':'border-[#2a2a2a]';
@@ -205,7 +218,7 @@ function renderAccas(){
       <div class="flex justify-between gap-2">
         <div class="flex-1 min-w-0">
           <p class="font-bold text-[11px] leading-tight">${a.name}</p>
-          <p class="text-[9px] text-gray-400 mt-1">${a.count} games • ${a.totalOdd} odds • Best Win Prob • No Dup<br><span class="text-green-500 font-bold">W${a.won||0}</span> L${a.lost||0} P${pend} • <span class="${a.result==='WON'?'text-green-500':a.result==='LOST'?'text-red-500':'text-yellow-500'} font-bold">${a.result}</span> • Avg ${a.games.length>0?Math.round(a.games.reduce((s,g)=>s+(g.winProb||70),0)/a.games.length):0}% Win Prob</p>
+          <p class="text-[9px] text-gray-400 mt-1">${a.count} games • ${a.totalOdd} odds • 30 GAMES STABLE<br><span class="text-green-500 font-bold">W${a.won||0}</span> L${a.lost||0} P${pend} • <span class="${a.result==='WON'?'text-green-500':a.result==='LOST'?'text-red-500':'text-yellow-500'} font-bold">${a.result}</span> • Avg ${a.games.length>0?Math.round(a.games.reduce((s,g)=>s+(g.winProb||70),0)/a.games.length):0}% Win Prob</p>
         </div>
         <div class="flex gap-1 flex-shrink-0">
           <button onclick="addAccaToSlip('${key}')" class="w-7 h-7 bg-white text-black rounded-[4px] flex items-center justify-center" title="Add to Slip"><i class="fas fa-plus text-[10px]"></i></button>
@@ -256,7 +269,7 @@ function renderTips(){
     else if(currentMarket==='Team Over 1.5 Home') f = allTips.filter(t=> t.ourPickKey==='teamHome');
     else if(currentMarket==='Team Over 1.5 Away') f = allTips.filter(t=> t.ourPickKey==='teamAway');
   }
-  if(f.length===0){c.innerHTML=`<div class="col-span-full text-center py-8 text-[11px] text-gray-500">No tips for ${currentDate} filter ${currentMarket}</div>`; return;}
+  if(f.length===0){c.innerHTML=`<div class="col-span-full text-center py-8 text-[11px] text-gray-500">No tips for ${currentDate} filter ${currentMarket} - 30 games</div>`; return;}
   c.innerHTML=f.map(t=>{
     const col=t.result==='WON'?'#22c55e':t.result==='LOST'?'#ef4444':'#eab308';
     const live=t.status!=='FT'&&t.status!=='NS'&&t.result==='PENDING';
@@ -269,7 +282,7 @@ function renderTips(){
       <p class="text-[10px] text-gray-400 mt-1 flex flex-wrap gap-2"><span><i class="far fa-clock"></i> ${t.time}</span><span>Form ${t.homeForm} vs ${t.awayForm}</span><span>H2H ${t.h2h}</span></p>
       <div class="mt-3 bg-[#0f0f0f] rounded-[6px] p-3 our-pick-glow">
         <div class="flex items-center justify-between mb-2">
-          <p class="text-[10px] font-bold text-green-400 flex items-center gap-1.5"><i class="fas fa-star"></i> OUR TIP • ${selKey===t.ourPickKey?'BEST PICK':'YOUR CHOICE'} • REAL STATS</p>
+          <p class="text-[10px] font-bold text-green-400 flex items-center gap-1.5"><i class="fas fa-star"></i> OUR TIP • ${selKey===t.ourPickKey?'BEST PICK':'YOUR CHOICE'} • 30 GAMES STABLE</p>
           <span class="text-[9px] bg-green-500 text-black px-2 py-0.5 rounded-[3px] font-bold">${selected.winProb}% WIN PROB</span>
         </div>
         <div class="flex flex-wrap items-center gap-2">
@@ -277,11 +290,11 @@ function renderTips(){
           <span class="bg-white text-black text-[12px] font-bold px-3 py-1.5 rounded-[4px]">@${selected.odd}</span>
           <span class="bg-green-500/20 text-green-400 text-[10px] font-bold px-2.5 py-1 rounded-[4px]">${selected.conf||t.confidence}% CONF • ${t.result} ${t.score}</span>
         </div>
-        <div class="mt-2"><div class="flex justify-between text-[8px] text-gray-400 mb-1"><span>Win Probability - Best Win Prob Selected</span><span>${selected.winProb}%</span></div><div class="win-prob-bar"><div class="win-prob-fill" style="width:${selected.winProb}%"></div></div></div>
+        <div class="mt-2"><div class="flex justify-between text-[8px] text-gray-400 mb-1"><span>Win Probability - Stable All Day - 30 Games</span><span>${selected.winProb}%</span></div><div class="win-prob-bar"><div class="win-prob-fill" style="width:${selected.winProb}%"></div></div></div>
         <p class="text-[10px] text-gray-300 leading-snug mt-2"><i class="fas fa-chart-line text-green-500"></i> ${selKey===t.ourPickKey? t.ourReason : selected.reason}</p>
       </div>
       <div class="mt-3">
-        <p class="text-[9px] text-gray-400 font-bold mb-2 flex items-center gap-1"><i class="fas fa-hand-pointer"></i> CLICK YOUR CHOICE - 6 MARKETS - REAL STATS + WIN PROB - CLICK TO SELECT & SHARE/ADD:</p>
+        <p class="text-[9px] text-gray-400 font-bold mb-2 flex items-center gap-1"><i class="fas fa-hand-pointer"></i> CLICK YOUR CHOICE - 6 MARKETS - 30 GAMES - STABLE + WIN PROB:</p>
         <div class="grid grid-cols-1 gap-2">
           ${Object.entries(m).map(([key, mk])=>{
             const isSelected = selKey===key;
@@ -323,17 +336,18 @@ function removeFromSlip(i){slip.splice(i,1); updateSlipUI();}
 function clearSlip(){slip=[]; updateSlipUI(); closeSlip(); toast('Slip cleared');}
 function openSlip(){document.getElementById('slipModal').classList.remove('hidden');}
 function closeSlip(){document.getElementById('slipModal').classList.add('hidden');}
-function shareMarket(match,tip,odd,score,result,league,conf,winProb){let m=`🔥 GoalPredict247 V4 - ${currentDate}%0A${match}%0A${league}%0A⭐ Pick: ${tip} @${odd}%0A📊 Win Prob: ${winProb}% • Conf ${conf}% • ${score} ${result}%0A👉 ${location.origin}?date=${currentDate}`; window.open(`https://wa.me/?text=${m}`,'_blank');}
+function shareMarket(match,tip,odd,score,result,league,conf,winProb){let m=`🔥 GoalPredict247 V7 30 GAMES - ${currentDate}%0A${match}%0A${league}%0A⭐ Pick: ${tip} @${odd}%0A📊 Win Prob: ${winProb}% • Conf ${conf}% • ${score} ${result}%0A👉 ${location.origin}?date=${currentDate}`; window.open(`https://wa.me/?text=${m}`,'_blank');}
 function shareIndividual(match,tip,odd,score,result,league,conf,winProb){shareMarket(match,tip,odd,score,result,league,conf,winProb);}
-function shareAccaGame(match,tip,odd,score,result,league){let m=`🔥 ACCA ${currentDate}: ${match} - ${tip} @${odd} ${score} ${result} • ${league} 👉 ${location.origin}`; window.open(`https://wa.me/?text=${m}`,'_blank');}
-function shareAcca(k){const a=allAccas[k];if(!a)return;const p=a.games.length-(a.won||0)-(a.lost||0);let m=`🔥 ${a.name} ${currentDate} - ${a.totalOdd} ODDS - BEST WIN PROB%0AWON ${a.won} LOST ${a.lost} PEND ${p} - ${a.result}%0A%0A`;a.games.forEach((g,i)=>{m+=`${i+1}. ${g.match} - ${g.tip} @${g.odd} ${g.winProb||''}% Win Prob ${g.score||''} ${g.result||''}%0A`});m+=`%0A👉 ${location.origin}?date=${currentDate}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
-function shareCompleteAcca(){let m=`🔥 COMPLETE ACCA V4 - 10 ACCAs - ${currentDate} - 25 GAMES - BEST WIN PROB%0A%0A`;Object.values(allAccas).forEach(a=>{if(!a.games)return;const p=a.games.length-(a.won||0)-(a.lost||0);m+=`*${a.name} ${a.totalOdd}* W${a.won} L${a.lost} P${p} ${a.result} • Avg ${a.games.length>0?Math.round(a.games.reduce((s,g)=>s+(g.winProb||70),0)/a.games.length):0}% Win Prob%0A`;});m+=`%0A👉 ${location.origin}?date=${currentDate}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
-function shareSlip(){if(slip.length===0)return;const total=slip.reduce((acc,s)=>acc*s.odd,1).toFixed(2);let m=`🔥 MY BET SLIP V4 ${currentDate} - ${slip.length} games @${total}%0A%0A`;slip.forEach((s,i)=>{m+=`${i+1}. ${s.match} - ${s.tip} @${s.odd}%0A`});m+=`%0ATotal: @${total}%0A👉 ${location.origin}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
+function shareAccaGame(match,tip,odd,score,result,league){let m=`🔥 ACCA V7 ${currentDate}: ${match} - ${tip} @${odd} ${score} ${result} • ${league} 👉 ${location.origin}`; window.open(`https://wa.me/?text=${m}`,'_blank');}
+function shareAcca(k){const a=allAccas[k];if(!a)return;const p=a.games.length-(a.won||0)-(a.lost||0);let m=`🔥 ${a.name} ${currentDate} - ${a.totalOdd} ODDS - 30 GAMES STABLE%0AWON ${a.won} LOST ${a.lost} PEND ${p} - ${a.result}%0A%0A`;a.games.forEach((g,i)=>{m+=`${i+1}. ${g.match} - ${g.tip} @${g.odd} ${g.winProb||''}% Win Prob ${g.score||''} ${g.result||''}%0A`});m+=`%0A👉 ${location.origin}?date=${currentDate}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
+function shareCompleteAcca(){let m=`🔥 COMPLETE ACCA V7 - 10 ACCAs - ${currentDate} - 30 GAMES - STABLE%0A%0A`;Object.values(allAccas).forEach(a=>{if(!a.games)return;const p=a.games.length-(a.won||0)-(a.lost||0);m+=`*${a.name} ${a.totalOdd}* W${a.won} L${a.lost} P${p} ${a.result} • Avg ${a.games.length>0?Math.round(a.games.reduce((s,g)=>s+(g.winProb||70),0)/a.games.length):0}% Win Prob%0A`;});m+=`%0A👉 ${location.origin}?date=${currentDate}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
+function shareSlip(){if(slip.length===0)return;const total=slip.reduce((acc,s)=>acc*s.odd,1).toFixed(2);let m=`🔥 MY BET SLIP V7 ${currentDate} - 30 GAMES - ${slip.length} games @${total}%0A%0A`;slip.forEach((s,i)=>{m+=`${i+1}. ${s.match} - ${s.tip} @${s.odd}%0A`});m+=`%0ATotal: @${total}%0A👉 ${location.origin}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
 document.getElementById('markets').addEventListener('click',e=>{const b=e.target.closest('.market-tab');if(!b)return;document.querySelectorAll('.market-tab').forEach(x=>{x.classList.remove('active','bg-white','text-black','bg-green-500');x.classList.add('bg-[#1a1a1a]')});if(b.dataset.market==='our'){b.classList.add('active','bg-green-500','text-black');}else{b.classList.add('active','bg-white','text-black');}b.classList.remove('bg-[#1a1a1a]');currentMarket=b.dataset.market;renderTips();});
 buildDateTracker();
 fetchTips(currentDate);
+trackVisit();
 if(liveInterval) clearInterval(liveInterval);
-liveInterval=setInterval(()=>fetchTips(currentDate,true),60*1000);
+liveInterval=setInterval(()=>fetchTips(currentDate,true),3600*1000);
 </script>
 </body>
 </html>
