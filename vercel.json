@@ -1,13 +1,45 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/about", "destination": "/about.html" },
-    { "source": "/about/", "destination": "/about.html" },
-    { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/admin/", "destination": "/admin.html" }
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/about/",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/booking",
+      "destination": "/generator.html"
+    },
+    {
+      "source": "/booking/",
+      "destination": "/generator.html"
+    },
+    {
+      "source": "/generator",
+      "destination": "/generator.html"
+    },
+    {
+      "source": "/generator/",
+      "destination": "/generator.html"
+    }
   ],
   "functions": {
-    "api/update.js": { "maxDuration": 10 },
-    "api/visit.js": { "maxDuration": 5 }
+    "api/update.js": {
+      "maxDuration": 10
+    },
+    "api/visit.js": {
+      "maxDuration": 5
+    }
   }
 }
