@@ -29,13 +29,13 @@ export default async function handler(req, res) {
         const ls=getStats(f.league.name);
         const fd=new Date(f.fixture.date);
         const hour=fd.getHours();
+        const dateDisplay=fd.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',timeZone:'Africa/Lagos'});
         return {
           home:f.teams.home.name, away:f.teams.away.name, league:f.league.name, country:f.league.country,
           avg:ls.avg.toFixed(1), leagueStats:ls,
           time:fd.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Africa/Lagos'}),
           hour, isEarlyMorning:hour>=0&&hour<8,
-          dateDisplay:fd.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',timeZone:'Africa/Lagos'}),
-          dateValue:dateStr, timestamp:fd.getTime(), fixtureId:f.fixture.id, status:f.fixture.status.short, goalsHome:f.goals.home, goalsAway:f.goals.away, date:dateStr
+          dateDisplay, dateValue:dateStr, timestamp:fd.getTime(), fixtureId:f.fixture.id, status:f.fixture.status.short, goalsHome:f.goals.home, goalsAway:f.goals.away, date:dateStr
         };
       });
       return { fixtures, error:null };
@@ -94,8 +94,7 @@ export default async function handler(req, res) {
   }
   function mStats(f,market,realOdd){
     const ls=f.leagueStats;
-    const isReal=!!realOdd;
-    if(!isReal) return null;
+    if(!realOdd) return null;
     if(market==='Over 1.5'){ return { odd:realOdd, winProb:ls.over15, conf:ls.over15, reason:`✅ REAL ODDS Bet365 • ${f.league} ${ls.avg} avg • O1.5 ${ls.over15}% • REAL SCORE ONLY • ${f.dateValue}`, tier:ls.tier, isReal:true }; }
     if(market==='Over 2.5'){ return { odd:realOdd, winProb:ls.over25, conf:ls.over25, reason:`✅ REAL ODDS • O2.5 ${ls.over25}% • ${f.dateValue}`, tier:ls.tier, isReal:true }; }
     if(market==='BTTS Yes'){ return { odd:realOdd, winProb:ls.tier===1?78:72, conf:72, reason:`✅ REAL ODDS • BTTS • ${f.dateValue}`, tier:ls.tier, isReal:true }; }
