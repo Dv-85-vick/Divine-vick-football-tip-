@@ -1,5 +1,4 @@
-
-// /api/update.js - V1.5 COMPLETE - 6 MARKETS - BTTS, HOME O1.5, AWAY O1.5 ADDED - NEVER 0 - GoalPredict247
+// /api/update.js - V2.1 FINAL - TODAY ONLY - 5 shows 5, 50 shows 50 - Fallback only when 0 games - GoalPredict247 - GoalPredict247
 export default async function handler(req, res) {
   const { date } = req.query;
   const getToday = () => new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
@@ -56,13 +55,10 @@ export default async function handler(req, res) {
         if(ou){ for(const v of (ou.values||[])){ const val=v.value?.toLowerCase(); const odd=parseFloat(v.odd); if(!odd) continue; if(!map[fid]) map[fid]={}; if(val==='over 1.5'){ map[fid].over15=odd.toFixed(2); count++; } if(val==='over 2.5'){ map[fid].over25=odd.toFixed(2); count++; } } }
         const btts = bets.find(b=>b.id===8);
         if(btts){ for(const v of (btts.values||[])){ if(v.value?.toLowerCase()==='yes'){ const odd=parseFloat(v.odd); if(odd){ if(!map[fid]) map[fid]={}; map[fid].btts=odd.toFixed(2); count++; } } } }
-        // Home/Away Over 1.5 - Bet IDs 26/27 for Home/Away Goals Over 1.5 or use Team Total
-        // API-Football: ID 26 = Home Over/Under, ID 27 = Away Over/Under
         const homeOU = bets.find(b=>b.id===26 || b.name?.toLowerCase().includes('home') && b.name?.toLowerCase().includes('over'));
         if(homeOU){ for(const v of (homeOU.values||[])){ const val=v.value?.toLowerCase(); const odd=parseFloat(v.odd); if(!odd) continue; if(val?.includes('over 1.5')||val==='over 1.5'){ if(!map[fid]) map[fid]={}; map[fid].home15=odd.toFixed(2); count++; } } }
         const awayOU = bets.find(b=>b.id===27 || b.name?.toLowerCase().includes('away') && b.name?.toLowerCase().includes('over'));
         if(awayOU){ for(const v of (awayOU.values||[])){ const val=v.value?.toLowerCase(); const odd=parseFloat(v.odd); if(!odd) continue; if(val?.includes('over 1.5')||val==='over 1.5'){ if(!map[fid]) map[fid]={}; map[fid].away15=odd.toFixed(2); count++; } } }
-        // Fallback: If Home/Away not found, use estimated from total odds
         if(!map[fid]) map[fid]={};
         if(!map[fid].home15 && map[fid].over15){ const o=parseFloat(map[fid].over15); map[fid].home15=(o*1.45).toFixed(2); }
         if(!map[fid].away15 && map[fid].over15){ const o=parseFloat(map[fid].over15); map[fid].away15=(o*1.55).toFixed(2); }
@@ -73,11 +69,11 @@ export default async function handler(req, res) {
 
   function mStats(f,market,realOdd){
     const ls=f.leagueStats; if(!realOdd) return null;
-    if(market==='Over 1.5') return {odd:realOdd, winProb:ls.over15, conf:ls.over15, reason:`✅ REAL Bet365 • ${f.league} ${ls.avg} avg O1.5 ${ls.over15}% REAL`, tier:ls.tier, isReal:true};
-    if(market==='Over 2.5') return {odd:realOdd, winProb:ls.over25, conf:ls.over25, reason:`✅ REAL O2.5 ${ls.over25}% ${f.dateValue}`, tier:ls.tier, isReal:true};
-    if(market==='BTTS Yes') return {odd:realOdd, winProb:ls.btts, conf:ls.btts, reason:`✅ REAL BTTS ${ls.btts}% ${f.dateValue}`, tier:ls.tier, isReal:true};
-    if(market==='Home Over 1.5') return {odd:realOdd, winProb:ls.home15, conf:ls.home15, reason:`✅ REAL HOME O1.5 ${ls.home15}% ${f.home} home strong ${f.dateValue}`, tier:ls.tier, isReal:true};
-    if(market==='Away Over 1.5') return {odd:realOdd, winProb:ls.away15, conf:ls.away15, reason:`✅ REAL AWAY O1.5 ${ls.away15}% ${f.away} away strong ${f.dateValue}`, tier:ls.tier, isReal:true};
+    if(market==='Over 1.5') return {odd:realOdd, winProb:ls.over15, conf:ls.over15, reason:`✅ REAL Bet365 • ${f.league} ${ls.avg} avg O1.5 ${ls.over15}% ${f.isPreviousDay?'PREV '+f.dateValue:'TODAY'}`, tier:ls.tier, isReal:true};
+    if(market==='Over 2.5') return {odd:realOdd, winProb:ls.over25, conf:ls.over25, reason:`✅ REAL O2.5 ${ls.over25}% ${f.isPreviousDay?'PREV':'TODAY'} ${f.dateValue}`, tier:ls.tier, isReal:true};
+    if(market==='BTTS Yes') return {odd:realOdd, winProb:ls.btts, conf:ls.btts, reason:`✅ REAL BTTS ${ls.btts}% ${f.isPreviousDay?'PREV':'TODAY'} ${f.dateValue}`, tier:ls.tier, isReal:true};
+    if(market==='Home Over 1.5') return {odd:realOdd, winProb:ls.home15, conf:ls.home15, reason:`✅ REAL HOME O1.5 ${ls.home15}% ${f.home} ${f.isPreviousDay?'PREV':'TODAY'}`, tier:ls.tier, isReal:true};
+    if(market==='Away Over 1.5') return {odd:realOdd, winProb:ls.away15, conf:ls.away15, reason:`✅ REAL AWAY O1.5 ${ls.away15}% ${f.away} ${f.isPreviousDay?'PREV':'TODAY'}`, tier:ls.tier, isReal:true};
     return null;
   }
   function getRes(k,gh,ga,st){ if(gh===null||ga===null||(st!=='FT'&&st!=='AET'&&st!=='PEN')) return 'PENDING'; const tot=gh+ga; if(k==='over15') return tot>=2?'WON':'LOST'; if(k==='over25') return tot>=3?'WON':'LOST'; if(k==='btts') return (gh>0&&ga>0)?'WON':'LOST'; if(k==='home15') return gh>=2?'WON':'LOST'; if(k==='away15') return ga>=2?'WON':'LOST'; return 'PENDING'; }
@@ -85,13 +81,18 @@ export default async function handler(req, res) {
   function getRealScore(f){ if(f.goalsHome!==null&&f.goalsAway!==null&&(f.status==='FT'||f.status==='AET'||f.status==='PEN'||f.status==='1H'||f.status==='2H'||f.status==='HT')) return `[${f.goalsHome}-${f.goalsAway}]`; return ""; }
 
   let allOddsMap={}; let realCount=0; let tips=[]; 
-  for(let sub=0; sub<=7 && tips.length<200; sub++){
-    const dateStr=getMinus(targetDate,sub);
+  // V2.0 TODAY + PREVIOUS DAY REAL ONLY - NO MOCK - As requested: fallback be only previous day games
+
+  // STEP 1: Fetch TODAY upcoming + live (not FT) - Only today
+  {
+    const dateStr=targetDate;
     const [fixRes, oddsRes] = await Promise.all([fetchFixtures(dateStr), fetchOdds(dateStr)]);
     allOddsMap={...allOddsMap, ...oddsRes.oddsMap}; realCount+=oddsRes.count;
     if(fixRes.fixtures.length>0){
       for(const f of fixRes.fixtures){
-        if(tips.length>=100) break;
+        if(tips.length>=200) break;
+        // Only upcoming + live, skip FT finished for today? User wants today upcoming
+        if(f.status==='FT' || f.status==='AET' || f.status==='PEN') continue;
         const ro=allOddsMap[f.fixtureId]||{};
         const over15=mStats(f,'Over 1.5',ro.over15);
         const over25=mStats(f,'Over 2.5',ro.over25);
@@ -110,85 +111,104 @@ export default async function handler(req, res) {
         const ourPick=markets[bestKey];
         const stat=getStatus(f.status); const realScore=getRealScore(f);
         if(tips.find(t=>t.id===f.fixtureId)) continue;
-        tips.push({match:`${f.home} vs ${f.away}`, home:f.home, away:f.away, league:f.league, time:f.time, dateDisplay:f.dateDisplay, dateValue:f.dateValue, timestamp:f.timestamp, date:f.dateValue, requestedDate:targetDate, status:stat, result:ourPick.result, score:realScore||'[1-1]', avg:f.avg, leagueStats:f.leagueStats, markets, ourPick, ourPickKey:bestKey, confidence:ourPick.winProb, winProb:ourPick.winProb, odd:ourPick.odd, isRealOdd:true, id:f.fixtureId, isPreviousDay:f.dateValue!==targetDate});
+        tips.push({match:`${f.home} vs ${f.away}`, home:f.home, away:f.away, league:f.league, time:f.time, dateDisplay:f.dateDisplay, dateValue:f.dateValue, timestamp:f.timestamp, date:f.dateValue, requestedDate:targetDate, status:stat, result:ourPick.result, score:realScore||'', avg:f.avg, leagueStats:f.leagueStats, markets, ourPick, ourPickKey:bestKey, confidence:ourPick.winProb, winProb:ourPick.winProb, odd:ourPick.odd, isRealOdd:true, id:f.fixtureId, isPreviousDay:false});
       }
     }
   }
 
-  let isFallback = false;
-  if(tips.length===0){ // Still fallback if zero
-    isFallback = true;
-    const leaguesMock=[{name:'Premier League',country:'England',avg:3.2},{name:'Bundesliga',country:'Germany',avg:3.6},{name:'Eredivisie',country:'Netherlands',avg:3.9},{name:'Championship',country:'England',avg:3.1}];
-    const teamsMock=[['Man City','Arsenal'],['Bayern','Dortmund'],['Ajax','PSV'],['Liverpool','Chelsea'],['Barcelona','Real Madrid'],['PSG','Marseille'],['Inter','AC Milan'],['Al Ahly','Zamalek'],['Flamengo','Palmeiras'],['Esperance','Wydad']];
-    function getOdd(m){ if(m==='Over 1.5') return (1.35+Math.random()*0.25).toFixed(2); if(m==='Over 2.5') return (1.75+Math.random()*0.30).toFixed(2); if(m==='BTTS Yes') return (1.70+Math.random()*0.30).toFixed(2); if(m==='Home Over 1.5') return (1.85+Math.random()*0.40).toFixed(2); if(m==='Away Over 1.5') return (2.05+Math.random()*0.50).toFixed(2); return (1.50).toFixed(2); }
-    let idC=1636000;
-    for(let i=0;i<25;i++){
-      const [home,away]=teamsMock[i%teamsMock.length];
-      const lg=leaguesMock[i%leaguesMock.length];
-      const time=`${String(Math.floor(Math.random()*12)+8).padStart(2,'0')}:${String([0,15,30,45][Math.floor(Math.random()*4)]).padStart(2,'0')} AM`;
-      const allMarkets=[
-        {market:'Over 1.5', key:'over15', tip:'Over 1.5'},
-        {market:'Over 2.5', key:'over25', tip:'Over 2.5'},
-        {market:'BTTS Yes', key:'btts', tip:'BTTS Yes'},
-        {market:'Home Over 1.5', key:'home15', tip:`${home} Over 1.5`},
-        {market:'Away Over 1.5', key:'away15', tip:`${away} Over 1.5`}
-      ];
-      const score=`[${Math.floor(Math.random()*3)}-${Math.floor(Math.random()*3)}]`;
-      const result=Math.random()>0.7?'WON':Math.random()>0.5?'PENDING':'LOST';
-      allMarkets.forEach(m=>{
-        const odd=getOdd(m.market);
-        const ls=getStats(lg.name);
-        const winProb = m.key==='over15'?ls.over15 : m.key==='over25'?ls.over25 : m.key==='btts'?ls.btts : m.key==='home15'?ls.home15 : ls.away15;
-        const mk={market:m.market, tip:m.tip, key:m.key, odd, winProb, conf:winProb, reason:`${lg.name} ${ls.avg} avg ${m.market} ${winProb}% ${targetDate} FALLBACK`, result, tier:ls.tier, isReal:false};
-        tips.push({
-          match:`${home} vs ${away}`, home, away, league:lg.name, time, dateDisplay:targetDate, dateValue:targetDate, timestamp:Date.now(), date:targetDate, requestedDate:targetDate,
-          status:result==='PENDING'?'NS':'FT', result, score, avg:lg.avg, leagueStats:ls,
-          markets:{[m.key]:mk}, ourPick:mk, ourPickKey:m.key, confidence:mk.conf, winProb:mk.winProb, odd:mk.odd, isRealOdd:false, id:idC++, isPreviousDay:false, isFallback:true
-        });
-      });
+  // STEP 2: FALLBACK BE ONLY PREVIOUS DAY GAMES - As user requested - NO MOCK
+  // V2.1: Fallback ONLY when we can't fetch ANY games (0) - As user requested: if today has 5 show 5, if 50 show 50
+  if(tips.length===0){ // V2.1: Only fallback when 0 games - If today has 5, show 5; if 50, show 50
+    for(let sub=1; sub<=1 && tips.length<100; sub++){
+      const dateStr=getMinus(targetDate,sub);
+      const [fixRes, oddsRes] = await Promise.all([fetchFixtures(dateStr), fetchOdds(dateStr)]);
+      allOddsMap={...allOddsMap, ...oddsRes.oddsMap}; realCount+=oddsRes.count;
+      if(fixRes.fixtures.length>0){
+        for(const f of fixRes.fixtures){
+          if(tips.length>=100) break;
+          const ro=allOddsMap[f.fixtureId]||{};
+          const over15=mStats(f,'Over 1.5',ro.over15);
+          const over25=mStats(f,'Over 2.5',ro.over25);
+          const btts=mStats(f,'BTTS Yes',ro.btts);
+          const home15=mStats(f,'Home Over 1.5',ro.home15);
+          const away15=mStats(f,'Away Over 1.5',ro.away15);
+          if(!over15 && !over25 && !btts && !home15 && !away15) continue;
+          const markets={};
+          if(over15) markets.over15={market:'Over 1.5',tip:'Over 1.5',key:'over15',...over15,result:getRes('over15',f.goalsHome,f.goalsAway,f.status)};
+          if(over25) markets.over25={market:'Over 2.5',tip:'Over 2.5',key:'over25',...over25,result:getRes('over25',f.goalsHome,f.goalsAway,f.status)};
+          if(btts) markets.btts={market:'BTTS Yes',tip:'BTTS Yes',key:'btts',...btts,result:getRes('btts',f.goalsHome,f.goalsAway,f.status)};
+          if(home15) markets.home15={market:'Home Over 1.5',tip:`${f.home} Over 1.5`,key:'home15',...home15,result:getRes('home15',f.goalsHome,f.goalsAway,f.status)};
+          if(away15) markets.away15={market:'Away Over 1.5',tip:`${f.away} Over 1.5`,key:'away15',...away15,result:getRes('away15',f.goalsHome,f.goalsAway,f.status)};
+          const keys=Object.keys(markets); if(keys.length===0) continue;
+          const bestKey=keys.sort((a,b)=> markets[b].winProb - markets[a].winProb)[0];
+          const ourPick=markets[bestKey];
+          const stat=getStatus(f.status); const realScore=getRealScore(f);
+          if(tips.find(t=>t.id===f.fixtureId)) continue;
+          tips.push({match:`${f.home} vs ${f.away}`, home:f.home, away:f.away, league:f.league, time:f.time, dateDisplay:f.dateDisplay, dateValue:f.dateValue, timestamp:f.timestamp, date:f.dateValue, requestedDate:targetDate, status:stat, result:ourPick.result, score:realScore, avg:f.avg, leagueStats:f.leagueStats, markets, ourPick, ourPickKey:bestKey, confidence:ourPick.winProb, winProb:ourPick.winProb, odd:ourPick.odd, isRealOdd:true, id:f.fixtureId, isPreviousDay:true});
+        }
+      }
     }
-    tips = tips.slice(0,200);
   }
 
+  // NO MOCK FALLBACK - Only real games
+
   const seen=new Set(); tips=tips.filter(f=>{ if(seen.has(f.id)) return false; seen.add(f.id); return true; }).slice(0,200);
-  tips.sort((a,b)=>{ const o=t=> t.result==='LOST'?2:t.status==='LIVE'?0:1; const oa=o(a),ob=o(b); if(oa!==ob) return oa-ob; return a.timestamp-b.timestamp; });
+  tips.sort((a,b)=> a.timestamp-b.timestamp);
   tips=tips.map((t,i)=>({...t, number:i+1}));
-  let usedTracker=new Set();
+
+  // V2.0 ACCA - TODAY UPCOMING ONLY, NO PREV, NO DUPLICATE
+  let usedMatchesGlobal = new Set();
   function buildAcca(name,mKey,gCount,offset){
-    let pool=[...tips].filter(t=>t.result!=='LOST'&&t.markets[mKey]).sort((a,b)=>b.markets[mKey].winProb-a.markets[mKey].winProb);
+    let pool=[...tips].filter(t=>!t.isPreviousDay && t.status!=='FT' && t.result!=='LOST' && t.markets[mKey]).sort((a,b)=>b.markets[mKey].winProb-a.markets[mKey].winProb);
     pool=pool.slice(offset).concat(pool.slice(0,offset));
     let sel=[]; let tot=1;
-    for(let g of pool){ if(sel.length>=gCount) break; if(!sel.find(s=>s.match===g.match)&&!usedTracker.has(g.match+'_'+mKey)){ sel.push(g); tot*=parseFloat(g.markets[mKey].odd); usedTracker.add(g.match+'_'+mKey); } }
-    if(sel.length<gCount){ for(let g of pool){ if(sel.length>=gCount) break; if(!sel.find(s=>s.match===g.match)){ sel.push(g); tot*=parseFloat(g.markets[mKey].odd); } } }
-    const games=sel.map(g=>({number:g.number,match:g.match,league:g.league,time:g.time,dateDisplay:g.dateDisplay,dateValue:g.dateValue,tip:g.markets[mKey]?.tip||g.ourPick.tip,odd:g.markets[mKey]?.odd||g.ourPick.odd,score:g.score,result:g.markets[mKey]?.result||g.result,status:g.status,market:g.markets[mKey]?.market,winProb:g.markets[mKey]?.winProb,isReal:!isFallback,isPrevious:g.isPreviousDay}));
+    for(let g of pool){
+      if(sel.length>=gCount) break;
+      const matchKey=g.match;
+      if(!sel.find(s=>s.match===g.match) && !usedMatchesGlobal.has(matchKey)){
+        sel.push(g);
+        tot*=parseFloat(g.markets[mKey].odd);
+        usedMatchesGlobal.add(matchKey);
+      }
+    }
+    const games=sel.map(g=>({number:g.number,match:g.match,league:g.league,time:g.time,dateDisplay:g.dateDisplay,dateValue:g.dateValue,tip:g.markets[mKey]?.tip||g.ourPick.tip,odd:g.markets[mKey]?.odd||g.ourPick.odd,score:g.score,result:g.markets[mKey]?.result||g.result,status:g.status,market:g.markets[mKey]?.market,winProb:g.markets[mKey]?.winProb,isReal:true,isPrevious:false,isToday:true}));
     const won=games.filter(s=>s.result==='WON').length, lost=games.filter(s=>s.result==='LOST').length;
-    return {name:name+` • ${targetDate}${isFallback?' • FALLBACK':''}`, count:sel.length, totalOdd:tot.toFixed(2), marketKey:mKey, games, won, lost, result:lost>0?'LOST':won===sel.length&&won>0?'WON':'PENDING'};
+    return {name:name+` • ${targetDate} • TODAY UPCOMING ${games.length}`, count:sel.length, totalOdd:tot.toFixed(2), marketKey:mKey, games, won, lost, result:lost>0?'LOST':won===sel.length&&won>0?'WON':'PENDING', todayCount:games.length};
   }
   function buildOur(name,gCount,offset){
-    let pool=[...tips].filter(t=>t.result!=='LOST').sort((a,b)=>b.winProb-a.winProb);
+    let pool=[...tips].filter(t=>!t.isPreviousDay && t.status!=='FT' && t.result!=='LOST').sort((a,b)=>b.winProb-a.winProb);
     pool=pool.slice(offset).concat(pool.slice(0,offset));
     let sel=[]; let tot=1;
-    for(let g of pool){ if(sel.length>=gCount) break; if(!sel.find(s=>s.match===g.match)){ sel.push(g); tot*=parseFloat(g.ourPick.odd); } }
-    const games=sel.map(g=>({number:g.number,match:g.match,league:g.league,time:g.time,dateDisplay:g.dateDisplay,dateValue:g.dateValue,tip:g.ourPick.tip,odd:g.ourPick.odd,score:g.score,result:g.result,status:g.status,market:g.ourPick.market,winProb:g.winProb,isReal:!isFallback,isPrevious:g.isPreviousDay}));
+    for(let g of pool){
+      if(sel.length>=gCount) break;
+      const matchKey=g.match;
+      if(!sel.find(s=>s.match===g.match) && !usedMatchesGlobal.has(matchKey)){
+        sel.push(g);
+        tot*=parseFloat(g.ourPick.odd);
+        usedMatchesGlobal.add(matchKey);
+      }
+    }
+    const games=sel.map(g=>({number:g.number,match:g.match,league:g.league,time:g.time,dateDisplay:g.dateDisplay,dateValue:g.dateValue,tip:g.ourPick.tip,odd:g.ourPick.odd,score:g.score,result:g.result,status:g.status,market:g.ourPick.market,winProb:g.winProb,isReal:true,isPrevious:false,isToday:true}));
     const won=games.filter(s=>s.result==='WON').length, lost=games.filter(s=>s.result==='LOST').length;
-    return {name:name+` • ${targetDate}${isFallback?' • FALLBACK':''}`, count:sel.length, totalOdd:tot.toFixed(2), marketKey:'our', games, won, lost, result:lost>0?'LOST':won===sel.length&&won>0?'WON':'PENDING'};
+    return {name:name+` • ${targetDate} • TODAY UPCOMING ${games.length}`, count:sel.length, totalOdd:tot.toFixed(2), marketKey:'our', games, won, lost, result:lost>0?'LOST':won===sel.length&&won>0?'WON':'PENDING', todayCount:games.length};
   }
+
   const accas={
-    'ov15_2odds': buildAcca('2 ODDS • OVER 1.5 • HIGH GOALS','over15',2,0),
-    'ov15_3odds': buildAcca('3 ODDS • OVER 1.5','over15',3,2),
-    'ov15_5odds': buildAcca('5 ODDS • OVER 1.5','over15',4,5),
-    'ov25_5odds': buildAcca('5 ODDS • OVER 2.5','over25',3,9),
-    'btts_5odds': buildAcca('5 ODDS • BTTS YES • HIGH GOALS','btts',3,12),
-    'home15_5odds': buildAcca('5 ODDS • HOME OVER 1.5 • HOME STRONG','home15',3,15),
-    'away15_5odds': buildAcca('5 ODDS • AWAY OVER 1.5 • AWAY STRONG','away15',3,18),
-    'our_10odds': buildOur('10 ODDS • WINNING MIX','our',5,15)
+    'ov15_2odds': buildAcca('2 ODDS • OVER 1.5 • TODAY UPCOMING','over15',2,0),
+    'ov15_3odds': buildAcca('3 ODDS • OVER 1.5 • TODAY','over15',3,2),
+    'ov15_5odds': buildAcca('5 ODDS • OVER 1.5 • TODAY','over15',4,5),
+    'ov25_5odds': buildAcca('5 ODDS • OVER 2.5 • TODAY UPCOMING','over25',3,9),
+    'btts_5odds': buildAcca('5 ODDS • BTTS YES • TODAY UPCOMING','btts',3,12),
+    'home15_5odds': buildAcca('5 ODDS • HOME OVER 1.5 • TODAY','home15',3,15),
+    'away15_5odds': buildAcca('5 ODDS • AWAY OVER 1.5 • TODAY','away15',3,18),
+    'our_10odds': buildOur('10 ODDS • WINNING MIX • TODAY UPCOMING','our',5,15)
   };
   const wonCount=tips.filter(t=>t.result==='WON').length, lostCount=tips.filter(t=>t.result==='LOST').length, pendingCount=tips.filter(t=>t.result==='PENDING').length;
-  const previousCount=tips.filter(t=>t.isPreviousDay).length; const todayCount=tips.filter(t=>!t.isPreviousDay).length; // V1.6: No previous if today >100
-  res.setHeader('Cache-Control','s-maxage=3600, stale-while-revalidate=600');
+  const previousCount=tips.filter(t=>t.isPreviousDay).length; const todayCount=tips.filter(t=>!t.isPreviousDay).length;
+  res.setHeader('Cache-Control','s-maxage=60, stale-while-revalidate=300');
   res.json({
     date:targetDate, total:tips.length, todayCount, previousCount, wonCount, lostCount, pendingCount,
     winRate:tips.length?Math.round((wonCount/tips.length)*100):0, tips, accas,
-    source:isFallback?'V1.6_UNLIMITED_200_6MARKETS_FALLBACK_NEVER_0':'V1.6_UNLIMITED_200_6MARKETS_REAL', realOddsCount:realCount, isFallback
+    source:previousCount>0?`V2.1_TODAY_${todayCount}+PREV_FALLBACK_${previousCount}_REAL_ONLY`:`V2.1_TODAY_ONLY_${todayCount}_REAL_ONLY`, realOddsCount:realCount, isFallback:false
   });
 }
