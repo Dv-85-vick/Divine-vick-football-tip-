@@ -1,4 +1,4 @@
-// /api/update.js - V2.5 FINAL - BOOSTED ACCA COUNTS - 2ODDS=3games 3ODDS=4games 5ODDS=6games 10ODDS=7games 20ODDS=10games - To ensure 1.35 vs 1.25 bookmaker issue - 9 ACCAs COMPLETE - NO DUP - REAL STATS - Over/Goals focus
+// /api/update.js - V2.6 FINAL - FIXED 79 GAMES BUG - BOOSTED ACCA COUNTS - 2ODDS=3games 3ODDS=4games 5ODDS=6games 10ODDS=7games 20ODDS=10games - To ensure 1.35 vs 1.25 bookmaker issue - 9 ACCAs COMPLETE - NO DUP - REAL STATS - Over/Goals focus
 export default async function handler(req, res) {
   const { date } = req.query;
   const getToday = () => new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
@@ -219,7 +219,7 @@ export default async function handler(req, res) {
     return {name:name+` • ${targetDate} • TODAY ${games.length}`, count:sel.length, totalOdd:tot.toFixed(2), marketKey:'our', games, won, lost, result:lost>0?'LOST':won===sel.length&&won>0?'WON':'PENDING', todayCount:games.length};
   }
 
-  // COMPLETE ACCA - 9 ACCAs - BOOSTED GAME COUNTS to ensure real bookmaker odds reach target (1.35 vs 1.25 issue)
+  // V2.6 FIX - Fixed buildOur bug (was taking 79 games) - Now correct counts
   const accas={
     'ov15_2odds': buildAcca('2 ODDS • OVER 1.5 • TODAY UPCOMING','over15',3,0),
     'ov15_3odds': buildAcca('3 ODDS • OVER 1.5 • TODAY','over15',4,3),
@@ -228,8 +228,8 @@ export default async function handler(req, res) {
     'btts_5odds': buildAcca('5 ODDS • BTTS YES • TODAY • HOME+AWAY SCORE','btts',4,17),
     'home15_5odds': buildAcca('5 ODDS • HOME OVER 1.5 • TODAY • HOME STRONG','home15',4,21),
     'away15_5odds': buildAcca('5 ODDS • AWAY OVER 1.5 • TODAY • AWAY STRONG','away15',4,25),
-    'our_10odds': buildOur('10 ODDS • WINNING MIX • OVER/GOALS • TODAY','our',7,29),
-    'our_20odds': buildOur('20 ODDS • SUPER MIXED • OVER 1.5+2.5+BTTS+HOME+AWAY • TODAY','our',10,36)
+    'our_10odds': buildOur('10 ODDS • WINNING MIX • OVER/GOALS • TODAY',7,29),
+    'our_20odds': buildOur('20 ODDS • SUPER MIXED • OVER 1.5+2.5+BTTS+HOME+AWAY • TODAY',10,36)
   };
   const wonCount=tips.filter(t=>t.result==='WON').length, lostCount=tips.filter(t=>t.result==='LOST').length, pendingCount=tips.filter(t=>t.result==='PENDING').length;
   const previousCount=tips.filter(t=>t.isPreviousDay).length; const todayCount=tips.filter(t=>!t.isPreviousDay).length;
@@ -237,6 +237,6 @@ export default async function handler(req, res) {
   res.json({
     date:targetDate, total:tips.length, todayCount, previousCount, wonCount, lostCount, pendingCount,
     winRate:tips.length?Math.round((wonCount/tips.length)*100):0, tips, accas,
-    source:previousCount>0?`V2.5_BOOSTED_${todayCount}+PREV_FALLBACK_${previousCount}_9ACCAs_COMPLETE`:`V2.5_BOOSTED_ONLY_${todayCount}_9ACCAs_COMPLETE_100+_GAMES_FIX`, realOddsCount:realCount, isFallback:false
+    source:previousCount>0?`V2.6_FIXED_${todayCount}+PREV_FALLBACK_${previousCount}_9ACCAs_COMPLETE`:`V2.6_FIXED_ONLY_${todayCount}_9ACCAs_COMPLETE_100+_GAMES_FIX`, realOddsCount:realCount, isFallback:false
   });
 }
