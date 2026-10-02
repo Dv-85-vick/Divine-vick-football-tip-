@@ -34,7 +34,7 @@ html,body{overflow-x:hidden; max-width:100vw; background:#080808}
 .acca-card{min-width:380px; max-width:380px; scroll-snap-align:start; flex-shrink:0; background:#121212; border:1px solid #222; border-left:4px solid #22c55e}
 @media(max-width:767px){.acca-card{min-width:90vw!important; max-width:90vw!important}}
 .live-dot{animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.toast{position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#22c55e; color:#000; padding:10px 16px; border-radius:20px; font-size:11px; font-weight:bold; z-index:9999; display:none; max-width:90vw; text-align:center}
+.toast{position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#22c55e; color:#000; padding:10px 16px; border-radius:20px; font-size:11px; font-weight:bold; z-index:9999; display:none}
 .date-scroll{display:flex; gap:8px; overflow-x:auto; padding:8px 0}
 .date-card{min-width:72px; max-width:72px; text-align:center; padding:10px 6px; border-radius:10px; background:#141414; border:1px solid #222; cursor:pointer; flex-shrink:0}
 .date-card.active{background:#fff; color:#000; border-color:#fff; font-weight:bold; transform:scale(1.05)}
@@ -58,24 +58,24 @@ html,body{overflow-x:hidden; max-width:100vw; background:#080808}
 <div id="toast" class="toast"></div>
 <header class="sticky top-0 z-50 bg-[#080808]/95 backdrop-blur border-b border-[#1a1a1a] px-3 py-3">
   <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-    <div class="flex items-center gap-3"><div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-[10px] flex items-center justify-center font-bold text-black">G247</div><div><h1 class="font-bold text-[16px]">GoalPredict247 V2.2 FINAL - OVER/GOALS</h1><p class="text-[10px] text-green-400 font-bold">TODAY ONLY • OVER 1.5 • OVER 2.5 • BTTS • HOME O1.5 • AWAY O1.5 • REAL ODDS • REAL STATS • NO DUPLICATE • NO MOCK</p></div></div>
-    <div class="flex gap-1.5 flex-wrap justify-end"><a href="/generator.html" class="text-[10px] bg-green-500 text-black px-3 py-2 rounded-full font-bold"><i class="fas fa-ticket"></i> BOOKING</a><a href="/about.html" class="text-[10px] bg-[#1a1a1a] border border-[#222] px-3 py-2 rounded-full font-bold">ABOUT</a><a href="/admin.html" class="text-[10px] bg-[#1a1a1a] border border-[#222] px-3 py-2 rounded-full font-bold"><i class="fas fa-chart-line"></i> ADMIN</a><span id="visitorBadge" class="text-[9px] bg-green-500/20 border border-green-500 px-2 py-2 rounded-full font-bold text-green-400"><i class="fas fa-eye"></i> <span id="todayVisitCount">0</span> TODAY</span><span class="text-[9px] bg-[#1a1a1a] border border-[#222] px-2.5 py-2 rounded-full"><span class="w-2 h-2 bg-green-500 rounded-full live-dot inline-block"></span> LIVE REAL</span></div>
+    <div class="flex items-center gap-3"><div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-[10px] flex items-center justify-center font-bold text-black">G247</div><div><h1 class="text-[12px] font-black tracking-[0.2em] text-green-400">GOALPREDICT247</h1><p class="text-[8px] text-neutral-400">REAL ODDS • TODAY ONLY</p></div></div>
+    <div class="flex gap-1.5 flex-wrap justify-end"><a href="/generator.html" class="text-[10px] bg-green-500 text-black px-3 py-2 rounded-full font-bold"><i class="fas fa-ticket"></i> BOOKING</a><a href="/index.html" class="text-[10px] bg-[#1a1a1a] border border-[#2a2a2a] text-white px-3 py-2 rounded-full font-bold"><i class="fas fa-home"></i> HOME</a></div>
   </div>
 </header>
 <div class="max-w-7xl mx-auto px-3 py-4">
   <div class="bg-[#121212] border border-[#1e1e1e] rounded-[16px] p-4 mb-4">
-    <div class="flex justify-between mb-3"><p class="text-[12px] font-bold">DATE TRACKER • <span id="selectedDateLabel" class="text-green-400"></span> • TODAY ONLY</p><p class="text-[9px] text-neutral-500">V2.2 FINAL - If today 5 games show 5, if 50 show 50 • Fallback only when 0 • No duplicate • Over/Goals focus</p></div>
+    <div class="flex justify-between mb-3"><p class="text-[12px] font-bold">DATE TRACKER • <span id="selectedDateLabel" class="text-green-400"></span> • TODAY ONLY</p><p class="text-[9px] text-neutral-500">NO DUPLICATE</p></div>
     <div class="date-scroll scrollbar-hide" id="dateTracker"></div>
-    <p class="text-[9px] text-neutral-600 mt-3 text-center">V2.2 FINAL: TODAY ONLY UPCOMING • PENDING only • REAL Bet365 odds ✅ • REAL stats avg • REAL score line • NO MOCK • NO DUPLICATE across ACCAs • 6 Markets: Over 1.5, Over 2.5, BTTS Yes, Home O1.5, Away O1.5 • Clickable market • Share button • Add to slip</p>
+    <p class="text-[9px] text-neutral-600 mt-3 text-center">V2.3 FINAL: TODAY ONLY UPCOMING • PENDING only • REAL Bet365 odds ✅ • REAL stats avg • REAL score line • NO MOCK • NO DUPLICATE • OVER/GOALS</p>
   </div>
   <div class="grid grid-cols-4 gap-2 mb-4">
-    <div class="bg-[#121212] border border-[#1e1e1e] rounded-[14px] p-3 text-center"><p class="text-[9px] text-neutral-500">GAMES TODAY</p><p id="total" class="font-bold text-[20px]">0</p><p id="breakdown" class="text-[8px] text-neutral-500">TODAY ONLY UPCOMING</p></div>
+    <div class="bg-[#121212] border border-[#1e1e1e] rounded-[14px] p-3 text-center"><p class="text-[9px] text-neutral-500">GAMES TODAY</p><p id="total" class="font-bold text-[20px]">0</p><p id="breakdown" class="text-[8px] text-neutral-500">0 TODAY</p></div>
     <div class="bg-[#121212] border rounded-[14px] p-3 text-center"><p class="text-[9px] text-neutral-500">WON REAL</p><p id="won" class="font-bold text-green-500 text-[20px]">0</p></div>
     <div class="bg-[#121212] border rounded-[14px] p-3 text-center"><p class="text-[9px] text-neutral-500">LOST REAL</p><p id="lost" class="font-bold text-red-500 text-[20px]">0</p></div>
-    <div class="bg-[#121212] border rounded-[14px] p-3 text-center"><p class="text-[9px] text-neutral-500">PENDING</p><p id="pending" class="font-bold text-yellow-500 text-[20px]">0</p><p class="text-[8px] text-neutral-500">UPCOMING ONLY</p></div>
+    <div class="bg-[#121212] border rounded-[14px] p-3 text-center"><p class="text-[9px] text-neutral-500">PENDING</p><p id="pending" class="font-bold text-yellow-500 text-[20px]">0</p><p id="realOddsCount" class="text-[8px] text-neutral-500">❌ 0 REAL</p></div>
   </div>
   <div class="bg-[#121212] border border-[#1e1e1e] rounded-[16px] p-4 mb-4">
-    <div class="flex justify-between mb-4 flex-wrap gap-2"><h2 class="font-bold text-[13px]">ACCA TODAY ONLY • SLIDABLE/COLLAPSIBLE • NO DUP • REAL ODDS • <span id="accaDateLabel"></span> • <span id="realOddsCount" class="text-green-400"></span></h2><div class="flex gap-2"><button onclick="expandAllAccas()" class="bg-[#1a1a1a] border border-[#222] text-[10px] font-bold px-3 py-2 rounded-full"><i class="fas fa-expand"></i> EXPAND ALL</button><button onclick="collapseAllAccas()" class="bg-[#1a1a1a] border border-[#222] text-[10px] font-bold px-3 py-2 rounded-full"><i class="fas fa-compress"></i> COLLAPSE ALL</button><button onclick="generateAllBookingCodes()" class="bg-green-500 text-black text-[10px] font-bold px-3 py-2 rounded-full"><i class="fas fa-bolt"></i> GENERATE CODES</button><button onclick="shareCompleteAcca()" class="bg-[#25D366] text-black text-[10px] font-bold px-3 py-2 rounded-full"><i class="fab fa-whatsapp"></i> SHARE ALL</button></div></div>
+    <div class="flex justify-between mb-4 flex-wrap gap-2"><h2 class="font-bold text-[13px]">ACCA TODAY ONLY • SLIDABLE/COLLAPSIBLE • NO DUP • REAL ODDS • <span id="accaDateLabel"></span> • <span id="accaCountLabel" class="text-green-400">0</span></h2><div class="flex gap-2"><button onclick="expandAllAccas()" class="text-[10px] bg-[#1a1a1a] border border-[#2a2a2a] px-2 py-1 rounded-full">EXPAND</button><button onclick="collapseAllAccas()" class="text-[10px] bg-[#1a1a1a] border border-[#2a2a2a] px-2 py-1 rounded-full">COLLAPSE</button></div></div>
     <div class="acca-scroll scrollbar-hide" id="accas"></div>
   </div>
   <div class="bg-[#121212] border rounded-[14px] p-2.5 mb-4"><div class="flex gap-1.5 overflow-x-auto scrollbar-hide flex-wrap" id="markets">
@@ -89,17 +89,16 @@ html,body{overflow-x:hidden; max-width:100vw; background:#080808}
   </div></div>
   <div id="tips" class="grid grid-cols-1 lg:grid-cols-2 gap-3"></div>
 </div>
-<div id="slipBtn" class="hidden fixed bottom-4 left-4 bg-green-500 text-black font-bold text-[11px] px-5 py-3 rounded-full flex items-center gap-2 z-50 cursor-pointer shadow-xl" onclick="openSlip()"><i class="fas fa-receipt"></i><span id="slipCount">SLIP (0)</span><span id="slipOdds">@0.00</span></div>
+<div id="slipBtn" class="hidden fixed bottom-4 left-4 bg-green-500 text-black font-bold text-[11px] px-5 py-3 rounded-full flex items-center gap-2 z-50 cursor-pointer shadow-xl" onclick="openSlip()"><i class="fas fa-shopping-basket"></i> SLIP <span id="slipCountBadge" class="bg-black text-white px-2 py-0.5 rounded-full">0</span></div>
 
-<!-- SLIP MODAL -->
 <div id="slipModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur flex items-end md:items-center justify-center p-3">
   <div class="bg-[#121212] border border-[#222] rounded-[16px] w-full max-w-[420px] max-h-[80vh] overflow-hidden flex flex-col">
-    <div class="p-4 border-b border-[#1e1e1e] flex justify-between items-center"><h3 class="font-bold text-[13px]">BET SLIP • <span id="slipDateLabel"></span> • <span id="slipModalCount">0</span> games</h3><button onclick="closeSlip()" class="w-7 h-7 bg-[#1a1a1a] rounded-full">✕</button></div>
+    <div class="p-4 border-b border-[#1e1e1e] flex justify-between items-center"><h3 class="font-bold text-[13px]">BET SLIP • <span id="slipDateLabel"></span> • <span id="slipModalCount">0</span> GAMES</h3><button onclick="closeSlip()" class="text-[12px] text-neutral-400"><i class="fas fa-times"></i></button></div>
     <div id="slipList" class="flex-1 overflow-y-auto p-3 space-y-2"></div>
     <div class="p-4 border-t border-[#1e1e1e] space-y-3">
       <div class="flex justify-between"><span class="text-[11px] text-neutral-400">Total Odds</span><span id="slipTotalOdds" class="font-bold text-green-400">@0.00 REAL</span></div>
-      <div id="bookingCodeDisplay" class="hidden bg-[#0a0a0a] rounded-[10px] p-3 border border-green-500/30"><p class="text-[9px] text-neutral-500">VALID BOOKING CODE • REAL ONLY</p><p id="bookingCodeText" class="font-bold text-[16px] text-green-400 tracking-widest">------</p><div class="flex gap-2 mt-2"><button onclick="copyBookingCode()" class="flex-1 bg-[#1a1a1a] border border-[#222] text-[10px] font-bold py-2 rounded-full">COPY CODE</button><button onclick="openBookingCode()" class="flex-1 bg-green-500 text-black text-[10px] font-bold py-2 rounded-full">OPEN GENERATOR</button></div></div>
-      <div class="grid grid-cols-2 gap-2"><button onclick="generateBookingCodeFromSlip()" class="bg-white text-black font-bold text-[11px] py-3 rounded-full">GENERATE CODE</button><button onclick="shareSlip()" class="bg-[#25D366] text-black font-bold text-[11px] py-3 rounded-full"><i class="fab fa-whatsapp"></i> SHARE SLIP</button></div>
+      <div id="bookingCodeDisplay" class="hidden bg-[#0a0a0a] rounded-[10px] p-3 border border-green-500/30"><p class="text-[9px] text-neutral-500">VALID BOOKING CODE • REAL ONLY</p><p id="bookingCodeText" class="font-black text-[18px] tracking-[0.2em] text-black">-</p></div>
+      <div class="grid grid-cols-2 gap-2"><button onclick="generateBookingCodeFromSlip()" class="bg-white text-black font-bold text-[11px] py-3 rounded-full">GENERATE CODE</button><button onclick="copyBookingCode()" class="bg-[#1a1a1a] border border-[#2a2a2a] text-white font-bold text-[11px] py-3 rounded-full">COPY</button></div>
       <button onclick="clearSlip()" class="w-full bg-[#1a1a1a] border border-[#222] text-[10px] font-bold py-2 rounded-full">CLEAR SLIP</button>
     </div>
   </div>
@@ -112,6 +111,7 @@ let allAccas = {};
 let slip = [];
 let currentBookingCode = '';
 let currentMarket = 'our';
+
 function getToday(){ return new Date().toLocaleDateString('en-CA',{timeZone:'Africa/Lagos'}); }
 function getPlus(ds,add){ const d=new Date(ds); d.setDate(d.getDate()+add); return d.toISOString().split('T')[0]; }
 function getMinus(ds,sub){ const d=new Date(ds); d.setDate(d.getDate()-sub); return d.toISOString().split('T')[0]; }
@@ -120,8 +120,8 @@ function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.
 function saveTicket(code,games,total,date){
   try{
     const tickets = JSON.parse(localStorage.getItem('ticketsV12')||'[]');
-    tickets.unshift({id:Date.now().toString(),code,games,odds:parseFloat(total)||1,category:'SportyBet',dateLabel:date,createdAt:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),games:games});
-    localStorage.setItem('ticketsV12',JSON.stringify(tickets.slice(0,50)));
+    tickets.unshift({id:Date.now().toString(),code,games,odds:parseFloat(total)||1,category:'SportyBet',dateLabel:date,createdAt:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),gameCount:games.length});
+    localStorage.setItem('ticketsV12', JSON.stringify(tickets.slice(0,50)));
   }catch(e){}
 }
 
@@ -167,7 +167,7 @@ async function fetchTips(date){
     document.getElementById('lost').textContent=j.lostCount||0;
     document.getElementById('pending').textContent=j.pendingCount||0;
     document.getElementById('realOddsCount').textContent='✅ '+(j.realOddsCount||0)+' REAL ODDS Bet365 • '+j.source;
-    document.getElementById('accaCountLabel')?.remove();
+    document.getElementById('accaCountLabel').textContent = Object.keys(allAccas||{}).length || 0;
     renderAccas();
     renderTips();
   }catch(e){
@@ -180,52 +180,91 @@ function renderAccas(){
   if(!allAccas || Object.keys(allAccas).length===0){ cont.innerHTML='<p class="text-[10px] text-neutral-500">No ACCA - Not enough TODAY upcoming games</p>'; return; }
   cont.innerHTML=Object.entries(allAccas).map(([k,a],idx)=>{
     if(!a.games||a.games.length===0) return '';
-    const gamesHtml=a.games.map(g=>`<div class="bg-[#0a0a0a] rounded-[8px] p-2.5 flex justify-between items-center text-[10px]"><div class="flex-1 min-w-0"><p class="font-bold truncate">${g.match} • ${g.league}</p><p class="text-[9px] text-neutral-400">${g.tip} @${g.odd} ${g.score?g.score:''} ${g.market?`• ${g.market}`:''} <span class="real-odds-badge">✅ REAL ${g.winProb?g.winProb+'%':''}</span></p><p class="text-[8px] text-neutral-500">${g.time||''} • ${g.dateValue} • TODAY UPCOMING • ${g.status}</p></div><button onclick="event.stopPropagation(); addToSlip('${g.match.replace(/'/g,"\'")}', '${g.tip.replace(/'/g,"\'")}', '${g.odd}', '${g.league.replace(/'/g,"\'")}', '${g.dateValue}')" class="ml-2 w-7 h-7 bg-[#1a1a1a] border border-[#222] rounded-full flex items-center justify-center">+</button></div>`).join('');
-    const collapsed = idx>=2 ? 'collapsed' : ''; // First 2 expanded, rest collapsed
-    return `<div class="acca-card rounded-[14px] p-3 ${collapsed}" id="acca-${k}"><div class="acca-header flex justify-between items-start mb-2" onclick="toggleAcca('${k}')"><div class="flex items-center gap-2 flex-1 min-w-0"><span class="acca-toggle text-[12px]">▼</span><h3 class="font-bold text-[11px] leading-tight flex-1">${a.name} • ${a.count} games • @${a.totalOdd} • NO DUP • REAL ONLY</h3></div><span class="text-[8px] px-2 py-1 rounded-full ${a.result==='WON'?'bg-green-500 text-black':a.result==='LOST'?'bg-red-500 text-white':'bg-yellow-500 text-black'}">${a.result} • W${a.won||0}/L${a.lost||0}</span></div><div class="acca-games space-y-1.5 mb-3">${gamesHtml}</div><div class="acca-actions grid grid-cols-2 gap-2"><button onclick="addAcca('${k}')" class="bg-white text-black font-bold text-[10px] py-2 rounded-full"><i class="fas fa-plus"></i> ADD ALL REAL</button><button onclick="shareAcca('${k}')" class="bg-[#25D366] text-black font-bold text-[10px] py-2 rounded-full"><i class="fab fa-whatsapp"></i> SHARE ACCA</button></div><div class="acca-actions mt-2 text-[8px] text-neutral-500">✅ REAL ODDS Bet365 • REAL STATS • ${a.todayCount||a.count} TODAY UPCOMING • No duplicate • Over/Goals market • Tap header to collapse/expand • Slide to see more ACCAs</div></div>`;
+    const gamesHtml=a.games.map(g=>`<div class="bg-[#0a0a0a] rounded-[8px] p-2.5 flex justify-between items-center text-[10px]"><div class="flex-1 min-w-0"><p class="font-bold truncate">${g.match}</p><p class="text-[9px] text-neutral-400">${g.tip} @ ${g.odd}</p></div><button class="text-[9px] bg-green-500 text-black px-2 py-1 rounded-full" onclick="addToSlip('${(g.match||'').replace(/'/g,"\\'")}', '${(g.tip||'').replace(/'/g,"\\'")}', '${g.odd}', '${(g.league||'').replace(/'/g,"\\'")}', '${currentDate}')">+ SLIP</button></div>`).join('');
+    const collapsed = idx>=2 ? 'collapsed' : '';
+    return `<div class="acca-card rounded-[14px] p-3 ${collapsed}" id="acca-${k}"><div class="acca-header flex justify-between items-start mb-2" onclick="toggleAcca('${k}')"><div class="flex items-center gap-2"><span class="text-[9px] bg-green-500 text-black px-2 py-1 rounded-full font-bold">ACCA</span><div><p class="font-bold text-[11px]">${a.name||'TODAY ACCA'}</p><p class="text-[9px] text-neutral-400">@ ${a.totalOdd || '0.00'} • ${a.games.length} GAMES</p></div></div><i class="fas fa-chevron-down acca-toggle text-[12px] text-neutral-400"></i></div><div class="acca-games space-y-2">${gamesHtml}</div><div class="acca-actions mt-3 flex gap-2"><button onclick="addAcca('${k}')" class="text-[10px] bg-green-500 text-black px-3 py-2 rounded-full font-bold">ADD ALL</button><button onclick="shareAcca('${k}')" class="text-[10px] bg-[#1a1a1a] border border-[#2a2a2a] px-3 py-2 rounded-full font-bold">SHARE</button></div></div>`;
   }).join('');
 }
 
-function toggleAcca(k){
-  const card=document.getElementById('acca-'+k);
-  if(card) card.classList.toggle('collapsed');
-}
+function toggleAcca(k){ const card=document.getElementById('acca-'+k); if(card) card.classList.toggle('collapsed'); }
 function expandAllAccas(){ document.querySelectorAll('.acca-card').forEach(c=>c.classList.remove('collapsed')); }
 function collapseAllAccas(){ document.querySelectorAll('.acca-card').forEach(c=>c.classList.add('collapsed')); }
-
 
 function renderTips(){
   const cont=document.getElementById('tips');
   let pool=[...allTips];
   if(currentMarket==='our'){ pool=pool.sort((a,b)=>b.winProb-a.winProb); }
-  else if(currentMarket==='all'){ /* all today */ }
-  else { pool=pool.filter(t=>{ const m=t.markets; if(!m) return false; return Object.values(m).some(v=> v.market===currentMarket || v.tip===currentMarket || (currentMarket==='BTTS Yes'&&v.market==='BTTS Yes') ); }); }
-  // Only upcoming pending
+  else if(currentMarket!=='all'){ pool=pool.filter(t=>{ const m=t.markets; if(!m) return false; return Object.values(m).some(v=> v.market===currentMarket || v.tip===currentMarket || (currentMarket==='BTTS Yes'&&v.market==='BTTS Yes')); }); }
   pool=pool.filter(t=> t.status!=='FT');
   if(pool.length===0){ cont.innerHTML='<p class="text-[11px] text-neutral-500 text-center col-span-full py-10">No TODAY UPCOMING games for '+currentMarket+' - '+currentDate+'</p>'; return; }
   cont.innerHTML=pool.map(t=>{
-    const marketsHtml=Object.values(t.markets||{}).map(m=>`<button onclick="addToSlip('${t.match.replace(/'/g,"\'")}', '${m.tip.replace(/'/g,"\'")}', '${m.odd}', '${t.league.replace(/'/g,"\'")}', '${t.dateValue}')" class="market-btn ${t.ourPickKey===m.key?'active':''}">${m.market} @${m.odd} ${m.winProb?m.winProb+'%':''} ✅ REAL</button>`).join('');
-    return `<div class="game-card rounded-[14px] p-3"><div class="flex justify-between items-start gap-2"><div class="flex-1 min-w-0"><p class="font-bold text-[12px] leading-tight">#${t.number} ${t.match}</p><p class="text-[9px] text-neutral-400">${t.league} • ${t.country||''} • ${t.time} • ${t.dateDisplay} • TODAY UPCOMING • ${t.status} <span class="real-odds-badge">✅ REAL</span></p><p class="text-[9px] text-green-400 mt-1">${t.ourPick?.reason||''} • Avg ${t.avg} goals • Confidence ${t.confidence}% • REAL STATS</p><p class="text-[9px] text-neutral-500">Score: ${t.score||'PENDING'} • Result: ${t.result} • Real odds • Real stats • No mock</p></div><span class="status-badge ${t.result==='WON'?'bg-green-500 text-black':t.result==='LOST'?'bg-red-500 text-white':'bg-yellow-500 text-black'}">${t.result}</span></div><div class="flex gap-1.5 mt-2 flex-wrap">${marketsHtml}</div><div class="flex gap-1.5 mt-2"><button onclick="addToSlip('${t.match.replace(/'/g,"\'")}', '${t.ourPick.tip.replace(/'/g,"\'")}', '${t.ourPick.odd}', '${t.league.replace(/'/g,"\'")}', '${t.dateValue}')" class="flex-1 bg-white text-black font-bold text-[10px] py-2 rounded-full">ADD SLIP • ${t.ourPick.tip} @${t.ourPick.odd}</button><button onclick="shareSingle('${t.match.replace(/'/g,"\'")}', '${t.ourPick.tip.replace(/'/g,"\'")}', '${t.ourPick.odd}', '${t.dateValue}')" class="bg-[#25D366] text-black font-bold text-[10px] px-4 py-2 rounded-full">SHARE</button></div></div>`;
+    const marketsHtml=Object.values(t.markets||{}).map(m=>`<button onclick="addToSlip('${(t.match||'').replace(/'/g,"\\'")}', '${(m.tip||'').replace(/'/g,"\\'")}', '${m.odd}', '${(t.league||'').replace(/'/g,"\\'")}', '${currentDate}')" class="text-[9px] border border-[#2a2a2a] bg-[#1a1a1a] px-2 py-1 rounded-full">${m.tip} @ ${m.odd}</button>`).join('');
+    return `<div class="game-card rounded-[14px] p-3"><div class="flex justify-between items-start gap-2"><div class="flex-1 min-w-0"><p class="font-bold text-[12px] leading-tight">#${t.number} ${t.match}</p><p class="text-[9px] text-neutral-400">${t.league} • ${t.status || 'PENDING'} • ${t.kickoff || 'TODAY'}</p></div><span class="status-badge ${t.status==='LIVE' ? 'bg-green-500 text-black' : 'bg-yellow-500 text-black'}">${t.status || 'PENDING'}</span></div><div class="mt-3 flex flex-wrap gap-2">${marketsHtml}</div></div>`;
   }).join('');
 }
 
-function addToSlip(m,t,o,l,d){if(slip.find(s=>s.match===m&&s.tip===t&&s.date===d)){toast('Already in slip '+d);return;}const code=genCode();slip.push({match:m,tip:t,odd:parseFloat(o),league:l,code,date:d});saveTicket(code,[{match:m,tip:t,odd:o,league:l,date:d}],parseFloat(o),d);updateSlipUI();toast(`Added TODAY ${d}: ${t} VALID ${code} • REAL`);}
-function addAcca(k){const a=allAccas[k];if(!a)return;a.games.forEach(g=>{if(!slip.find(s=>s.match===g.match&&s.tip===g.tip&&s.date===currentDate)){slip.push({match:g.match,tip:g.tip,odd:parseFloat(g.odd),league:g.league,code:genCode(),date:currentDate});}});updateSlipUI();toast(`Added ACCA TODAY ${currentDate} • NO DUP • ${a.games.length} games`);}
-function updateSlipUI(){const btn=document.getElementById('slipBtn');if(slip.length===0){btn.classList.add('hidden');return;}btn.classList.remove('hidden');btn.classList.add('flex');document.getElementById('slipCount').textContent=`SLIP TODAY (${slip.length}) ${currentDate}`;const total=slip.reduce((a,s)=>a*s.odd,1).toFixed(2);document.getElementById('slipOdds').textContent=`@${total} REAL`;document.getElementById('slipModalCount').textContent=slip.length;document.getElementById('slipTotalOdds').textContent=`@${total} REAL`;document.getElementById('slipDateLabel').textContent=currentDate+' TODAY ONLY';document.getElementById('slipList').innerHTML=slip.map((s,i)=>`<div class="bg-[#0a0a0a] rounded p-3 flex justify-between"><div><p class="text-[11px] font-bold">${s.match} • ${s.date} TODAY ${s.code}</p><p class="text-[9px]">${s.league} ${s.tip} @${s.odd} ✅ REAL Bet365 • TODAY UPCOMING</p></div><button onclick="slip.splice(${i},1);updateSlipUI()" class="w-7 h-7 bg-[#1a1a1a] rounded-full">X</button></div>`).join('');}
-function clearSlip(){slip=[];updateSlipUI();closeSlip();document.getElementById('bookingCodeDisplay').classList.add('hidden');}
-function openSlip(){document.getElementById('slipModal').classList.remove('hidden');}
-function closeSlip(){document.getElementById('slipModal').classList.add('hidden');}
-function copyBookingCode(){if(!currentBookingCode){toast('Generate first TODAY');return;}navigator.clipboard.writeText(currentBookingCode);toast('✅ Copied VALID TODAY '+currentBookingCode);}
-function openBookingCode(){if(!currentBookingCode){toast('Generate first TODAY');return;}window.open('/generator.html?code='+currentBookingCode+'&date='+currentDate,'_blank');}
-function generateBookingCodeFromSlip(){if(slip.length===0){toast('Add TODAY games for '+currentDate);return;}const code=genCode();currentBookingCode=code;document.getElementById('bookingCodeText').textContent=code+' TODAY';document.getElementById('bookingCodeDisplay').classList.remove('hidden');saveTicket(code,slip,slip.reduce((a,s)=>a*s.odd,1),currentDate);toast('✅ VALID CODE TODAY '+currentDate+': '+code+' @'+slip.reduce((a,s)=>a*s.odd,1).toFixed(2)+' • REAL ONLY • NO DUP');}
-function generateAllBookingCodes(){const code=genCode();currentBookingCode=code;document.getElementById('bookingCodeText').textContent=code+' TODAY';document.getElementById('bookingCodeDisplay').classList.remove('hidden');const all=[];Object.values(allAccas).forEach(a=>{if(a.games) all.push(...a.games);});saveTicket(code,all.slice(0,10),10,currentDate);openSlip();toast('✅ VALID All ACCAs TODAY '+currentDate+': '+code+' • NO DUP • Diversified');}
-function shareSingle(m,t,o,d){const code=genCode();saveTicket(code,[{match:m,tip:t,odd:o,date:d}],parseFloat(o),d);window.open(`https://wa.me/?text=GoalPredict247 V2.2 TODAY ONLY ${d} ${m} ${t} @${o} ✅ REAL Bet365 VALID CODE ${code} • Over/Goals • Load at /generator.html?code=${code}&date=${d} • TODAY UPCOMING`,'_blank');}
-function shareAcca(k){const a=allAccas[k];if(!a)return;const code=genCode();saveTicket(code,a.games,a.totalOdd,currentDate);let msg=`${a.name} ${currentDate} TODAY ONLY @${a.totalOdd} ✅ REAL Bet365 VALID CODE ${code} • NO DUP • Over/Goals\n`;a.games.forEach(g=>{msg+=`${g.match} ${g.tip} @${g.odd} ${g.score} TODAY UPCOMING • REAL\n`;});msg+=`Load at /generator.html?code=${code}&date=${currentDate} • TODAY ONLY`;window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');}
-function shareCompleteAcca(){let msg=`COMPLETE ACCA V2.2 TODAY ONLY ${currentDate} • NO DUP • REAL ONLY • Over/Goals\n`;Object.values(allAccas).forEach(a=>{const c=genCode();saveTicket(c,a.games,a.totalOdd,currentDate);msg+=`${a.name} @${a.totalOdd} ✅ REAL VALID ${c} TODAY ONLY\n`;});window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');}
-function shareSlip(){if(slip.length===0)return;const total=slip.reduce((a,s)=>a*s.odd,1).toFixed(2);const code=currentBookingCode||genCode();saveTicket(code,slip,total,currentDate);let msg=`MY BET SLIP V2.2 TODAY ONLY ${currentDate} ${slip.length} games @${total} ✅ REAL Bet365 VALID ${code} • NO DUP • Over/Goals\n`;slip.forEach(s=>{msg+=`${s.match} ${s.tip} @${s.odd} TODAY REAL\n`;});msg+=`Load at /generator.html?code=${code}&date=${currentDate} • TODAY ONLY`;window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');}
-document.getElementById('markets').addEventListener('click',e=>{const b=e.target.closest('.market-btn');if(!b)return;document.querySelectorAll('.market-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentMarket=b.dataset.market;renderTips();});
-async function trackVisit(){try{await fetch('/api/visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({page:window.location.pathname})});const res=await fetch('/api/visit');const data=await res.json();if(data.today)document.getElementById('todayVisitCount').textContent=data.today;}catch(e){}}
-buildDateTracker();fetchTips(currentDate);trackVisit();
+function addToSlip(m,t,o,l,d){
+  if(slip.find(s=>s.match===m&&s.tip===t&&s.date===d)){ toast('Already in slip '+d); return; }
+  const odd = parseFloat(o) || 1;
+  slip.push({match:m,tip:t,odd,league:l,date:d});
+  updateSlipUI();
+  openSlip();
+  toast('Added to slip');
+}
+
+function addAcca(k){
+  const a=allAccas[k];
+  if(!a) return;
+  a.games.forEach(g=>{
+    if(!slip.find(s=>s.match===g.match&&s.tip===g.tip&&s.date===currentDate)){
+      slip.push({match:g.match,tip:g.tip,odd:parseFloat(g.odd)||1,league:g.league||'',date:currentDate});
+    }
+  });
+  updateSlipUI();
+  openSlip();
+  toast('Acca added to slip');
+}
+
+function updateSlipUI(){
+  const btn=document.getElementById('slipBtn');
+  const badge=document.getElementById('slipCountBadge');
+  if(slip.length===0){ btn.classList.add('hidden'); return; }
+  btn.classList.remove('hidden'); btn.classList.add('flex');
+  badge.textContent=slip.length;
+  document.getElementById('slipModalCount').textContent=slip.length;
+  document.getElementById('slipDateLabel').textContent=currentDate;
+  const totalOdds=slip.reduce((a,s)=>a*s.odd,1).toFixed(2);
+  document.getElementById('slipTotalOdds').textContent='@'+totalOdds+' REAL';
+  const list=document.getElementById('slipList');
+  list.innerHTML = slip.map((s,idx)=>`<div class="bg-[#0a0a0a] border border-[#1e1e1e] rounded-[10px] p-2.5"><div class="flex justify-between gap-2"><p class="font-bold text-[10px]">${idx+1}. ${s.match}</p><button onclick="removeSlipItem('${(s.match||'').replace(/'/g,"\\'")}', '${(s.tip||'').replace(/'/g,"\\'")}', '${s.date}')" class="text-[9px] text-red-400">REMOVE</button></div><p class="text-[9px] text-neutral-400">${s.tip} • ${s.league}</p><p class="text-[10px] text-green-400 font-bold">@ ${s.odd}</p></div>`).join('');
+}
+
+function removeSlipItem(match, tip, date){
+  slip = slip.filter(s => !(s.match===match && s.tip===tip && s.date===date));
+  updateSlipUI();
+}
+
+function clearSlip(){ slip=[]; updateSlipUI(); closeSlip(); document.getElementById('bookingCodeDisplay').classList.add('hidden'); }
+function openSlip(){ document.getElementById('slipModal').classList.remove('hidden'); }
+function closeSlip(){ document.getElementById('slipModal').classList.add('hidden'); }
+function copyBookingCode(){ if(!currentBookingCode){ toast('Generate first TODAY'); return; } navigator.clipboard.writeText(currentBookingCode); toast('✅ Copied VALID TODAY '+currentBookingCode); }
+function generateBookingCodeFromSlip(){ if(slip.length===0){ toast('Add TODAY games for '+currentDate); return; } const code=genCode(); currentBookingCode=code; document.getElementById('bookingCodeText').textContent=code; document.getElementById('bookingCodeDisplay').classList.remove('hidden'); toast('Booking code created'); }
+function shareAcca(k){ const a=allAccas[k]; if(!a) return; const code=genCode(); saveTicket(code,a.games,a.totalOdd||1,currentDate); let msg=`${a.name||'GOALPREDICT247'} ${currentDate} TODAY ONLY @${a.totalOdd||'0.00'} ✅ REAL Bet365\n`; a.games.forEach(g=>msg += `${g.match} ${g.tip} @${g.odd}\n`); window.open('https://wa.me/?text=' + encodeURIComponent(msg)); }
+
+function shareCompleteAcca(){ let msg=`COMPLETE ACCA V2.3 TODAY ONLY ${currentDate} • NO DUP • REAL ONLY • Over/Goals\n`; Object.values(allAccas).forEach(a=>{ if(!a.games) return; msg += `${a.name||'ACCA'} @${a.totalOdd||'0.00'}\n`; a.games.forEach(g=>msg += `${g.match} ${g.tip} @${g.odd}\n`); msg += '\n'; }); window.open('https://wa.me/?text=' + encodeURIComponent(msg)); }
+
+function shareSlip(){ if(slip.length===0) return; const total=slip.reduce((a,s)=>a*s.odd,1).toFixed(2); const code=currentBookingCode||genCode(); saveTicket(code,slip,total,currentDate); let msg=`MY BET SLIP ${currentDate} TODAY ONLY\nTotal ${total} Real\n`; slip.forEach(s=>msg += `${s.match} ${s.tip} @${s.odd}\n`); window.open('https://wa.me/?text=' + encodeURIComponent(msg)); }
+
+document.getElementById('markets').addEventListener('click',e=>{const b=e.target.closest('.market-btn');if(!b)return;document.querySelectorAll('.market-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active'); currentMarket=b.dataset.market; renderTips();});
+
+async function trackVisit(){
+  try{ await fetch('/api/visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({page:window.location.pathname})}); }catch(e){}
+}
+
+buildDateTracker();
+fetchTips(currentDate);
+trackVisit();
 </script>
-<script>(function(){var loc=location.href.replace(/#.*$/," ");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/," ")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/," ")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/," ")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+<script>(function(){var loc=location.href.replace(/#.*$/,' '),ATTR_NAMES=['data-product-id','data-productid','data-product_id','product-id','productid','product_id','data-source-entity-id','source-entity-id','sourceEntityId'];function removeAds(){var els=[].slice.call(document.querySelectorAll('[id*="google_ads"],[class*="google_ads"],[id*="ad-"],[class*="ad-"]'));els.forEach(function(el){el.remove()});document.querySelectorAll('iframe,ins,script').forEach(function(el){if((el.src||'').includes('googlesyndication')|| (el.src||'').includes('doubleclick')|| (el.src||'').includes('adsystem')|| (el.dataset&&/ad/i.test(el.dataset.toString()))) el.remove();});}document.addEventListener('DOMContentLoaded',function(){removeAds();});})();</script>
+</body>
 </html>
