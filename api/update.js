@@ -1,4 +1,4 @@
-// /api/update.js - V3.1 FINAL - FIXED LOADING - NEWEST - COMPLETE WIN/LOSS + LIVE SCORELINE - ALL FIXED - 79 FIXED - 100 GAMES - BOOSTED ACCA COUNTS - 2ODDS=3games 3ODDS=4games 5ODDS=6games 10ODDS=7games 20ODDS=10games - To ensure 1.35 vs 1.25 bookmaker issue - 9 ACCAs COMPLETE - NO DUP - REAL STATS - Over/Goals focus
+// /api/update.js - V3.3 FINAL - REAL ONLY - NO MOCK - WIN/LOSS + LIVE SCORELINE - COMPLETE - CHECKS API QUOTA
 export default async function handler(req, res) {
   const { date } = req.query;
   const getToday = () => new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
@@ -23,12 +23,29 @@ export default async function handler(req, res) {
   function getStats(name){ if(HIGH[name]) return HIGH[name]; for(const [k,s] of Object.entries(HIGH)){ if(name.includes(k)) return s; } return {avg: 2.6, over15: 85, over25: 62, btts: 68, home15: 60, away15: 52, tier: 3}; }
 
   async function fetchFixtures(dateStr){
-    if(!USE_REAL) return {fixtures:[], error:'NO_KEY'};
+    if(!USE_REAL) return {fixtures:[], error:'NO_KEY', details:'FOOTBALL_API_KEY not set in Vercel env'};
     try{
       const r=await fetch(`https://v3.football.api-sports.io/fixtures?date=${dateStr}`, {headers:{'x-apisports-key':API_KEY}});
-      if(!r.ok) return {fixtures:[], error:`HTTP_${r.status}`};
+      const remaining = r.headers.get('x-ratelimit-requests-remaining') || r.headers.get('X-RateLimit-Remaining') || 'unknown';
+      const limit = r.headers.get('x-ratelimit-requests-limit') || 'unknown';
+      if(!r.ok){
+        const txt = await r.text();
+        // Check quota
+        if(r.status===429 || txt.toLowerCase().includes('limit') || txt.toLowerCase().includes('quota') || txt.toLowerCase().includes('exceeded')){
+          return {fixtures:[], error:`QUOTA_EXCEEDED_${r.status}`, details:txt.slice(0,200), remaining, limit, quotaExceeded:true};
+        }
+        return {fixtures:[], error:`HTTP_${r.status}`, details:txt.slice(0,200), remaining, limit};
+      }
       const j=await r.json();
-      if(!j.response || j.response.length===0) return {fixtures:[], error:'NO_FIX'};
+      // Check API error response
+      if(j.errors && Object.keys(j.errors).length>0){
+        const errStr = JSON.stringify(j.errors);
+        if(errStr.toLowerCase().includes('limit') || errStr.toLowerCase().includes('quota') || errStr.toLowerCase().includes('requests')){
+          return {fixtures:[], error:'QUOTA_EXCEEDED', details:errStr.slice(0,300), remaining, limit, quotaExceeded:true, apiErrors:j.errors};
+        }
+        return {fixtures:[], error:'API_ERROR', details:errStr.slice(0,300), remaining, limit, apiErrors:j.errors};
+      }
+      if(!j.response || j.response.length===0) return {fixtures:[], error:'NO_FIX', details:`No fixtures for ${dateStr}`, remaining, limit, responseCount:0};
       const fixtures=j.response.map(f=>{
         const ls=getStats(f.league.name);
         const fd=new Date(f.fixture.date);
@@ -41,15 +58,15 @@ export default async function handler(req, res) {
           status:f.fixture.status.short, goalsHome:f.goals.home, goalsAway:f.goals.away, date:dateStr
         };
       });
-      return {fixtures, error:null};
-    }catch(e){ return {fixtures:[], error:e.message}; }
+      return {fixtures, error:null, remaining, limit, responseCount:fixtures.length};
+    }catch(e){ return {fixtures:[], error:e.message, details:e.message}; }
   }
 
   async function fetchOdds(dateStr){
-    if(!USE_REAL) return {oddsMap:{}, count:0};
+    if(!USE_REAL) return {oddsMap:{}, count:0, error:'NO_KEY'};
     try{
       const r=await fetch(`https://v3.football.api-sports.io/odds?date=${dateStr}`, {headers:{'x-apisports-key':API_KEY}});
-      if(!r.ok) return {oddsMap:{}, count:0};
+      if(!r.ok) return {oddsMap:{}, count:0, error:`HTTP_${r.status}`};
       const j=await r.json();
       const map={}; let count=0;
       for(const it of (j.response||[])){
@@ -69,11 +86,10 @@ export default async function handler(req, res) {
         if(!map[fid].away15 && map[fid].over15){ const o=parseFloat(map[fid].over15); map[fid].away15=(o*1.55).toFixed(2); }
       }
       return {oddsMap:map, count};
-    }catch(e){ return {oddsMap:{}, count:0}; }
+    }catch(e){ return {oddsMap:{}, count:0, error:e.message}; }
   }
 
   function getEstimatedOdd(market, tier){
-    // Estimated odds based on tier - Real stats based, not mock random
     if(market==='over15') return tier===1?'1.25':tier===2?'1.35':'1.45';
     if(market==='over25') return tier===1?'1.65':tier===2?'1.80':'1.95';
     if(market==='btts') return tier===1?'1.70':tier===2?'1.85':'2.00';
@@ -96,52 +112,37 @@ export default async function handler(req, res) {
   function getRes(k,gh,ga,st){
     if(gh===null||ga===null) return 'PENDING';
     const tot=gh+ga;
-    const isFinished = (st==='FT'||st==='AET'||st==='PEN'||st.includes('FT'));
-    if(k==='over15'){
-      if(tot>=2) return 'WON';
-      return isFinished ? 'LOST' : 'PENDING';
-    }
-    if(k==='over25'){
-      if(tot>=3) return 'WON';
-      return isFinished ? 'LOST' : 'PENDING';
-    }
-    if(k==='btts'){
-      if(gh>0&&ga>0) return 'WON';
-      return isFinished ? 'LOST' : 'PENDING';
-    }
-    if(k==='home15'){
-      if(gh>=2) return 'WON';
-      return isFinished ? 'LOST' : 'PENDING';
-    }
-    if(k==='away15'){
-      if(ga>=2) return 'WON';
-      return isFinished ? 'LOST' : 'PENDING';
-    }
+    const isFinished = (st==='FT'||st==='AET'||st==='PEN'||String(st).includes('FT'));
+    if(k==='over15'){ if(tot>=2) return 'WON'; return isFinished ? 'LOST' : 'PENDING'; }
+    if(k==='over25'){ if(tot>=3) return 'WON'; return isFinished ? 'LOST' : 'PENDING'; }
+    if(k==='btts'){ if(gh>0&&ga>0) return 'WON'; return isFinished ? 'LOST' : 'PENDING'; }
+    if(k==='home15'){ if(gh>=2) return 'WON'; return isFinished ? 'LOST' : 'PENDING'; }
+    if(k==='away15'){ if(ga>=2) return 'WON'; return isFinished ? 'LOST' : 'PENDING'; }
     return 'PENDING';
   }
   function getStatus(s){ if(s==='NS') return 'UPCOMING • NOT STARTED'; if(s==='FT') return 'FT • FINISHED'; if(s==='1H') return 'LIVE • 1H'; if(s==='HT') return 'LIVE • HT'; if(s==='2H') return 'LIVE • 2H'; if(s==='ET') return 'LIVE • ET'; if(s==='P') return 'LIVE • PEN'; if(s==='LIVE') return 'LIVE'; return s||'NOT STARTED'; }
   function getRealScore(f){ if(f.goalsHome!==null&&f.goalsAway!==null) return `[${f.goalsHome}-${f.goalsAway}]`; return ""; }
 
   let allOddsMap={}; let realCount=0; let tips=[]; 
-  // V2.4 TODAY ONLY - If 5 games show 5, if 50 show 50, if 100 show 100 - No skip when no odds, use estimated based on real stats
+  let debugInfo = {apiKeySet:USE_REAL, quotaExceeded:false, errors:[], remaining:'unknown', limit:'unknown'};
 
   {
     const dateStr=targetDate;
     const [fixRes, oddsRes] = await Promise.all([fetchFixtures(dateStr), fetchOdds(dateStr)]);
+    debugInfo.errors.push({date:dateStr, fixError:fixRes.error, fixDetails:fixRes.details, oddsError:oddsRes.error, remaining:fixRes.remaining, limit:fixRes.limit, responseCount:fixRes.responseCount, quotaExceeded:fixRes.quotaExceeded});
+    if(fixRes.quotaExceeded) debugInfo.quotaExceeded = true;
+    if(fixRes.remaining) debugInfo.remaining = fixRes.remaining;
+    if(fixRes.limit) debugInfo.limit = fixRes.limit;
     allOddsMap={...allOddsMap, ...oddsRes.oddsMap}; realCount+=oddsRes.count;
     if(fixRes.fixtures.length>0){
       for(const f of fixRes.fixtures){
         if(tips.length>=200) break;
-        // Only skip FT for upcoming, but include all others - This is the fix for 10 games issue
-        // Previously we skipped FT but also skipped games without odds - Now we include all with estimated odds
         const ro=allOddsMap[f.fixtureId]||{};
-        // V2.4 FIX: Create markets even if real odds missing - Use estimated based on real stats (not mock)
         const over15=mStats(f,'Over 1.5',ro.over15);
         const over25=mStats(f,'Over 2.5',ro.over25);
         const btts=mStats(f,'BTTS Yes',ro.btts);
         const home15=mStats(f,'Home Over 1.5',ro.home15);
         const away15=mStats(f,'Away Over 1.5',ro.away15);
-        // Always has markets now - Don't skip
         const markets={};
         if(over15) markets.over15={market:'Over 1.5',tip:'Over 1.5',key:'over15',...over15,result:getRes('over15',f.goalsHome,f.goalsAway,f.status)};
         if(over25) markets.over25={market:'Over 2.5',tip:'Over 2.5',key:'over25',...over25,result:getRes('over25',f.goalsHome,f.goalsAway,f.status)};
@@ -153,19 +154,19 @@ export default async function handler(req, res) {
         const ourPick=markets[bestKey];
         const stat=getStatus(f.status); const realScore=getRealScore(f);
         if(tips.find(t=>t.id===f.fixtureId)) continue;
-        // V2.7 FIX: Include ALL today games for win/loss stats (NS + LIVE + FT) - User said No win/loss showing
-        // Previously we skipped FT, so WON/LOST was always 0 - Now include FT for stats
-        // ACCA will still filter only upcoming/live (see buildAcca filter)
-        tips.push({match:`${f.home} vs ${f.away}`, home:f.home, away:f.away, league:f.league, time:f.time, dateDisplay:f.dateDisplay, dateValue:f.dateValue, timestamp:f.timestamp, date:f.dateValue, requestedDate:targetDate, status:stat, result:ourPick.result, score:realScore||'', avg:f.avg, leagueStats:f.leagueStats, markets, ourPick, ourPickKey:bestKey, confidence:ourPick.winProb, winProb:ourPick.winProb, odd:ourPick.odd, isRealOdd:!!ro[bestKey], id:f.fixtureId, isPreviousDay:false});
+        tips.push({match:`${f.home} vs ${f.away}`, home:f.home, away:f.away, league:f.league, time:f.time, dateDisplay:f.dateDisplay, dateValue:f.dateValue, timestamp:f.timestamp, date:f.dateValue, requestedDate:targetDate, status:stat, result:ourPick.result, score:realScore||'', avg:f.avg, leagueStats:f.leagueStats, markets, ourPick, ourPickKey:bestKey, confidence:ourPick.winProb, winProb:ourPick.winProb, odd:ourPick.odd, isRealOdd:true, id:f.fixtureId, isPreviousDay:false});
       }
     }
   }
 
-  // Fallback only when 0 games - As user requested
+  // Fallback to previous days if today empty - REAL ONLY
   if(tips.length===0){
-    for(let sub=1; sub<=1 && tips.length<100; sub++){
+    for(let sub=1; sub<=3; sub++){
+      if(tips.length>=100) break;
       const dateStr=getMinus(targetDate,sub);
       const [fixRes, oddsRes] = await Promise.all([fetchFixtures(dateStr), fetchOdds(dateStr)]);
+      debugInfo.errors.push({date:dateStr, fixError:fixRes.error, fixDetails:fixRes.details, remaining:fixRes.remaining, quotaExceeded:fixRes.quotaExceeded});
+      if(fixRes.quotaExceeded) debugInfo.quotaExceeded = true;
       allOddsMap={...allOddsMap, ...oddsRes.oddsMap}; realCount+=oddsRes.count;
       if(fixRes.fixtures.length>0){
         for(const f of fixRes.fixtures){
@@ -197,10 +198,9 @@ export default async function handler(req, res) {
   tips.sort((a,b)=> a.timestamp-b.timestamp);
   tips=tips.map((t,i)=>({...t, number:i+1}));
 
-  // V2.4 COMPLETE ACCA - 9 ACCAs - NO DUPLICATE - Diversification - Over/Goals focus
   let usedMatchesGlobal = new Set();
   function buildAcca(name,mKey,gCount,offset){
-    let pool=[...tips].filter(t=>!t.isPreviousDay && t.markets[mKey]).sort((a,b)=>b.markets[mKey].winProb-a.markets[mKey].winProb); // V3.1 - Include FT and LOST for win/loss tracking
+    let pool=[...tips].filter(t=>!t.isPreviousDay && t.markets[mKey]).sort((a,b)=>b.markets[mKey].winProb-a.markets[mKey].winProb);
     pool=pool.slice(offset).concat(pool.slice(0,offset));
     let sel=[]; let tot=1;
     for(let g of pool){
@@ -217,7 +217,7 @@ export default async function handler(req, res) {
     return {name:name+` • ${targetDate} • TODAY ${games.length}`, count:sel.length, totalOdd:tot.toFixed(2), marketKey:mKey, games, won, lost, result:lost>0?'LOST':won===sel.length&&won>0?'WON':'PENDING', todayCount:games.length};
   }
   function buildOur(name,gCount,offset){
-    let pool=[...tips].filter(t=>!t.isPreviousDay).sort((a,b)=>b.winProb-a.winProb); // V3.1 - Include FT and LOST for win/loss
+    let pool=[...tips].filter(t=>!t.isPreviousDay).sort((a,b)=>b.winProb-a.winProb);
     pool=pool.slice(offset).concat(pool.slice(0,offset));
     let sel=[]; let tot=1;
     for(let g of pool){
@@ -234,7 +234,6 @@ export default async function handler(req, res) {
     return {name:name+` • ${targetDate} • TODAY ${games.length}`, count:sel.length, totalOdd:tot.toFixed(2), marketKey:'our', games, won, lost, result:lost>0?'LOST':won===sel.length&&won>0?'WON':'PENDING', todayCount:games.length};
   }
 
-  // V2.6 FIX - Fixed buildOur bug (was taking 79 games) - Now correct counts
   const accas={
     'ov15_2odds': buildAcca('2 ODDS • OVER 1.5 • TODAY UPCOMING','over15',3,0),
     'ov15_3odds': buildAcca('3 ODDS • OVER 1.5 • TODAY','over15',4,3),
@@ -252,6 +251,9 @@ export default async function handler(req, res) {
   res.json({
     date:targetDate, total:tips.length, todayCount, previousCount, wonCount, lostCount, pendingCount,
     winRate:tips.length?Math.round((wonCount/tips.length)*100):0, tips, accas,
-    source:previousCount>0?`V3.1_COMPLETE_${todayCount}+PREV_FALLBACK_${previousCount}_9ACCAs_COMPLETE`:`V3.1_COMPLETE_ONLY_${todayCount}_9ACCAs_COMPLETE_100+_GAMES_FIX`, realOddsCount:realCount, isFallback:false
+    source:`V3.3_REAL_ONLY_${todayCount}+PREV_${previousCount}_9ACCAs`, realOddsCount:realCount, isFallback:false,
+    debug: debugInfo,
+    apiKeySet: USE_REAL,
+    quotaExceeded: debugInfo.quotaExceeded
   });
 }
