@@ -1,4 +1,4 @@
-// /api/update.js - V2.9 FINAL - NEWEST - WIN/LOSS IN ACCA + ALL MARKETS + LIVE FIX - 79 FIXED - BOOSTED ACCA COUNTS - 2ODDS=3games 3ODDS=4games 5ODDS=6games 10ODDS=7games 20ODDS=10games - To ensure 1.35 vs 1.25 bookmaker issue - 9 ACCAs COMPLETE - NO DUP - REAL STATS - Over/Goals focus
+// /api/update.js - V3.1 FINAL - FIXED LOADING - NEWEST - COMPLETE WIN/LOSS + LIVE SCORELINE - ALL FIXED - 79 FIXED - 100 GAMES - BOOSTED ACCA COUNTS - 2ODDS=3games 3ODDS=4games 5ODDS=6games 10ODDS=7games 20ODDS=10games - To ensure 1.35 vs 1.25 bookmaker issue - 9 ACCAs COMPLETE - NO DUP - REAL STATS - Over/Goals focus
 export default async function handler(req, res) {
   const { date } = req.query;
   const getToday = () => new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
@@ -120,7 +120,7 @@ export default async function handler(req, res) {
     return 'PENDING';
   }
   function getStatus(s){ if(s==='NS') return 'UPCOMING • NOT STARTED'; if(s==='FT') return 'FT • FINISHED'; if(s==='1H') return 'LIVE • 1H'; if(s==='HT') return 'LIVE • HT'; if(s==='2H') return 'LIVE • 2H'; if(s==='ET') return 'LIVE • ET'; if(s==='P') return 'LIVE • PEN'; if(s==='LIVE') return 'LIVE'; return s||'NOT STARTED'; }
-  function getRealScore(f){ if(f.goalsHome!==null&&f.goalsAway!==null&&(f.status==='FT'||f.status==='AET'||f.status==='PEN'||f.status==='1H'||f.status==='2H'||f.status==='HT')) return `[${f.goalsHome}-${f.goalsAway}]`; return ""; }
+  function getRealScore(f){ if(f.goalsHome!==null&&f.goalsAway!==null) return `[${f.goalsHome}-${f.goalsAway}]`; return ""; }
 
   let allOddsMap={}; let realCount=0; let tips=[]; 
   // V2.4 TODAY ONLY - If 5 games show 5, if 50 show 50, if 100 show 100 - No skip when no odds, use estimated based on real stats
@@ -200,7 +200,7 @@ export default async function handler(req, res) {
   // V2.4 COMPLETE ACCA - 9 ACCAs - NO DUPLICATE - Diversification - Over/Goals focus
   let usedMatchesGlobal = new Set();
   function buildAcca(name,mKey,gCount,offset){
-    let pool=[...tips].filter(t=>!t.isPreviousDay && t.status!=='FT' && t.result!=='LOST' && t.markets[mKey]).sort((a,b)=>b.markets[mKey].winProb-a.markets[mKey].winProb);
+    let pool=[...tips].filter(t=>!t.isPreviousDay && t.markets[mKey]).sort((a,b)=>b.markets[mKey].winProb-a.markets[mKey].winProb); // V3.1 - Include FT and LOST for win/loss tracking
     pool=pool.slice(offset).concat(pool.slice(0,offset));
     let sel=[]; let tot=1;
     for(let g of pool){
@@ -217,7 +217,7 @@ export default async function handler(req, res) {
     return {name:name+` • ${targetDate} • TODAY ${games.length}`, count:sel.length, totalOdd:tot.toFixed(2), marketKey:mKey, games, won, lost, result:lost>0?'LOST':won===sel.length&&won>0?'WON':'PENDING', todayCount:games.length};
   }
   function buildOur(name,gCount,offset){
-    let pool=[...tips].filter(t=>!t.isPreviousDay && t.status!=='FT' && t.result!=='LOST').sort((a,b)=>b.winProb-a.winProb);
+    let pool=[...tips].filter(t=>!t.isPreviousDay).sort((a,b)=>b.winProb-a.winProb); // V3.1 - Include FT and LOST for win/loss
     pool=pool.slice(offset).concat(pool.slice(0,offset));
     let sel=[]; let tot=1;
     for(let g of pool){
@@ -252,6 +252,6 @@ export default async function handler(req, res) {
   res.json({
     date:targetDate, total:tips.length, todayCount, previousCount, wonCount, lostCount, pendingCount,
     winRate:tips.length?Math.round((wonCount/tips.length)*100):0, tips, accas,
-    source:previousCount>0?`V2.8_WINLOSS_${todayCount}+PREV_FALLBACK_${previousCount}_9ACCAs_COMPLETE`:`V2.8_WINLOSS_ONLY_${todayCount}_9ACCAs_COMPLETE_100+_GAMES_FIX`, realOddsCount:realCount, isFallback:false
+    source:previousCount>0?`V3.1_COMPLETE_${todayCount}+PREV_FALLBACK_${previousCount}_9ACCAs_COMPLETE`:`V3.1_COMPLETE_ONLY_${todayCount}_9ACCAs_COMPLETE_100+_GAMES_FIX`, realOddsCount:realCount, isFallback:false
   });
 }
