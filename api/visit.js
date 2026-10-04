@@ -17,3 +17,4 @@ export default async function handler(req,res){
   if(req.method==='GET'){ res.setHeader('Cache-Control','no-store'); return res.json({total:visitsData.total,today:visitsData.today,todayDate:visitsData.todayDate,daily:visitsData.daily,lastVisits:visitsData.lastVisits.slice(0,20),last7Days:Object.entries(visitsData.daily).sort().slice(-7)}); }
   res.status(405).json({error:'Method not allowed'});
 }
+
