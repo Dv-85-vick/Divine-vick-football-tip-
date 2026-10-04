@@ -1,4 +1,4 @@
-// /api/update.js - V3.5 FINAL - REAL ONLY - ULTRA ROBUST FALLBACK - 7 DAYS + TODAY - NO MOCK - WIN/LOSS + LIVE SCORE - FIXES 0 GAMES
+// /api/update.js - V3.6 FINAL - REAL ONLY - ULTRA ROBUST FALLBACK - 7 DAYS + TODAY - NO MOCK - WIN/LOSS + LIVE SCORE - FIXES 0 GAMES
 export default async function handler(req, res) {
   const { date } = req.query;
   const getToday = () => new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const todayStr = getToday();
   let targetDate = date || todayStr;
   const API_KEY = process.env.FOOTBALL_API_KEY || process.env.API_FOOTBALL_KEY || "";
-  const USE_REAL = !!API_KEY;
+  const USE_REAL =!!API_KEY;
 
   const HIGH = {
     'Eredivisie': { avg: 3.4, over15: 96, over25: 82, btts: 78, home15: 72, away15: 65, tier: 1 },
@@ -102,31 +102,26 @@ export default async function handler(req, res) {
     if(gh===null||ga===null) return 'PENDING';
     const tot=gh+ga;
     const isFT = st==='FT'||st==='AET'||st==='PEN'||String(st).includes('FT');
-    if(k==='over15'){ if(tot>=2) return 'WON'; return isFT ? 'LOST' : 'PENDING'; }
-    if(k==='over25'){ if(tot>=3) return 'WON'; return isFT ? 'LOST' : 'PENDING'; }
-    if(k==='btts'){ if(gh>0&&ga>0) return 'WON'; return isFT ? 'LOST' : 'PENDING'; }
-    if(k==='home15'){ if(gh>=2) return 'WON'; return isFT ? 'LOST' : 'PENDING'; }
-    if(k==='away15'){ if(ga>=2) return 'WON'; return isFT ? 'LOST' : 'PENDING'; }
+    if(k==='over15'){ if(tot>=2) return 'WON'; return isFT? 'LOST' : 'PENDING'; }
+    if(k==='over25'){ if(tot>=3) return 'WON'; return isFT? 'LOST' : 'PENDING'; }
+    if(k==='btts'){ if(gh>0&&ga>0) return 'WON'; return isFT? 'LOST' : 'PENDING'; }
+    if(k==='home15'){ if(gh>=2) return 'WON'; return isFT? 'LOST' : 'PENDING'; }
+    if(k==='away15'){ if(ga>=2) return 'WON'; return isFT? 'LOST' : 'PENDING'; }
     return 'PENDING';
   }
   function getStatus(s){ if(s==='NS') return 'UPCOMING • NOT STARTED'; if(s==='FT') return 'FT • FINISHED'; if(s==='1H') return 'LIVE • 1H'; if(s==='HT') return 'LIVE • HT'; if(s==='2H') return 'LIVE • 2H'; return s||'NOT STARTED'; }
   function getRealScore(f){ if(f.goalsHome!==null&&f.goalsAway!==null) return `[${f.goalsHome}-${f.goalsAway}]`; return ""; }
 
-  let allOddsMap={}; let realCount=0; let tips=[]; 
+  let allOddsMap={}; let realCount=0; let tips=[];
   let debugInfo = {apiKeySet:USE_REAL, quotaExceeded:false, errors:[], today:todayStr, requested:targetDate};
-
-  // Try target date first
   const datesToTry = [];
   datesToTry.push(targetDate);
-  // If target is future, also try today and past 7 days
   if(new Date(targetDate) > new Date(todayStr)){
     datesToTry.push(todayStr);
     for(let i=1;i<=7;i++) datesToTry.push(getMinus(todayStr,i));
   } else {
-    // If target is not future, try past 7 days from target
     for(let i=1;i<=7;i++) datesToTry.push(getMinus(targetDate,i));
-    // Also try today if different
-    if(targetDate !== todayStr) datesToTry.push(todayStr);
+    if(targetDate!== todayStr) datesToTry.push(todayStr);
   }
 
   for(const dateStr of datesToTry){
@@ -134,7 +129,7 @@ export default async function handler(req, res) {
     const [fixRes, oddsRes] = await Promise.all([fetchFixtures(dateStr), fetchOdds(dateStr)]);
     debugInfo.errors.push({date:dateStr, error:fixRes.error, remaining:fixRes.remaining, count:fixRes.responseCount||0, quota:fixRes.quotaExceeded||false});
     if(fixRes.quotaExceeded) debugInfo.quotaExceeded = true;
-    allOddsMap={...allOddsMap, ...oddsRes.oddsMap}; realCount+=oddsRes.count;
+    allOddsMap={...allOddsMap,...oddsRes.oddsMap}; realCount+=oddsRes.count;
     if(fixRes.fixtures.length>0){
       for(const f of fixRes.fixtures){
         if(tips.length>=120) break;
@@ -155,7 +150,7 @@ export default async function handler(req, res) {
         const ourPick=markets[bestKey];
         const stat=getStatus(f.status); const realScore=getRealScore(f);
         if(tips.find(t=>t.id===f.fixtureId)) continue;
-        const isPrev = dateStr !== targetDate;
+        const isPrev = dateStr!== targetDate;
         tips.push({match:`${f.home} vs ${f.away}`, home:f.home, away:f.away, league:f.league, time:f.time, dateDisplay:f.dateDisplay, dateValue:f.dateValue, timestamp:f.timestamp, date:f.dateValue, requestedDate:targetDate, status:stat, result:ourPick.result, score:realScore, avg:f.avg, leagueStats:f.leagueStats, markets, ourPick, ourPickKey:bestKey, confidence:ourPick.winProb, winProb:ourPick.winProb, odd:ourPick.odd, id:f.fixtureId, isPreviousDay:isPrev});
       }
     }
@@ -172,7 +167,7 @@ export default async function handler(req, res) {
     let sel=[]; let tot=1;
     for(let g of pool){
       if(sel.length>=gCount) break;
-      if(!sel.find(s=>s.match===g.match) && !usedMatchesGlobal.has(g.match)){
+      if(!sel.find(s=>s.match===g.match) &&!usedMatchesGlobal.has(g.match)){
         sel.push(g); tot*=parseFloat(g.markets[mKey].odd); usedMatchesGlobal.add(g.match);
       }
     }
@@ -186,7 +181,7 @@ export default async function handler(req, res) {
     let sel=[]; let tot=1;
     for(let g of pool){
       if(sel.length>=gCount) break;
-      if(!sel.find(s=>s.match===g.match) && !usedMatchesGlobal.has(g.match)){
+      if(!sel.find(s=>s.match===g.match) &&!usedMatchesGlobal.has(g.match)){
         sel.push(g); tot*=parseFloat(g.ourPick.odd); usedMatchesGlobal.add(g.match);
       }
     }
@@ -212,7 +207,7 @@ export default async function handler(req, res) {
   res.json({
     date:targetDate, total:tips.length, todayCount, previousCount, wonCount, lostCount, pendingCount,
     winRate:tips.length?Math.round((wonCount/tips.length)*100):0, tips, accas,
-    source:`V3.5_REAL_${todayCount}+PREV_${previousCount}_9ACCAs_NO_MOCK`, realOddsCount:realCount,
+    source:`V3.6_REAL_${todayCount}+PREV_${previousCount}_9ACCAs_NO_MOCK`, realOddsCount:realCount,
     debug: debugInfo, apiKeySet:USE_REAL, quotaExceeded:debugInfo.quotaExceeded
   });
 }
