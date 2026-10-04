@@ -1,11 +1,37 @@
 {
-  "apiKeySet": true/false,
-  "quotaExceeded": true/false,
-  "debug": {
-    "remaining": "45",
-    "limit": "100",
-    "errors": [
-      {"date":"2026-10-02", "fixError":"QUOTA_EXCEEDED_429", "details":"..."}
-    ]
-  }
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/about/",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/booking",
+      "destination": "/generator.html"
+    },
+    {
+      "source": "/booking/",
+      "destination": "/generator.html"
+    },
+    {
+      "source": "/generator",
+      "destination": "/generator.html"
+    },
+    {
+      "source": "/generator/",
+      "destination": "/generator.html"
+    }
+  ]
 }
