@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GoalPredict247 V12 - Booking Code Generator - WINNING TICKET TIER1 97% REAL ODDS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+html,body{overflow-x:hidden; max-width:100vw}
+.scrollbar-hide::-webkit-scrollbar{display:none}
+.scrollbar-hide{-ms-overflow-style:none; scrollbar-width:none}
+.toast{position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#22c55e; color:#000; padding:8px 14px; border-radius:20px; font-size:11px; font-weight:bold; z-index:9999; display:none}
+.date-card{min-width:68px; max-width:68px; text-align:center; padding:8px 6px; border-radius:10px; background:#141414; border:1px solid #222; cursor:pointer; flex-shrink:0}
+.date-card.active{background:#fff; color:#000; border-color:#fff; font-weight:bold}
+.date-card.today{border-color:#22c55e}
+.date-card.tomorrow{border-color:#22c55e; border-width:2px}
+</style>
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen">
+<div id="toast" class="toast"></div>
+<header class="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur border-b border-[#1a1a1a]">
+<div class="max-w-[1280px] mx-auto px-4 h-[64px] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-[8px] bg-[#00c853] flex items-center justify-center font-bold text-black text-[12px]">G247</div>
+<div><div class="font-bold text-[14px]">GoalPredict247 V12 BOOKING</div><div class="text-[10px] text-neutral-500 uppercase">100 GAMES • WINNING TICKET TIER1 97% • REAL ODDS • BOOKING CODES</div></div>
+</div>
+<div class="flex items-center gap-1.5">
+<a href="/" class="text-[10px] bg-white text-black px-3 py-1.5 rounded-[6px] font-bold"><i class="fas fa-home"></i> HOME</a>
+<a href="/about.html" class="text-[10px] bg-[#141414] border border-[#222] px-3 py-1.5 rounded-[6px] font-bold">ABOUT</a>
+<span id="visitorCount" class="text-[9px] bg-green-500/20 border border-green-500 px-2 py-1 rounded-[6px] font-bold text-green-400"><i class="fas fa-eye"></i> <span id="todayVisitCount">0</span> today</span>
+<span class="flex items-center gap-1 text-[9px] bg-[#141414] px-2 py-1 rounded-[6px] border border-[#222]"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>LIVE</span>
+</div>
+</div>
+<div class="border-t border-[#111]">
+<div class="max-w-[1280px] mx-auto px-4 py-2 flex items-center gap-2 overflow-x-auto scrollbar-hide">
+<span class="text-[11px] text-neutral-500 font-bold mr-2 flex-shrink-0"><i class="far fa-calendar text-green-500"></i> DATE TRACKER • <span id="selectedDateLabel" class="text-green-400"></span> • V12 BOOKING + V11 WINNING 100 GAMES</span>
+<div id="dateRow" class="flex gap-1.5"></div>
+</div>
+</div>
+</header>
+
+<main class="max-w-[1280px] mx-auto px-4 py-5 grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-5">
+
+<!-- LEFT ADMIN PANEL -->
+<div class="space-y-4">
+<div class="rounded-[16px] bg-[#141414] border border-[#222] overflow-hidden">
+<div class="p-4 border-b border-[#1e1e1e] flex justify-between items-center"><h2 class="text-[13px] font-semibold flex items-center gap-2"><i class="fas fa-cog text-green-500"></i> Admin Panel - Booking Generator</h2><span id="gameCount" class="text-[11px] px-2 py-1 rounded-full bg-[#0a0a0a] border border-[#222] text-neutral-400">0 games</span></div>
+<div class="p-4 space-y-3">
+
+<!-- QUICK ADD FROM V11 WINNING -->
+<div class="rounded-[12px] bg-[#0a0a0a] border border-green-500/30 p-3">
+<p class="text-[11px] font-bold text-green-400 flex items-center gap-1.5"><i class="fas fa-trophy text-yellow-500"></i> QUICK ADD FROM V11 WINNING TICKET</p>
+<p class="text-[9px] text-neutral-500 mt-1">100 games Tier1 97% Over 1.5 - Real odds - Tomorrow default</p>
+<button id="loadV11Btn" class="mt-2 w-full h-8 rounded-lg bg-green-500/20 border border-green-500 text-green-400 font-bold text-[11px]"><i class="fas fa-download"></i> LOAD 100 WINNING GAMES FOR <span id="loadDateLabel"></span></button>
+<div id="v11QuickList" class="mt-2 max-h-[200px] overflow-y-auto space-y-1 scrollbar-hide"></div>
+</div>
+
+<div class="grid grid-cols-2 gap-2">
+<div><label class="text-[11px] text-neutral-500">Home</label><input id="home" placeholder="Ajax" class="mt-1 w-full h-9 rounded-lg px-3 text-[13px] bg-[#111] border border-[#222] focus:border-green-500 outline-none"></div>
+<div><label class="text-[11px] text-neutral-500">Away</label><input id="away" placeholder="PSV" class="mt-1 w-full h-9 rounded-lg px-3 text-[13px] bg-[#111] border border-[#222] focus:border-green-500 outline-none"></div>
+</div>
+<div><label class="text-[11px] text-neutral-500">League</label><input id="league" placeholder="Eredivisie" class="mt-1 w-full h-9 rounded-lg px-3 text-[13px] bg-[#111] border border-[#222]"></div>
+<div class="grid grid-cols-[1fr_90px] gap-2">
+<div><label class="text-[11px] text-neutral-500">Tip</label><select id="tip" class="mt-1 w-full h-9 rounded-lg px-2 text-[13px] bg-[#111] border border-[#222]"><option>Over 1.5</option><option>Over 2.5</option><option>BTTS Yes</option><option>1X</option><option>X2</option><option>Home Win</option><option>Away Win</option><option>Over 8.5 Corners</option></select></div>
+<div><label class="text-[11px] text-neutral-500">Odd</label><input id="odd" type="number" step="0.01" placeholder="1.42" class="mt-1 w-full h-9 rounded-lg px-3 text-[13px] bg-[#111] border border-[#222]"></div>
+</div>
+<button id="addBtn" class="w-full h-10 rounded-xl bg-white text-black font-semibold text-[13px] hover:bg-neutral-200"><i class="fas fa-plus"></i> Add Game</button>
+<div id="currentList" class="space-y-2"></div>
+<div class="pt-3 border-t border-[#1e1e1e] space-y-3">
+<div class="flex justify-between items-center"><span class="text-[12px] text-neutral-400">Total Odds</span><span id="totalOdds" class="text-[20px] font-bold text-[#00c853]">1.00</span></div>
+<div class="grid grid-cols-2 gap-2 p-1 rounded-xl bg-[#0a0a0a] border border-[#1e1e1e]">
+<button id="catSporty" class="h-9 rounded-lg bg-[#00c853] text-black font-semibold text-[12px]">SportyBet</button>
+<button id="catBet" class="h-9 rounded-lg text-neutral-400 text-[12px] hover:bg-[#1a1a1a]">Bet365</button>
+</div>
+<button id="genBtn" class="w-full h-12 rounded-xl bg-[#00c853] text-black font-bold text-[14px] hover:bg-[#00b34a]"><i class="fas fa-bolt"></i> GENERATE BOOKING CODE</button>
+<p class="text-[9px] text-neutral-600 text-center">Real bookmaker odds from Bet365 API + Winning Ticket Tier1 97% • 72 calls/day +28 spare</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- RIGHT PUBLIC TICKETS -->
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="text-[14px] font-semibold flex items-center gap-2"><i class="fas fa-ticket text-green-500"></i> Public Tickets - Booking Codes <span id="ticketCount" class="ml-2 text-[11px] px-2.5 py-1 rounded-full bg-[#141414] border border-[#222] text-neutral-400">2 active</span></h2>
+<button onclick="clearAllTickets()" class="text-[10px] bg-[#1a1a1a] border border-[#222] px-2.5 py-1 rounded-[6px]">Clear All</button>
+</div>
+<div id="ticketsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+<div class="rounded-[12px] bg-[#141414] border border-[#222] p-4">
+<p class="text-[11px] font-bold">How Booking Codes Work V12 - WINNING TICKET INTEGRATED</p>
+<p class="text-[10px] text-neutral-500 mt-2 leading-relaxed">1. Select date from DATE TRACKER (Tomorrow default so you bet ahead 01:00-06:00 early games). 2. Click LOAD 100 WINNING GAMES - It fetches your V11 API /api/update?date= - 100 games sorted Tier1 97% Over1.5 at top. 3. Quick add #1 Eredivisie 3.4 avg 96% etc - Adds to slip. 4. Or manually add Home/Away. 5. Choose SportyBet (6-char code 8K3M9P) or Bet365 (BET365-GP247-XXXX). 6. GENERATE BOOKING CODE - Saves to Public Tickets. 7. Copy code + Open in SportyBet button opens https://www.sportybet.com/ng/m/betslip/share?code=CODE. Note: Real SportyBet booking requires SportyBet API integration - Currently generates realistic codes - For 100% real booking, integrate SportyBet booking API.</p>
+</div>
+</div>
+
+</main>
+
+<script>
+function getTomorrowDate(){const d=new Date();d.setDate(d.getDate()+1);return d.toLocaleDateString('en-CA',{timeZone:'Africa/Lagos'});}
+let selectedDate = new URLSearchParams(window.location.search).get('date') || getTomorrowDate();
+let currentGames=[];let category='SportyBet';let v11Games=[];
+let tickets = JSON.parse(localStorage.getItem('ticketsV12')||'null') || [
+{id:'1',category:'SportyBet',code:'8K3M9P',odds:1.78,dateLabel:'Today',createdAt:'09:24',games:[{home:'Kallithea',away:'Asteras Tripolis II',league:'Super League 2',tip:'Over 1.5',odd:1.32,tier:1,avg:'3.1'},{home:'Markos',away:'Panthrakikos',league:'Greek Cup',tip:'Over 1.5',odd:1.35,tier:1,avg:'3.0'}]},
+{id:'2',category:'SportyBet',code:'7F3K9P',odds:2.71,dateLabel:'Today',createdAt:'08:15',games:[{home:'Ajax',away:'PSV',league:'Eredivisie',tip:'Over 1.5',odd:1.35,tier:1,avg:'3.4'}]}
+];
+
+function genSporty(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';let r='';for(let i=0;i<6;i++)r+=c[Math.floor(Math.random()*c.length)];return r;}
+function genBet365(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';let r='';for(let i=0;i<4;i++)r+=c[Math.floor(Math.random()*c.length)];return 'BET365-GP247-'+r;}
+function calcOdds(g){return g.reduce((a,b)=>a*parseFloat(b.odd),1)||1;}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
+
+function buildDateTracker(){
+  const row=document.getElementById('dateRow');
+  const base=new Date();
+  let html='';
+  for(let i=-2;i<=5;i++){
+    const d=new Date(base);d.setDate(base.getDate()+i);
+    const dateStr=d.toLocaleDateString('en-CA',{timeZone:'Africa/Lagos'});
+    const dayName=d.toLocaleDateString('en-US',{weekday:'short'});
+    const dayNum=d.getDate();
+    const isToday=i===0;const isTomorrow=i===1;const isActive=dateStr===selectedDate;
+    let label=isToday?'TODAY':isTomorrow?'TOMORROW':'';
+    html+=`<button onclick="selectDate('${dateStr}')" class="date-card ${isToday?'today':''} ${isTomorrow?'tomorrow':''} ${isActive?'active':''}"><div class="text-[9px]">${dayName}</div><div class="font-bold text-[14px]">${dayNum}</div><div class="text-[8px] ${isTomorrow?'text-green-400 font-bold':''}">${label}</div></button>`;
+  }
+  row.innerHTML=html;
+  document.getElementById('selectedDateLabel').textContent = selectedDate===getTomorrowDate()? `TOMORROW ${selectedDate} - BET AHEAD WINNING TIER1 97%` : selectedDate;
+  document.getElementById('loadDateLabel').textContent = selectedDate;
+}
+
+function selectDate(d){selectedDate=d;buildDateTracker();fetchV11Games(d);window.history.replaceState(null,'',`?date=${d}`);showToast(`Loading ${d} - WINNING TICKET 100 games`);window.scrollTo({top:0,behavior:'smooth'});}
+
+async function fetchV11Games(dateStr){
+  const list=document.getElementById('v11QuickList');
+  list.innerHTML='<div class="text-[10px] text-neutral-500 py-2"><i class="fas fa-spinner fa-spin"></i> Loading 100 WINNING games Tier1 97%...</div>';
+  try{
+    const res=await fetch(`/api/update?date=${dateStr}`);
+    const data=await res.json();
+    v11Games=data.tips||[];
+    if(v11Games.length===0){list.innerHTML='<div class="text-[10px] text-neutral-500">No games for '+dateStr+'</div>';return;}
+    list.innerHTML=v11Games.slice(0,20).map(g=>`<button onclick="quickAddV11(${g.id||g.number})" class="w-full text-left flex justify-between items-center p-2 rounded-lg bg-[#111] border border-[#222] hover:border-green-500/50 text-[10px]"><div class="flex-1 min-w-0"><div class="font-bold truncate">#${g.number} ${g.match} <span class="text-green-400">T${g.leagueStats?.tier||4} ${g.leagueStats?.over15||82}%</span></div><div class="text-[9px] text-neutral-500">${g.league} • Avg ${g.avg} • ${g.ourPick?.tip} @${g.ourPick?.odd} • ${g.time}</div></div><div class="ml-2 text-[9px] bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded">+ADD</div></button>`).join('') + (v11Games.length>20?`<div class="text-[9px] text-neutral-600 text-center py-1">Showing 20 of ${v11Games.length} WINNING games - Scroll for more in main page</div>`:'');
+  }catch(e){list.innerHTML='<div class="text-[10px] text-red-400">Failed to load V11 games</div>';}
+}
+
+function quickAddV11(id){
+  const g=v11Games.find(x=> (x.id||x.number)==id) || v11Games[id];
+  if(!g){showToast('Game not found');return;}
+  const pick=g.ourPick||{tip:'Over 1.5',odd:'1.35'};
+  currentGames.push({home:g.home||g.match.split(' vs ')[0], away:g.away||g.match.split(' vs ')[1]||'', league:g.league||'Unknown', tip:pick.tip, odd:pick.odd, tier:g.leagueStats?.tier||4, avg:g.avg||'2.5', number:g.number});
+  renderCurrent();
+  showToast(`Added #${g.number} ${g.match} - WINNING TIER ${g.leagueStats?.tier}`);
+}
+
+function renderCurrent(){
+  document.getElementById('gameCount').textContent=currentGames.length+' games';
+  document.getElementById('totalOdds').textContent=calcOdds(currentGames).toFixed(2);
+  const list=document.getElementById('currentList');
+  if(!currentGames.length){list.innerHTML='<div class="py-4 text-center text-[11px] text-neutral-600 border border-dashed border-[#1e1e1e] rounded-xl">No games yet - Load V11 WINNING or add manual</div>';return;}
+  list.innerHTML=currentGames.map((g,i)=>`<div class="flex justify-between items-center p-2.5 rounded-xl bg-[#0a0a0a] border border-[#1e1e1e] text-[11px]"><div class="flex-1 min-w-0"><div class="font-bold truncate">${g.number?`#${g.number} `:''}${g.home} vs ${g.away} <span class="text-[9px] px-1 py-0.5 rounded bg-green-500/20 text-green-400">T${g.tier||4} ${g.avg?g.avg+' avg':''}</span></div><div class="text-[10px] text-neutral-400">${g.league} - ${g.tip} @${g.odd}</div></div><button onclick="removeGame(${i})" class="ml-2 w-6 h-6 rounded-full bg-[#1a1a1a] flex items-center justify-center">✕</button></div>`).join('');
+}
+
+function removeGame(i){currentGames.splice(i,1);renderCurrent();}
+
+function renderTickets(){
+  const grid=document.getElementById('ticketsGrid');
+  document.getElementById('ticketCount').textContent=tickets.length+' active';
+  if(tickets.length===0){grid.innerHTML='<div class="col-span-full py-10 text-center text-[12px] text-neutral-600 border border-dashed border-[#222] rounded-[16px]">No booking codes yet - Generate your first WINNING TICKET booking code</div>';return;}
+  grid.innerHTML=tickets.map(t=>`<div class="rounded-[16px] bg-[#141414] border border-[#222] overflow-hidden hover:border-green-500/30 transition"><div class="p-4 flex justify-between items-center"><div class="flex gap-2 items-center"><span class="text-[10px] font-bold px-2.5 py-1 rounded-full ${t.category==='SportyBet'?'bg-[#00c853] text-black':'bg-white text-black'}">${t.category}</span><span class="text-[11px] text-neutral-500">${t.dateLabel} ${t.createdAt}</span></div><span class="text-[11px] px-2.5 py-1 rounded-full bg-[#0a0a0a] border border-[#1e1e1e] font-bold text-green-400">ODDS ${t.odds.toFixed(2)}</span></div><div class="px-4 pb-2 flex items-center gap-2 flex-wrap"><div class="text-[20px] font-bold tracking-widest">${t.code}</div><button onclick="copyCode('${t.code}')" class="h-8 px-3 rounded-lg bg-[#1a1a1a] border border-[#222] text-[11px] hover:bg-[#222]"><i class="far fa-copy"></i> Copy</button><button onclick="openSporty('${t.code}')" class="h-8 px-3 rounded-lg bg-[#00c853] text-black text-[11px] font-bold hover:bg-[#00b34a]">Open in SportyBet →</button><button onclick="deleteTicket('${t.id}')" class="h-8 w-8 rounded-lg bg-[#1a1a1a] border border-[#222] text-[11px]">🗑️</button></div><div class="px-4 pb-4 space-y-1 mt-2">${t.games.map(g=>`<div class="flex justify-between py-2 border-t border-[#1a1a1a] text-[12px]"><span class="truncate pr-2">${g.number?`#${g.number} `:''}${g.home} vs ${g.away} <span class="text-[9px] text-neutral-500">${g.league||''}</span></span><span class="text-[#00c853] font-bold flex-shrink-0">${g.tip} @${g.odd} ${g.tier?`T${g.tier}`:''}</span></div>`).join('')}</div></div>`).join('');
+}
+
+function copyCode(c){navigator.clipboard.writeText(c);showToast('Copied '+c+' - Paste in SportyBet');}
+function openSporty(c){window.open('https://www.sportybet.com/ng/m/betslip/share?code='+c,'_blank');}
+function deleteTicket(id){tickets=tickets.filter(t=>t.id!==id);localStorage.setItem('ticketsV12',JSON.stringify(tickets));renderTickets();showToast('Deleted');}
+function clearAllTickets(){if(!confirm('Clear all booking codes?'))return;tickets=[];localStorage.setItem('ticketsV12',JSON.stringify(tickets));renderTickets();showToast('Cleared all');}
+async function trackVisit(){try{await fetch('/api/visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({page:window.location.pathname})});const res=await fetch('/api/visit');const data=await res.json();if(data.today)document.getElementById('todayVisitCount').textContent=data.today;}catch(e){}}
+
+document.getElementById('addBtn').addEventListener('click',()=>{
+  const home=document.getElementById('home').value.trim();
+  const away=document.getElementById('away').value.trim();
+  const league=document.getElementById('league').value||'Friendly';
+  const tip=document.getElementById('tip').value;
+  const odd=document.getElementById('odd').value;
+  if(!home||!away||!odd){showToast('Fill home, away & odd');return;}
+  currentGames.push({home,away,league,tip,odd,tier:4,avg:'2.5'});
+  document.getElementById('home').value='';document.getElementById('away').value='';document.getElementById('odd').value='';
+  renderCurrent();showToast('Added '+home+' vs '+away);
+});
+
+document.getElementById('catSporty').addEventListener('click',()=>{
+  category='SportyBet';
+  document.getElementById('catSporty').className='h-9 rounded-lg bg-[#00c853] text-black font-semibold text-[12px]';
+  document.getElementById('catBet').className='h-9 rounded-lg text-neutral-400 text-[12px] hover:bg-[#1a1a1a]';
+});
+
+document.getElementById('catBet').addEventListener('click',()=>{
+  category='Bet365';
+  document.getElementById('catBet').className='h-9 rounded-lg bg-[#00c853] text-black font-semibold text-[12px]';
+  document.getElementById('catSporty').className='h-9 rounded-lg text-neutral-400 text-[12px] hover:bg-[#1a1a1a]';
+});
+
+document.getElementById('genBtn').addEventListener('click',()=>{
+  if(!currentGames.length){showToast('Add at least 1 game - Load V11 WINNING first');return;}
+  const code=category==='SportyBet'?genSporty():genBet365();
+  const odds=calcOdds(currentGames);
+  tickets.unshift({id:Date.now().toString(),category,code,odds,dateLabel:selectedDate===getTomorrowDate()?'Tomorrow':selectedDate,createdAt:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),games:JSON.parse(JSON.stringify(currentGames))});
+  localStorage.setItem('ticketsV12',JSON.stringify(tickets));
+  currentGames=[];renderCurrent();renderTickets();showToast('Generated WINNING CODE '+code+' @'+odds.toFixed(2));
+});
+
+document.getElementById('loadV11Btn').addEventListener('click',()=>{fetchV11Games(selectedDate);});
+
+buildDateTracker();
+renderCurrent();
+renderTickets();
+fetchV11Games(selectedDate);
+trackVisit();
+</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"\");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"\")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</html>
