@@ -1,8 +1,8 @@
-// /api/update.js - V4.2 OPTIMIZED REAL-ONLY FETCH WITH DEEP DEBUG
+// /api/update.js - V4.5 ACTIVE LEAGUES FETCH WITH SEASON & LEAGUE-ID FALLBACK
 export default async function handler(req, res) {
   const { date } = req.query;
 
-  // Get date string formatted for Lagos timezone (YYYY-MM-DD)
+  // Format date to Lagos timezone string (YYYY-MM-DD)
   const getLagosDateStr = (d = new Date()) => {
     return new Intl.DateTimeFormat('en-CA', {
       timeZone: 'Africa/Lagos',
@@ -12,33 +12,36 @@ export default async function handler(req, res) {
     }).format(d);
   };
 
-  const getMinusDateStr = (baseDateStr, daysToSub) => {
-    const d = new Date(baseDateStr + 'T00:00:00Z');
-    d.setUTCDate(d.getUTCDate() - daysToSub);
-    return d.toISOString().split('T')[0];
-  };
-
   const todayStr = getLagosDateStr();
   const targetDate = date || todayStr;
 
   const API_KEY = process.env.FOOTBALL_API_KEY || process.env.API_FOOTBALL_KEY || "";
   const USE_REAL = !!API_KEY;
 
+  // Active leagues mapped with benchmark statistics
   const HIGH = {
+    'Veikkausliiga': { avg: 3.1, over15: 93, over25: 75, btts: 72, home15: 68, away15: 60, tier: 1 },
+    'Serie A': { avg: 2.8, over15: 88, over25: 66, btts: 68, home15: 62, away15: 54, tier: 2 },
+    'Liga 1': { avg: 2.7, over15: 86, over25: 64, btts: 65, home15: 60, away15: 52, tier: 2 },
+    'Primera A': { avg: 2.6, over15: 84, over25: 60, btts: 62, home15: 58, away15: 50, tier: 3 },
     'Eredivisie': { avg: 3.4, over15: 96, over25: 82, btts: 78, home15: 72, away15: 65, tier: 1 },
     'Bundesliga': { avg: 3.2, over15: 94, over25: 78, btts: 75, home15: 70, away15: 62, tier: 1 },
-    'Eerste Divisie': { avg: 3.5, over15: 97, over25: 85, btts: 80, home15: 75, away15: 68, tier: 1 },
     'Premier League': { avg: 2.9, over15: 90, over25: 70, btts: 72, home15: 65, away15: 58, tier: 2 },
     'A-League': { avg: 3.2, over15: 94, over25: 79, btts: 76, home15: 71, away15: 64, tier: 1 },
     'MLS': { avg: 3.0, over15: 92, over25: 75, btts: 74, home15: 68, away15: 60, tier: 2 },
-    'Champions League': { avg: 3.0, over15: 92, over25: 75, btts: 74, home15: 68, away15: 60, tier: 1 },
-    'Europa League': { avg: 2.9, over15: 90, over25: 72, btts: 72, home15: 66, away15: 58, tier: 2 },
-    'La Liga': { avg: 2.8, over15: 89, over25: 68, btts: 70, home15: 64, away15: 56, tier: 2 },
-    'Serie A': { avg: 2.8, over15: 88, over25: 66, btts: 68, home15: 62, away15: 54, tier: 2 },
-    'Ligue 1': { avg: 2.9, over15: 90, over25: 70, btts: 71, home15: 65, away15: 57, tier: 2 },
   };
 
+  // Specific API-Football League IDs playing today to query directly if standard fetch returns 0
+  const ACTIVE_LEAGUE_IDS = [
+    { id: 71, name: 'Serie A (Brazil)' },
+    { id: 244, name: 'Veikkausliiga (Finland)' },
+    { id: 283, name: 'Liga 1 (Romania)' },
+    { id: 239, name: 'Primera A (Colombia)' },
+    { id: 281, name: 'Liga 1 (Peru)' }
+  ];
+
   function getStats(name) {
+    if (!name) return { avg: 2.6, over15: 85, over25: 62, btts: 68, home15: 60, away15: 52, tier: 3 };
     if (HIGH[name]) return HIGH[name];
     for (const [k, s] of Object.entries(HIGH)) {
       if (name.includes(k)) return s;
@@ -46,44 +49,44 @@ export default async function handler(req, res) {
     return { avg: 2.6, over15: 85, over25: 62, btts: 68, home15: 60, away15: 52, tier: 3 };
   }
 
-  async function fetchFixtures(dateStr) {
-    if (!USE_REAL) {
-      return { fixtures: [], error: 'NO_KEY', details: 'FOOTBALL_API_KEY environment variable is missing in Vercel.', remaining: '0', quota: false, noKey: true };
-    }
-    try {
-      const headers = {
-        'x-apisports-key': API_KEY,
-        'x-rapidapi-key': API_KEY
+  function getHeaders() {
+    const isRapid = API_KEY.length > 40;
+    if (isRapid) {
+      return {
+        'x-rapidapi-key': API_KEY,
+        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
       };
+    }
+    return {
+      'x-apisports-key': API_KEY
+    };
+  }
 
-      const r = await fetch(`https://v3.football.api-sports.io/fixtures?date=${dateStr}`, { headers });
+  function getBaseUrl() {
+    return API_KEY.length > 40 
+      ? 'https://api-football-v1.p.rapidapi.com/v3'
+      : 'https://v3.football.api-sports.io';
+  }
+
+  async function fetchFixturesByUrl(url) {
+    if (!USE_REAL) return { fixtures: [], error: 'NO_KEY' };
+    try {
+      const headers = getHeaders();
+      const r = await fetch(url, { headers });
       const remaining = r.headers.get('x-ratelimit-requests-remaining') || 'unknown';
-      const limit = r.headers.get('x-ratelimit-requests-limit') || 'unknown';
 
       if (!r.ok) {
         const txt = await r.text();
-        if (r.status === 429 || txt.toLowerCase().includes('limit') || txt.toLowerCase().includes('quota')) {
-          return { fixtures: [], error: `QUOTA_EXCEEDED_${r.status}`, details: `Quota finished! Limit ${limit}, Remaining ${remaining}.`, remaining, quota: true };
-        }
         return { fixtures: [], error: `HTTP_${r.status}`, details: txt.slice(0, 500), remaining };
       }
 
       const j = await r.json();
-
-      if (j.errors && Object.keys(j.errors).length > 0) {
-        const errStr = JSON.stringify(j.errors);
-        if (errStr.toLowerCase().includes('limit') || errStr.toLowerCase().includes('quota')) {
-          return { fixtures: [], error: 'QUOTA_EXCEEDED', details: errStr.slice(0, 500), remaining, quota: true, rawResponse: j };
-        }
-        return { fixtures: [], error: 'API_ERROR', details: errStr.slice(0, 500), remaining, rawResponse: j };
-      }
-
       if (!j.response || j.response.length === 0) {
-        return { fixtures: [], error: 'NO_FIXTURES', details: `0 fixtures returned for ${dateStr}. Check rawResponse in debug.`, remaining, responseCount: 0, rawResponse: j };
+        return { fixtures: [], error: 'NO_FIXTURES', remaining };
       }
 
       const fixtures = j.response.map(f => {
-        const ls = getStats(f.league.name);
+        const ls = getStats(f.league?.name || '');
         const fd = new Date(f.fixture.date);
         return {
           home: f.teams.home.name,
@@ -94,31 +97,57 @@ export default async function handler(req, res) {
           leagueStats: ls,
           time: fd.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Lagos' }),
           dateDisplay: fd.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', timeZone: 'Africa/Lagos' }),
-          dateValue: dateStr,
+          dateValue: targetDate,
           timestamp: fd.getTime(),
           fixtureId: f.fixture.id,
           status: f.fixture.status.short,
           goalsHome: f.goals.home,
           goalsAway: f.goals.away,
-          date: dateStr
+          date: targetDate
         };
       });
 
-      return { fixtures, error: null, remaining, limit, responseCount: fixtures.length };
+      return { fixtures, error: null, remaining };
     } catch (e) {
-      return { fixtures: [], error: e.message, details: e.toString() };
+      return { fixtures: [], error: e.message };
     }
+  }
+
+  async function fetchFixtures(dateStr) {
+    const baseUrl = getBaseUrl();
+    
+    // 1. First attempt standard date query
+    let result = await fetchFixturesByUrl(`${baseUrl}/fixtures?date=${dateStr}&timezone=Africa/Lagos`);
+    
+    // 2. If standard date search yields zero fixtures, fallback to querying active leagues directly
+    if (result.fixtures.length === 0) {
+      const year = dateStr.split('-')[0];
+      let aggregatedFixtures = [];
+
+      for (const lg of ACTIVE_LEAGUE_IDS) {
+        const leagueUrl = `${baseUrl}/fixtures?league=${lg.id}&season=${year}&date=${dateStr}`;
+        const leagueRes = await fetchFixturesByUrl(leagueUrl);
+        if (leagueRes.fixtures.length > 0) {
+          aggregatedFixtures = [...aggregatedFixtures, ...leagueRes.fixtures];
+        }
+      }
+
+      if (aggregatedFixtures.length > 0) {
+        result.fixtures = aggregatedFixtures;
+        result.error = null;
+      }
+    }
+
+    return result;
   }
 
   async function fetchOdds(dateStr) {
     if (!USE_REAL) return { oddsMap: {}, count: 0 };
     try {
-      const headers = {
-        'x-apisports-key': API_KEY,
-        'x-rapidapi-key': API_KEY
-      };
+      const headers = getHeaders();
+      const baseUrl = getBaseUrl();
 
-      const r = await fetch(`https://v3.football.api-sports.io/odds?date=${dateStr}`, { headers });
+      const r = await fetch(`${baseUrl}/odds?date=${dateStr}`, { headers });
       if (!r.ok) return { oddsMap: {}, count: 0 };
 
       const j = await r.json();
@@ -222,49 +251,16 @@ export default async function handler(req, res) {
     return "";
   }
 
-  let allOddsMap = {};
-  let realCount = 0;
   let tips = [];
-  let debugInfo = { apiKeySet: USE_REAL, quotaExceeded: false, errors: [], today: todayStr, requested: targetDate, envKeyExists: USE_REAL, noKey: !USE_REAL };
+  let debugInfo = { apiKeySet: USE_REAL, errors: [], today: todayStr, requested: targetDate };
 
-  const primaryDates = [targetDate];
-  if (targetDate !== todayStr) primaryDates.push(todayStr);
+  const [fixRes, oddsRes] = await Promise.all([fetchFixtures(targetDate), fetchOdds(targetDate)]);
 
-  let targetFixturesFound = false;
-
-  for (const dateStr of primaryDates) {
-    const [fixRes, oddsRes] = await Promise.all([fetchFixtures(dateStr), fetchOdds(dateStr)]);
-    
-    debugInfo.errors.push({ date: dateStr, error: fixRes.error, details: fixRes.details || '', remaining: fixRes.remaining, count: fixRes.responseCount || 0, rawResponse: fixRes.rawResponse || null });
-    if (fixRes.quota) debugInfo.quotaExceeded = true;
-    if (fixRes.noKey) debugInfo.noKey = true;
-
-    allOddsMap = { ...allOddsMap, ...oddsRes.oddsMap };
-    realCount += oddsRes.count;
-
-    if (fixRes.fixtures.length > 0) {
-      targetFixturesFound = true;
-      processFixtures(fixRes.fixtures, dateStr);
-    }
-  }
-
-  // Fallback to recent history ONLY if target and today returned zero games
-  if (!targetFixturesFound && !debugInfo.quotaExceeded && !debugInfo.noKey) {
-    const fallbackDates = [getMinusDateStr(targetDate, 1), getMinusDateStr(targetDate, 2)];
-    for (const dateStr of fallbackDates) {
-      const fixRes = await fetchFixtures(dateStr);
-      if (fixRes.fixtures.length > 0) {
-        processFixtures(fixRes.fixtures, dateStr);
-        break;
-      }
-    }
-  }
-
-  function processFixtures(fixtures, dateStr) {
-    for (const f of fixtures) {
+  if (fixRes.fixtures.length > 0) {
+    for (const f of fixRes.fixtures) {
       if (tips.length >= 150) break;
 
-      const ro = allOddsMap[f.fixtureId] || {};
+      const ro = oddsRes.oddsMap[f.fixtureId] || {};
       const over15 = mStats(f, 'Over 1.5', ro.over15);
       const over25 = mStats(f, 'Over 2.5', ro.over25);
       const btts = mStats(f, 'BTTS Yes', ro.btts);
@@ -284,8 +280,6 @@ export default async function handler(req, res) {
       const bestKey = keys.sort((a, b) => markets[b].winProb - markets[a].winProb)[0];
       const ourPick = markets[bestKey];
 
-      if (tips.find(t => t.id === f.fixtureId)) continue;
-
       tips.push({
         match: `${f.home} vs ${f.away}`,
         home: f.home,
@@ -293,9 +287,9 @@ export default async function handler(req, res) {
         league: f.league,
         time: f.time,
         dateDisplay: f.dateDisplay,
-        dateValue: f.dateValue,
+        dateValue: targetDate,
         timestamp: f.timestamp,
-        date: f.dateValue,
+        date: targetDate,
         requestedDate: targetDate,
         status: getStatus(f.status),
         result: ourPick.result,
@@ -308,14 +302,13 @@ export default async function handler(req, res) {
         confidence: ourPick.winProb,
         winProb: ourPick.winProb,
         odd: ourPick.odd,
-        id: f.fixtureId,
-        isPreviousDay: dateStr !== targetDate
+        id: f.fixtureId
       });
     }
   }
 
   if (tips.length === 0) {
-    res.setHeader('Cache-Control', 's-maxage=60');
+    res.setHeader('Cache-Control', 's-maxage=30');
     return res.json({
       date: targetDate,
       total: 0,
@@ -327,22 +320,13 @@ export default async function handler(req, res) {
       winRate: 0,
       tips: [],
       accas: {},
-      source: `V4.2_REAL_0_GAMES`,
+      source: `V4.5_ACTIVE_LEAGUES_FALLBACK`,
       realOddsCount: 0,
       debug: debugInfo,
-      apiKeySet: USE_REAL,
-      quotaExceeded: debugInfo.quotaExceeded,
-      noKey: debugInfo.noKey,
-      error: debugInfo.noKey ? 'NO_API_KEY_SET' : debugInfo.quotaExceeded ? 'QUOTA_EXCEEDED' : 'NO_FIXTURES_REAL'
+      apiKeySet: USE_REAL
     });
   }
 
-  const seen = new Set();
-  tips = tips.filter(f => {
-    if (seen.has(f.id)) return false;
-    seen.add(f.id);
-    return true;
-  });
   tips.sort((a, b) => a.timestamp - b.timestamp);
   tips = tips.map((t, i) => ({ ...t, number: i + 1 }));
 
@@ -404,18 +388,17 @@ export default async function handler(req, res) {
   res.json({
     date: targetDate,
     total: tips.length,
-    todayCount: tips.filter(t => !t.isPreviousDay).length,
-    previousCount: tips.filter(t => t.isPreviousDay).length,
+    todayCount: tips.length,
+    previousCount: 0,
     wonCount,
     lostCount,
     pendingCount,
     winRate: tips.length ? Math.round((wonCount / tips.length) * 100) : 0,
     tips,
     accas,
-    source: `V4.2_REAL_OPTIMIZED`,
-    realOddsCount: realCount,
+    source: `V4.5_ACTIVE_LEAGUES_FALLBACK`,
+    realOddsCount: oddsRes.count,
     debug: debugInfo,
-    apiKeySet: USE_REAL,
-    quotaExceeded: debugInfo.quotaExceeded
+    apiKeySet: USE_REAL
   });
 }
