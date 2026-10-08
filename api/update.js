@@ -1,4 +1,4 @@
-// /api/update.js - V4.1 OPTIMIZED REAL-ONLY FETCH
+// /api/update.js - V4.2 OPTIMIZED REAL-ONLY FETCH WITH DEEP DEBUG
 export default async function handler(req, res) {
   const { date } = req.query;
 
@@ -51,9 +51,12 @@ export default async function handler(req, res) {
       return { fixtures: [], error: 'NO_KEY', details: 'FOOTBALL_API_KEY environment variable is missing in Vercel.', remaining: '0', quota: false, noKey: true };
     }
     try {
-      const r = await fetch(`https://v3.football.api-sports.io/fixtures?date=${dateStr}`, {
-        headers: { 'x-apisports-key': API_KEY }
-      });
+      const headers = {
+        'x-apisports-key': API_KEY,
+        'x-rapidapi-key': API_KEY
+      };
+
+      const r = await fetch(`https://v3.football.api-sports.io/fixtures?date=${dateStr}`, { headers });
       const remaining = r.headers.get('x-ratelimit-requests-remaining') || 'unknown';
       const limit = r.headers.get('x-ratelimit-requests-limit') || 'unknown';
 
@@ -66,16 +69,17 @@ export default async function handler(req, res) {
       }
 
       const j = await r.json();
+
       if (j.errors && Object.keys(j.errors).length > 0) {
         const errStr = JSON.stringify(j.errors);
         if (errStr.toLowerCase().includes('limit') || errStr.toLowerCase().includes('quota')) {
-          return { fixtures: [], error: 'QUOTA_EXCEEDED', details: errStr.slice(0, 500), remaining, quota: true };
+          return { fixtures: [], error: 'QUOTA_EXCEEDED', details: errStr.slice(0, 500), remaining, quota: true, rawResponse: j };
         }
-        return { fixtures: [], error: 'API_ERROR', details: errStr.slice(0, 500), remaining };
+        return { fixtures: [], error: 'API_ERROR', details: errStr.slice(0, 500), remaining, rawResponse: j };
       }
 
       if (!j.response || j.response.length === 0) {
-        return { fixtures: [], error: 'NO_FIXTURES', details: `0 fixtures found for ${dateStr}.`, remaining, responseCount: 0 };
+        return { fixtures: [], error: 'NO_FIXTURES', details: `0 fixtures returned for ${dateStr}. Check rawResponse in debug.`, remaining, responseCount: 0, rawResponse: j };
       }
 
       const fixtures = j.response.map(f => {
@@ -109,9 +113,12 @@ export default async function handler(req, res) {
   async function fetchOdds(dateStr) {
     if (!USE_REAL) return { oddsMap: {}, count: 0 };
     try {
-      const r = await fetch(`https://v3.football.api-sports.io/odds?date=${dateStr}`, {
-        headers: { 'x-apisports-key': API_KEY }
-      });
+      const headers = {
+        'x-apisports-key': API_KEY,
+        'x-rapidapi-key': API_KEY
+      };
+
+      const r = await fetch(`https://v3.football.api-sports.io/odds?date=${dateStr}`, { headers });
       if (!r.ok) return { oddsMap: {}, count: 0 };
 
       const j = await r.json();
@@ -220,7 +227,6 @@ export default async function handler(req, res) {
   let tips = [];
   let debugInfo = { apiKeySet: USE_REAL, quotaExceeded: false, errors: [], today: todayStr, requested: targetDate, envKeyExists: USE_REAL, noKey: !USE_REAL };
 
-  // PRIORITIZED DATES: Target date first, then fallback to recent days ONLY if primary returns 0 games.
   const primaryDates = [targetDate];
   if (targetDate !== todayStr) primaryDates.push(todayStr);
 
@@ -229,7 +235,7 @@ export default async function handler(req, res) {
   for (const dateStr of primaryDates) {
     const [fixRes, oddsRes] = await Promise.all([fetchFixtures(dateStr), fetchOdds(dateStr)]);
     
-    debugInfo.errors.push({ date: dateStr, error: fixRes.error, details: fixRes.details || '', remaining: fixRes.remaining, count: fixRes.responseCount || 0 });
+    debugInfo.errors.push({ date: dateStr, error: fixRes.error, details: fixRes.details || '', remaining: fixRes.remaining, count: fixRes.responseCount || 0, rawResponse: fixRes.rawResponse || null });
     if (fixRes.quota) debugInfo.quotaExceeded = true;
     if (fixRes.noKey) debugInfo.noKey = true;
 
@@ -321,7 +327,7 @@ export default async function handler(req, res) {
       winRate: 0,
       tips: [],
       accas: {},
-      source: `V4.1_REAL_0_GAMES`,
+      source: `V4.2_REAL_0_GAMES`,
       realOddsCount: 0,
       debug: debugInfo,
       apiKeySet: USE_REAL,
@@ -331,7 +337,6 @@ export default async function handler(req, res) {
     });
   }
 
-  // Deduplicate and Sort
   const seen = new Set();
   tips = tips.filter(f => {
     if (seen.has(f.id)) return false;
@@ -341,12 +346,11 @@ export default async function handler(req, res) {
   tips.sort((a, b) => a.timestamp - b.timestamp);
   tips = tips.map((t, i) => ({ ...t, number: i + 1 }));
 
-  // Accumulator Builders
   let usedMatchesGlobal = new Set();
 
   function buildAcca(name, mKey, gCount, offset = 0) {
     let pool = tips.filter(t => t.markets[mKey]).sort((a, b) => b.markets[mKey].winProb - a.markets[mKey].winProb);
-    if (pool.length === 0) pool = [...tips]; // Fallback if specific market is empty
+    if (pool.length === 0) pool = [...tips];
     pool = pool.slice(offset).concat(pool.slice(0, offset));
 
     let sel = [];
@@ -408,7 +412,7 @@ export default async function handler(req, res) {
     winRate: tips.length ? Math.round((wonCount / tips.length) * 100) : 0,
     tips,
     accas,
-    source: `V4.1_REAL_OPTIMIZED`,
+    source: `V4.2_REAL_OPTIMIZED`,
     realOddsCount: realCount,
     debug: debugInfo,
     apiKeySet: USE_REAL,
