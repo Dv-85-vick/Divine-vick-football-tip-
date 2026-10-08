@@ -1,4 +1,4 @@
-// /api/update.js - V3.9 FINAL - ROOT FIXED - REAL API + EMERGENCY FALLBACK - FIXES 0 GAMES FOREVER
+// /api/update.js - V4.0 FINAL - TRUE REAL ONLY - NO MOCK EVER - FIXES MOCK GAMES FOREVER
 export default async function handler(req, res) {
   const { date } = req.query;
   const getToday = () => new Date().toLocaleDateString('en-CA', {timeZone: 'Africa/Lagos'});
@@ -24,22 +24,23 @@ export default async function handler(req, res) {
   function getStats(name){ if(HIGH[name]) return HIGH[name]; for(const [k,s] of Object.entries(HIGH)){ if(name.includes(k)) return s; } return {avg: 2.6, over15: 85, over25: 62, btts: 68, home15: 60, away15: 52, tier: 3}; }
 
   async function fetchFixtures(dateStr){
-    if(!USE_REAL) return {fixtures:[], error:'NO_KEY', details:'FOOTBALL_API_KEY not set in Vercel Env Vars', quota:false};
+    if(!USE_REAL) return {fixtures:[], error:'NO_KEY', details:'FOOTBALL_API_KEY not set in Vercel > Settings > Environment Variables', remaining:'0', quota:false, noKey:true};
     try{
       const r=await fetch(`https://v3.football.api-sports.io/fixtures?date=${dateStr}`, {headers:{'x-apisports-key':API_KEY}});
       const remaining = r.headers.get('x-ratelimit-requests-remaining') || 'unknown';
+      const limit = r.headers.get('x-ratelimit-requests-limit') || 'unknown';
       if(!r.ok){
         const txt = await r.text();
-        if(r.status===429 || txt.toLowerCase().includes('limit') || txt.toLowerCase().includes('quota')) return {fixtures:[], error:`QUOTA_${r.status}`, details:txt.slice(0,300), remaining, quota:true};
-        return {fixtures:[], error:`HTTP_${r.status}`, details:txt.slice(0,300), remaining};
+        if(r.status===429 || txt.toLowerCase().includes('limit') || txt.toLowerCase().includes('quota') || txt.toLowerCase().includes('too many')) return {fixtures:[], error:`QUOTA_EXCEEDED_${r.status}`, details:`Quota finished! Limit ${limit}, Remaining ${remaining}. Wait 24h or upgrade API plan. Response: ${txt.slice(0,400)}`, remaining, quota:true};
+        return {fixtures:[], error:`HTTP_${r.status}`, details:txt.slice(0,500), remaining};
       }
       const j=await r.json();
       if(j.errors && Object.keys(j.errors).length>0){
         const errStr = JSON.stringify(j.errors);
-        if(errStr.toLowerCase().includes('limit') || errStr.toLowerCase().includes('quota')) return {fixtures:[], error:'QUOTA_EXCEEDED', details:errStr.slice(0,300), remaining, quota:true};
-        return {fixtures:[], error:'API_ERROR', details:errStr.slice(0,300), remaining};
+        if(errStr.toLowerCase().includes('limit') || errStr.toLowerCase().includes('quota')) return {fixtures:[], error:'QUOTA_EXCEEDED', details:`Quota exceeded: ${errStr.slice(0,500)} | Remaining: ${remaining}`, remaining, quota:true};
+        return {fixtures:[], error:'API_ERROR', details:errStr.slice(0,500), remaining};
       }
-      if(!j.response || j.response.length===0) return {fixtures:[], error:'NO_FIX', details:`No fixtures for ${dateStr}`, remaining, responseCount:0};
+      if(!j.response || j.response.length===0) return {fixtures:[], error:'NO_FIXTURES', details:`API returned 0 fixtures for ${dateStr} - Real date has no games (off-season or no matches). Try another date.`, remaining, responseCount:0};
       const fixtures=j.response.map(f=>{
         const ls=getStats(f.league.name);
         const fd=new Date(f.fixture.date);
@@ -52,7 +53,7 @@ export default async function handler(req, res) {
           status:f.fixture.status.short, goalsHome:f.goals.home, goalsAway:f.goals.away, date:dateStr
         };
       });
-      return {fixtures, error:null, remaining, responseCount:fixtures.length};
+      return {fixtures, error:null, remaining, limit, responseCount:fixtures.length};
     }catch(e){ return {fixtures:[], error:e.message, details:e.toString()}; }
   }
 
@@ -91,7 +92,7 @@ export default async function handler(req, res) {
     const ls=f.leagueStats;
     const odd=realOdd || getEstimatedOdd(market==='Over 1.5'?'over15':market==='Over 2.5'?'over25':market==='BTTS Yes'?'btts':market==='Home Over 1.5'?'home15':'away15', ls.tier);
     const isReal=!!realOdd;
-    if(market==='Over 1.5') return {odd, winProb:ls.over15, conf:ls.over15, reason:`${isReal?'✅ REAL':'📊 EST'} O1.5 ${ls.over15}% ${f.dateValue}`, tier:ls.tier, isReal};
+    if(market==='Over 1.5') return {odd, winProb:ls.over15, conf:ls.over15, reason:`${isReal?'✅ REAL Bet365':'📊 EST'} O1.5 ${ls.over15}% ${f.dateValue}`, tier:ls.tier, isReal};
     if(market==='Over 2.5') return {odd, winProb:ls.over25, conf:ls.over25, reason:`O2.5 ${ls.over25}% ${f.dateValue}`, tier:ls.tier, isReal};
     if(market==='BTTS Yes') return {odd, winProb:ls.btts, conf:ls.btts, reason:`BTTS ${ls.btts}% ${f.dateValue}`, tier:ls.tier, isReal};
     if(market==='Home Over 1.5') return {odd, winProb:ls.home15, conf:ls.home15, reason:`HOME O1.5 ${ls.home15}%`, tier:ls.tier, isReal};
@@ -113,7 +114,7 @@ export default async function handler(req, res) {
   function getRealScore(f){ if(f.goalsHome!==null&&f.goalsAway!==null) return `[${f.goalsHome}-${f.goalsAway}]`; return ""; }
 
   let allOddsMap={}; let realCount=0; let tips=[];
-  let debugInfo = {apiKeySet:USE_REAL, quotaExceeded:false, errors:[], today:todayStr, requested:targetDate, envKeyExists:USE_REAL};
+  let debugInfo = {apiKeySet:USE_REAL, quotaExceeded:false, errors:[], today:todayStr, requested:targetDate, envKeyExists:USE_REAL, noKey:!USE_REAL};
   const datesToTry = [];
   datesToTry.push(targetDate);
   for(let i=1;i<=7;i++) datesToTry.push(getMinus(targetDate,i));
@@ -123,8 +124,9 @@ export default async function handler(req, res) {
   for(const dateStr of datesToTry){
     if(tips.length>=80) break;
     const [fixRes, oddsRes] = await Promise.all([fetchFixtures(dateStr), fetchOdds(dateStr)]);
-    debugInfo.errors.push({date:dateStr, error:fixRes.error, details:fixRes.details||'', remaining:fixRes.remaining, count:fixRes.responseCount||0, quota:fixRes.quota||false});
+    debugInfo.errors.push({date:dateStr, error:fixRes.error, details:fixRes.details||'', remaining:fixRes.remaining, limit:fixRes.limit||'', count:fixRes.responseCount||0, quota:fixRes.quota||false, noKey:fixRes.noKey||false});
     if(fixRes.quota) debugInfo.quotaExceeded = true;
+    if(fixRes.noKey) debugInfo.noKey = true;
     allOddsMap={...allOddsMap,...oddsRes.oddsMap}; realCount+=oddsRes.count;
     if(fixRes.fixtures.length>0){
       for(const f of fixRes.fixtures){
@@ -152,37 +154,16 @@ export default async function handler(req, res) {
     }
   }
 
-  // EMERGENCY FALLBACK - NEVER SHOW 0 GAMES - If still 0, create sample REALISTIC games
   if(tips.length===0){
-    const sampleTeams = [
-      ['Ajax','PSV'], ['Bayern','Dortmund'], ['Man City','Arsenal'], ['Barcelona','Real Madrid'],
-      ['Liverpool','Chelsea'], ['PSG','Marseille'], ['Inter','AC Milan'], ['Benfica','Porto'],
-      ['Ajax','Feyenoord'], ['Man United','Tottenham'], ['Napoli','Juventus'], ['Dortmund','Leverkusen'],
-      ['Atletico','Sevilla'], ['Lille','Lyon'], ['Galatasaray','Fenerbahce'], ['Celtic','Rangers'],
-      ['Flamengo','Palmeiras'], ['Al Nassr','Al Hilal'], ['LAFC','Inter Miami'], ['Sydney FC','Melbourne City']
-    ];
-    const now = Date.now();
-    tips = sampleTeams.map((pair,i)=>{
-      const ls = {avg:'3.2', over15:94, over25:78, btts:75, home15:70, away15:62, tier:1};
-      const gh = i%3===0?2: i%3===1?1: null;
-      const ga = i%3===0?1: i%3===1?1: null;
-      const status = gh===null? 'UPCOMING • NOT STARTED' : 'FT • FINISHED';
-      const score = gh!==null? `[${gh}-${ga}]` : '';
-      const result = gh!==null? (gh+ga>=2?'WON':'LOST') : 'PENDING';
-      const markets = {
-        over15:{market:'Over 1.5',tip:'Over 1.5',key:'over15',odd:'1.25',winProb:94,conf:94,reason:`⚠️ EMERGENCY FALLBACK - NO API KEY - ${targetDate} - REAL API returned 0`, tier:1, isReal:false, result:result},
-        over25:{market:'Over 2.5',tip:'Over 2.5',key:'over25',odd:'1.65',winProb:78,conf:78,reason:'FALLBACK', tier:1, isReal:false, result:result},
-        btts:{market:'BTTS Yes',tip:'BTTS Yes',key:'btts',odd:'1.70',winProb:75,conf:75,reason:'FALLBACK', tier:1, isReal:false, result:result},
-        home15:{market:'Home Over 1.5',tip:`${pair[0]} Over 1.5`,key:'home15',odd:'1.85',winProb:70,conf:70,reason:'FALLBACK', tier:1, isReal:false, result:result},
-        away15:{market:'Away Over 1.5',tip:`${pair[1]} Over 1.5`,key:'away15',odd:'2.10',winProb:62,conf:62,reason:'FALLBACK', tier:1, isReal:false, result:result}
-      };
-      return {
-        match:`${pair[0]} vs ${pair[1]}`, home:pair[0], away:pair[1], league:'Eredivisie', time:'15:00', dateDisplay:'Today', dateValue:targetDate, timestamp:now+i*3600000, date:targetDate, requestedDate:targetDate,
-        status, result, score, avg:'3.2', leagueStats:ls, markets, ourPick:markets.over15, ourPickKey:'over15', confidence:94, winProb:94, odd:'1.25', id:1000000+i, isPreviousDay:false
-      };
+    res.setHeader('Cache-Control','s-maxage=60');
+    return res.json({
+      date:targetDate, total:0, todayCount:0, previousCount:0, wonCount:0, lostCount:0, pendingCount:0,
+      winRate:0, tips:[], accas:{},
+      source:`V4.0_REAL_0_GAMES_NO_MOCK`, realOddsCount:0,
+      debug: debugInfo, apiKeySet:USE_REAL, quotaExceeded:debugInfo.quotaExceeded, noKey:debugInfo.noKey,
+      error: debugInfo.noKey? 'NO_API_KEY_SET - Go to Vercel Dashboard > Your Project > Settings > Environment Variables > Add FOOTBALL_API_KEY = your api-football key > Redeploy. Without key, REAL games cannot be fetched.' : debugInfo.quotaExceeded? 'QUOTA_EXCEEDED - API-Football quota finished. Remaining 0. Wait 24h or upgrade plan at api-football.com. Check debug.errors for details.' : 'NO_FIXTURES_REAL - API returned 0 real fixtures for all 8 dates tried. Date may have no real games (off-season). Try another date or check API-Football status.',
+      message: debugInfo.noKey? '❌ REAL GAMES NEED API KEY - No mock fake games! Set FOOTBALL_API_KEY in Vercel Env Vars' : debugInfo.quotaExceeded? '❌ QUOTA FINISHED - No real games until quota resets' : '❌ 0 REAL FIXTURES - No real games for these dates'
     });
-    debugInfo.fallbackUsed = true;
-    debugInfo.fallbackReason = !USE_REAL? 'NO_API_KEY_SET_IN_VERCEL' : 'API_RETURNED_0_GAMES_ALL_DATES';
   }
 
   const seen=new Set(); tips=tips.filter(f=>{ if(seen.has(f.id)) return false; seen.add(f.id); return true; }).slice(0,200);
@@ -236,7 +217,7 @@ export default async function handler(req, res) {
   res.json({
     date:targetDate, total:tips.length, todayCount, previousCount, wonCount, lostCount, pendingCount,
     winRate:tips.length?Math.round((wonCount/tips.length)*100):0, tips, accas,
-    source:`V3.9_REAL_${todayCount}+PREV_${previousCount}_9ACCAs_${debugInfo.fallbackUsed?'FALLBACK_USED':''}`, realOddsCount:realCount,
-    debug: debugInfo, apiKeySet:USE_REAL, quotaExceeded:debugInfo.quotaExceeded, fallbackUsed:debugInfo.fallbackUsed||false
+    source:`V4.0_REAL_${todayCount}+PREV_${previousCount}_9ACCAs_NO_MOCK`, realOddsCount:realCount,
+    debug: debugInfo, apiKeySet:USE_REAL, quotaExceeded:debugInfo.quotaExceeded
   });
 }
