@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const getMinus = (ds, sub) => { const d=new Date(ds); d.setDate(d.getDate()-sub); return d.toISOString().split('T')[0]; };
   const todayStr = getToday();
   let targetDate = date || todayStr;
-  const API_KEY = process.env.FOOTBALL_API_KEY || process.env.API_FOOTBALL_KEY || "";
+  const API_KEY = process.env.FOOTBALL_API_KEY || PROCESS.env.FOOTBALL_API_KEY || "";
   const USE_REAL = !!API_KEY;
 
   const HIGH = {
