@@ -1,173 +1,1012 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><style>
-@font-face {
-  font-family: "Optimistic";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Optimistic Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
-}
-:where(html) {
-  font-family: "Optimistic", system-ui, sans-serif;
-}
-:where(code, pre, kbd, samp) {
-  font-family: "Optimistic Mono", ui-monospace, monospace;
-}
-</style>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GoalPredict247 - 1 Card Per Game - 6 Markets Inside</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-.scrollbar-hide::-webkit-scrollbar{display:none}
-.scrollbar-hide{-ms-overflow-style:none; scrollbar-width:none}
-.acca-scroll{display:flex; gap:12px; overflow-x:auto; padding-bottom:12px; scroll-snap-type:x mandatory}
-.acca-card{min-width:340px; max-width:340px; scroll-snap-align:start; flex-shrink:0}
-@media(max-width:767px){.acca-card{min-width:88vw!important; max-width:88vw!important}}
-.live-dot{animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.toast{position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#22c55e; color:#000; padding:8px 14px; border-radius:6px; font-size:11px; font-weight:bold; z-index:9999; display:none}
-.collapse-content{overflow:hidden; transition:grid-template-rows 0.3s ease; display:grid}
-.collapse-content.collapsed{grid-template-rows:0fr}
-.collapse-content.expanded{grid-template-rows:1fr}
-.collapse-inner{overflow:hidden}
-.market-chip{cursor:pointer; transition:all 0.2s}
-.market-chip.active{background:white!important; color:black!important}
-</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoalPredict247 - 1 Card Per Game - 6 Markets Inside</title>
+  <meta name="description" content="GoalPredict247 football betting cards and accas.">
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --panel: #1a1a1a;
+      --panel-2: #131313;
+      --line: #2a2a2a;
+      --text: #f5f5f5;
+      --muted: #9ca3af;
+      --green: #22c55e;
+      --green-soft: rgba(34, 197, 94, .15);
+      --red: #ef4444;
+      --amber: #eab308;
+      --shadow: 0 12px 28px rgba(0,0,0,.24);
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--bg); }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    button { font: inherit; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(8px);
+      background: rgba(15,15,15,.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner,
+    .wrap {
+      width: min(1200px, calc(100% - 24px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 62px;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--green);
+      color: #08130d;
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: .04em;
+      box-shadow: 0 8px 18px rgba(34,197,94,.18);
+    }
+
+    .brand-copy { min-width: 0; }
+    .brand-copy h1 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+    .brand-copy p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .live-pill,
+    .mini-btn,
+    .action-btn,
+    .market-chip,
+    .slip-action,
+    .acca-action {
+      border: 1px solid transparent;
+      border-radius: 6px;
+      transition: transform .16s ease, opacity .16s ease, background .16s ease, border-color .16s ease;
+    }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 10px;
+      background: rgba(255,255,255,.03);
+      color: #ddd;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 1.8s infinite ease-in-out;
+      box-shadow: 0 0 0 0 rgba(34,197,94,.5);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(.9); opacity: .6; }
+    }
+
+    .mini-btn,
+    .action-btn,
+    .acca-action,
+    .slip-action {
+      cursor: pointer;
+      outline: none;
+    }
+
+    .mini-btn {
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-size: 14px;
+      display: inline-grid;
+      place-items: center;
+    }
+
+    .mini-btn:hover,
+    .action-btn:hover,
+    .market-chip:hover,
+    .acca-action:hover,
+    .slip-action:hover {
+      transform: translateY(-1px);
+    }
+
+    .wrap {
+      padding-top: 18px;
+      padding-bottom: 30px;
+    }
+
+    .summary {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .summary strong {
+      font-size: 13px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .summary small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .summary-stats {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .summary-stats > div {
+      text-align: center;
+      min-width: 54px;
+    }
+    .summary-stats p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .summary-stats strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 16px;
+      color: var(--text);
+    }
+    .summary-stats .divider {
+      width: 1px;
+      height: 24px;
+      background: var(--line);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 14px 12px;
+      margin-bottom: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    .share-btn {
+      background: var(--green);
+      color: #061309;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-weight: 800;
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .acca-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scroll-snap-type: x proximity;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .acca-scroll::-webkit-scrollbar { display: none; }
+
+    .acca-card {
+      flex: 0 0 340px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 12px 10px;
+      scroll-snap-align: start;
+      box-shadow: var(--shadow);
+    }
+
+    .acca-card[data-status="WON"] { border-left-color: var(--green); }
+    .acca-card[data-status="LOST"] { border-left-color: var(--red); }
+    .acca-card[data-status="PENDING"] { border-left-color: var(--amber); }
+
+    .acca-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .acca-info { min-width: 0; flex: 1; }
+    .acca-info strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .acca-info span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .acca-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .acca-action {
+      width: 28px;
+      height: 28px;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-size: 11px;
+    }
+    .acca-action.share {
+      background: var(--green);
+      color: #05140a;
+      font-weight: 900;
+    }
+
+    .collapse-content {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height .22s ease;
+    }
+    .collapse-content.open { max-height: 300px; }
+
+    .acca-games {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+    .acca-game {
+      background: rgba(255,255,255,.025);
+      border: 1px solid rgba(255,255,255,.04);
+      border-radius: 5px;
+      padding: 8px 10px;
+    }
+    .acca-game strong {
+      display: block;
+      font-size: 11px;
+      margin-bottom: 3px;
+    }
+    .acca-game span {
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: .02em;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .tip-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 12px 10px;
+      box-shadow: var(--shadow);
+    }
+    .tip-card[data-status="WON"] { border-left-color: var(--green); }
+    .tip-card[data-status="LOST"] { border-left-color: var(--red); }
+    .tip-card[data-status="PENDING"] { border-left-color: var(--amber); }
+
+    .tip-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .tip-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 5px;
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .tip-state {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 72px;
+      padding: 5px 8px;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+    }
+    .tip-card[data-status="WON"] .tip-state { background: var(--green-soft); color: var(--green); }
+    .tip-card[data-status="LOST"] .tip-state { background: rgba(239,68,68,.12); color: var(--red); }
+    .tip-card[data-status="PENDING"] .tip-state { background: rgba(234,179,8,.12); color: var(--amber); }
+
+    .tip-card h3 {
+      margin: 0 0 5px;
+      font-size: 14px;
+      line-height: 1.35;
+      letter-spacing: .02em;
+    }
+    .tip-card .sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .market-chip {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.05);
+      background: rgba(255,255,255,.04);
+      padding: 8px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: left;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .market-chip.won { background: rgba(34,197,94,.12); color: #b6f0c8; border-color: rgba(34,197,94,.25); }
+    .market-chip.lost { background: rgba(239,68,68,.12); color: #f9b3b3; border-color: rgba(239,68,68,.25); }
+
+    .market-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .market-odd { white-space: nowrap; }
+
+    .tip-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .action-btn {
+      padding: 9px 10px;
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 6px;
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .action-btn.primary {
+      background: var(--green);
+      border-color: transparent;
+      color: #08130d;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 76px;
+      transform: translateX(-50%);
+      z-index: 50;
+      background: var(--green);
+      color: #08130d;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 8px 12px;
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      display: none;
+    }
+
+    .slip-btn {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 40;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      color: #111;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+    .slip-btn.show { display: inline-flex; }
+    .slip-odds {
+      background: #111;
+      color: #fff;
+      border-radius: 5px;
+      padding: 3px 6px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .slip-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 60;
+    }
+    .slip-modal.show { display: flex; }
+
+    .slip-panel {
+      width: min(480px, 100%);
+      max-height: 80vh;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .slip-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .slip-head h3 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .slip-close {
+      width: 28px;
+      height: 28px;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .slip-list {
+      max-height: 46vh;
+      overflow: auto;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .slip-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--bg);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 6px;
+      padding: 9px 10px;
+    }
+    .slip-item strong {
+      display: block;
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .slip-item span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+    .slip-remove {
+      width: 24px;
+      height: 24px;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 5px;
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .slip-footer {
+      padding: 14px 16px 16px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 12px;
+    }
+    .slip-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .slip-buttons {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 8px;
+    }
+    .slip-action {
+      min-height: 42px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .slip-action.primary {
+      background: var(--green);
+      border-color: transparent;
+      color: #091a10;
+    }
+
+    @media (max-width: 900px) {
+      .cards { grid-template-columns: 1fr 1fr; }
+      .brand-copy p { white-space: normal; }
+    }
+
+    @media (max-width: 720px) {
+      .summary {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .summary-stats {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .cards { grid-template-columns: 1fr; }
+      .acca-card { flex-basis: 88vw; }
+      .tip-actions { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-<body class="bg-[#0f0f0f] text-white">
-<div id="toast" class="toast"></div>
-<header class="sticky top-0 z-50 bg-[#0f0f0f] border-b border-[#222] px-4 py-3">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
-    <div class="flex items-center gap-3"><div class="w-10 h-10 bg-green-500 rounded-[6px] flex items-center justify-center font-bold text-black">G247</div><div><h1 class="font-bold text-[16px]">GoalPredict247</h1><p class="text-[10px] text-gray-400">1 CARD PER GAME • 6 MARKETS • DIVERSIFIED ACCA</p></div></div>
-    <div class="flex items-center gap-2"><span class="flex items-center gap-1 text-[10px] bg-[#1a1a1a] px-2 py-1 rounded-[4px]"><span class="w-2 h-2 bg-green-500 rounded-full live-dot"></span>LIVE</span><button onclick="fetchTips(currentDate,true)" class="w-9 h-9 bg-[#1a1a1a] rounded-[6px] flex items-center justify-center"><i class="fas fa-rotate text-[12px]"></i></button></div>
-  </div>
-</header>
+<body>
+  <div id="toast" class="toast" aria-live="polite"></div>
 
-<div class="max-w-7xl mx-auto px-3 md:px-4 py-4">
-  <div class="bg-[#1a1a1a] rounded-[6px] p-3 mb-4 flex items-center justify-between">
-    <div><p class="font-bold text-[13px]" id="dateLabel">TODAY • 1 CARD PER GAME</p><p class="text-[10px] text-gray-400">6 markets inside each card • Each market win/loss</p></div>
-    <div class="flex gap-2 text-center"><div><p class="text-[10px] text-gray-400">GAMES</p><p id="total" class="font-bold">0</p></div><div class="w-px bg-[#222]"></div><div><p class="text-[10px] text-gray-400">ACCA</p><p class="font-bold text-green-500">10</p></div></div>
-  </div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand" aria-label="GoalPredict247 brand">
+        <div class="brand-mark">G247</div>
+        <div class="brand-copy">
+          <h1>GoalPredict247</h1>
+          <p>1 CARD PER GAME • 6 MARKETS • DIVERSIFIED ACCA</p>
+        </div>
+      </div>
 
-  <div class="bg-[#1a1a1a] rounded-[6px] p-3 md:p-4 mb-4">
-    <div class="flex items-center justify-between gap-2 mb-3">
-      <h2 class="font-bold text-[13px]"><i class="fas fa-fire text-orange-500"></i> 10 ACCAs • DIVERSIFIED • ONE CUT WON'T KILL ALL</h2>
-      <button onclick="shareCompleteAcca()" class="bg-[#25D366] text-black text-[10px] font-bold px-3 py-1.5 rounded-[4px]">SHARE ALL</button>
+      <div class="top-actions">
+        <span class="live-pill"><span class="live-dot"></span>Live</span>
+        <button type="button" class="mini-btn" aria-label="Refresh tips" onclick="fetchTips(currentDate, true)">↻</button>
+      </div>
     </div>
-    <div class="acca-scroll scrollbar-hide" id="accas"></div>
-    <p class="text-[9px] text-gray-500 mt-2">Diversified: Same game with different markets across ACCAs - One cut won't kill all - Low games: reuse with different market</p>
+  </header>
+
+  <main class="wrap">
+    <section class="summary" aria-label="Daily summary">
+      <div>
+        <strong id="dateLabel">TODAY • 1 CARD PER GAME</strong>
+        <small>6 markets inside each card • each market win/loss</small>
+      </div>
+
+      <div class="summary-stats" aria-label="Games and accas overview">
+        <div>
+          <p>Games</p>
+          <strong id="total">0</strong>
+        </div>
+        <div class="divider" aria-hidden="true"></div>
+        <div>
+          <p>Acca</p>
+          <strong style="color: var(--green);">10</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="acca-title">
+      <div class="panel-head">
+        <h2 id="acca-title">🔥 10 ACCAs • diversified • one cut won't kill all</h2>
+        <button type="button" class="share-btn" onclick="shareCompleteAcca()">Share all</button>
+      </div>
+      <div id="accas" class="acca-scroll" aria-live="polite"></div>
+      <p style="margin: 10px 0 0; color: var(--muted); font-size: 9px; letter-spacing: .04em; text-transform: uppercase;">
+        diversified: same game with different markets across accas • low games: reuse with different market
+      </p>
+    </section>
+
+    <section id="tips" class="cards" aria-live="polite"></section>
+  </main>
+
+  <button id="slipBtn" class="slip-btn" type="button" aria-label="Open bet slip" onclick="openSlip()">
+    <span>Slip</span>
+    <span id="slipCount">(0)</span>
+    <span id="slipOdds" class="slip-odds">@1.00</span>
+  </button>
+
+  <div id="slipModal" class="slip-modal" aria-hidden="true">
+    <div class="slip-panel" role="dialog" aria-modal="true" aria-labelledby="slipTitle">
+      <div class="slip-head">
+        <h3 id="slipTitle">Bet Slip • <span id="slipModalCount">0</span></h3>
+        <button type="button" class="slip-close" aria-label="Close slip" onclick="closeSlip()">✕</button>
+      </div>
+
+      <div id="slipList" class="slip-list"></div>
+
+      <div class="slip-footer">
+        <div class="slip-total">
+          <span>Total:</span>
+          <span id="slipTotalOdds">@1.00</span>
+        </div>
+
+        <div class="slip-buttons">
+          <button type="button" class="slip-action" onclick="clearSlip()">Clear</button>
+          <button type="button" class="slip-action primary" onclick="shareSlip()">Share</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div id="tips" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
-</div>
+  <script>
+    const POLL_MS = 120000;
+    let currentDate = new Date().toISOString().split('T')[0];
+    let allTips = [];
+    let allAccas = {};
+    let slip = [];
 
-<div id="slipBtn" onclick="openSlip()" class="fixed bottom-4 right-4 bg-white text-black rounded-[8px] px-4 py-3 font-bold text-[12px] shadow-xl cursor-pointer z-40 hidden items-center gap-2"><i class="fas fa-receipt"></i><span id="slipCount">SLIP (0)</span><span id="slipOdds" class="bg-black text-white px-1.5 py-0.5 rounded-[3px] text-[10px]">@1.00</span></div>
-<div id="slipModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end md:items-center justify-center p-3"><div class="bg-[#1a1a1a] rounded-[6px] w-full max-w-md max-h-[80vh] flex flex-col"><div class="p-4 border-b border-[#222] flex justify-between items-center"><h3 class="font-bold text-[14px]">BET SLIP • <span id="slipModalCount">0</span></h3><button onclick="closeSlip()" class="w-7 h-7 bg-[#222] rounded-[4px] flex items-center justify-center"><i class="fas fa-xmark text-[12px]"></i></button></div><div id="slipList" class="flex-1 overflow-y-auto p-3 space-y-2"></div><div class="p-4 border-t border-[#222] space-y-2"><div class="flex justify-between font-bold text-[13px]"><span>Total:</span><span id="slipTotalOdds">@1.00</span></div><div class="flex gap-2"><button onclick="clearSlip()" class="flex-1 bg-[#222] text-white py-2.5 rounded-[6px] font-bold text-[11px]">CLEAR</button><button onclick="shareSlip()" class="flex-[2] bg-[#25D366] text-black py-2.5 rounded-[6px] font-bold text-[11px]">SHARE</button></div></div></div></div>
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => t.style.display = 'none', 1800);
+    }
 
-<script>
-let currentDate = new Date().toISOString().split('T')[0];
-let allTips = []; let allAccas = {}; let slip = [];
-function toast(m){const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2000);}
-async function fetchTips(date,force){
-  currentDate = date||currentDate;
-  if(!force) document.getElementById('tips').innerHTML = '<div class="col-span-full text-center py-16"><i class="fas fa-spinner fa-spin"></i><p class="text-[11px] text-gray-400 mt-2">Loading...</p></div>';
-  try{
-    const r = await fetch(`/api/update?date=${currentDate}`);
-    const j = await r.json();
-    allTips=j.tips||[]; allAccas=j.accas||[];
-    document.getElementById('total').textContent=j.fixturesCount||0;
-    document.getElementById('dateLabel').textContent=(j.date||currentDate)+' • '+j.fixturesCount+' GAMES • 1 CARD PER GAME';
-    renderAccas(); renderTips();
-  }catch(e){
-    document.getElementById('tips').innerHTML='<p class="text-center text-[11px] text-gray-500 py-10">No games today</p>';
-  }
-}
-function renderAccas(){
-  const c=document.getElementById('accas');
-  const order=['ov15_2odds','ov15_3odds','ov15_5odds','ov25_5odds','btts_5odds','corners_5odds','home15_5odds','away15_5odds','mixed_10odds','super_20odds'];
-  c.innerHTML=order.map(key=>{
-    const a=allAccas[key]; if(!a||!a.games||a.games.length===0) return '';
-    const col=a.result==='WON'?'border-green-500':a.result==='LOST'?'border-red-500':'border-[#2a2a2a]';
-    return `<div class="acca-card bg-[#0f0f0f] border ${col} rounded-[6px] p-3">
-      <div class="flex justify-between items-start gap-2 cursor-pointer" onclick="toggleAcca(this)">
-        <div class="flex-1 min-w-0"><p class="font-bold text-[12px]">${a.name} <i class="fas fa-chevron-down chevron text-[9px] text-gray-400 ml-1"></i></p><p class="text-[10px] text-gray-400 mt-1">${a.count} games • ${a.totalOdd} odds • ${a.result}</p></div>
-        <div class="flex gap-1 flex-shrink-0" onclick="event.stopPropagation()"><button onclick="addAccaToSlip('${key}')" class="w-7 h-7 bg-[#222] rounded-[4px] flex items-center justify-center"><i class="fas fa-plus text-[10px]"></i></button><button onclick="shareAcca('${key}')" class="w-7 h-7 bg-[#25D366] rounded-[4px] flex items-center justify-center"><i class="fab fa-whatsapp text-black text-[11px]"></i></button></div>
-      </div>
-      <div class="collapse-content collapsed"><div class="collapse-inner"><div class="mt-3 space-y-2">
-        ${a.games.map(g=>`<div class="bg-[#1a1a1a] rounded-[4px] p-2.5"><p class="text-[11px] font-bold">${g.match}</p><p class="text-[9px] text-gray-400">${g.league} • ${g.market} @${g.odd} • ${g.result}</p></div>`).join('')}
-      </div></div></div>
-    </div>`;
-  }).join('');
-}
-function toggleAcca(header){const content=header.nextElementSibling; const chev=header.querySelector('.chevron'); if(content.classList.contains('collapsed')){content.classList.remove('collapsed'); content.classList.add('expanded'); chev.classList.add('rotated');}else{content.classList.add('collapsed'); content.classList.remove('expanded'); chev.classList.remove('rotated');}}
-function renderTips(){
-  const c=document.getElementById('tips');
-  c.innerHTML=allTips.map(t=>{
-    const cardCol=t.cardResult==='WON'?'#22c55e':t.cardResult==='LOST'?'#ef4444':'#eab308';
-    return `<div class="bg-[#1a1a1a] rounded-[6px] p-3 border-l-[4px]" style="border-color:${cardCol}">
-      <div class="flex justify-between gap-2 mb-2"><span class="text-[10px] bg-[#222] px-2 py-1 rounded-[4px]">${t.league} • ${t.time}</span><span class="text-[10px] px-2 py-1 rounded-[4px] font-bold" style="background:${cardCol}20;color:${cardCol}">${t.cardResult} ${t.wonMarkets}W-${t.lostMarkets}L</span></div>
-      <p class="font-bold text-[14px]">${t.match}</p>
-      <p class="text-[11px] text-gray-400 mt-1">6 markets • Click market to add to slip</p>
-      <div class="grid grid-cols-2 gap-1.5 mt-3">
-        ${t.markets.map(m=>{
-          const col=m.result==='WON'?'bg-green-500/20 text-green-400':m.result==='LOST'?'bg-red-500/20 text-red-400':'bg-[#222] text-white';
-          return `<button onclick="addToSlip('${t.match.replace(/'/g,"")}', '${m.tip}', '${m.odd}', '${t.league}', '${m.market}')" class="market-chip ${col} text-[10px] font-bold px-2 py-2 rounded-[4px] flex justify-between"><span>${m.market}</span><span>@${m.odd} ${m.result==='WON'?'✓':m.result==='LOST'?'✗':''}</span></button>`;
-        }).join('')}
-      </div>
-      <div class="flex gap-2 mt-3">
-        <button onclick="addGameToSlip('${t.match.replace(/'/g,"")}', ${t.fixtureId})" class="flex-1 bg-[#222] text-white py-2 rounded-[4px] font-bold text-[11px]">ADD BEST TO SLIP</button>
-        <button onclick="shareGame('${t.match.replace(/'/g,"")}', '${t.league}')" class="flex-1 bg-[#25D366] text-black py-2 rounded-[4px] font-bold text-[11px]">SHARE</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-function addToSlip(match,tip,odd,league,market){
-  if(slip.find(s=>s.match===match && s.tip===tip)) {toast('Already in slip'); return;}
-  slip.push({match,tip,odd:parseFloat(odd),league,market});
-  updateSlipUI(); toast(`Added: ${match} ${market}`);
-}
-function addGameToSlip(match, fixtureId){
-  const game = allTips.find(t=>t.fixtureId===fixtureId);
-  if(!game) return;
-  const best = game.markets.sort((a,b)=>b.winProb-a.winProb)[0];
-  addToSlip(match, best.tip, best.odd, game.league, best.market);
-}
-function addAccaToSlip(key){
-  const a=allAccas[key]; if(!a) return;
-  a.games.forEach(g=>{ if(!slip.find(s=>s.match===g.match && s.tip===g.tip)) slip.push({match:g.match,tip:g.tip,odd:parseFloat(g.odd),league:g.league,market:g.market}); });
-  updateSlipUI(); toast(`Added ACCA ${a.name}`);
-}
-function updateSlipUI(){
-  const btn=document.getElementById('slipBtn');
-  if(slip.length===0){btn.classList.add('hidden'); btn.classList.remove('flex'); return;}
-  btn.classList.remove('hidden'); btn.classList.add('flex');
-  document.getElementById('slipCount').textContent=`SLIP (${slip.length})`;
-  const total=slip.reduce((acc,s)=>acc*s.odd,1).toFixed(2);
-  document.getElementById('slipOdds').textContent=`@${total}`;
-  document.getElementById('slipModalCount').textContent=slip.length;
-  document.getElementById('slipTotalOdds').textContent=`@${total}`;
-  document.getElementById('slipList').innerHTML=slip.map((s,i)=>`<div class="bg-[#0f0f0f] rounded-[4px] p-2.5 flex justify-between gap-2"><div class="flex-1 min-w-0"><p class="text-[11px] font-bold truncate">${s.match}</p><p class="text-[9px] text-gray-400">${s.league} • ${s.market} • ${s.tip} @${s.odd}</p></div><button onclick="removeFromSlip(${i})" class="w-6 h-6 bg-[#222] rounded-[3px] flex items-center justify-center"><i class="fas fa-xmark text-[9px]"></i></button></div>`).join('');
-}
-function removeFromSlip(i){slip.splice(i,1); updateSlipUI();}
-function clearSlip(){slip=[]; updateSlipUI(); closeSlip(); toast('Slip cleared');}
-function openSlip(){document.getElementById('slipModal').classList.remove('hidden');}
-function closeSlip(){document.getElementById('slipModal').classList.add('hidden');}
-function shareGame(match,league){let m=`🔥 ${match} - ${league} - 6 markets 👉 ${location.origin}`; window.open(`https://wa.me/?text=${m}`,'_blank');}
-function shareAcca(k){const a=allAccas[k];if(!a)return;let m=`🔥 ${a.name} - ${a.totalOdd} ODDS%0A`;a.games.forEach((g,i)=>{m+=`${i+1}. ${g.match} - ${g.market} ${g.tip} @${g.odd}%0A`});m+=`%0A👉 ${location.origin}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
-function shareCompleteAcca(){let m=`🔥 COMPLETE 10 ACCAs%0A`;Object.values(allAccas).forEach(a=>{if(!a.games)return; m+=`*${a.name} ${a.totalOdd}*%0A`;});m+=`%0A👉 ${location.origin}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
-function shareSlip(){if(slip.length===0)return;const total=slip.reduce((acc,s)=>acc*s.odd,1).toFixed(2);let m=`🔥 SLIP - ${slip.length} games @${total}%0A`;slip.forEach((s,i)=>{m+=`${i+1}. ${s.match} - ${s.market} ${s.tip} @${s.odd}%0A`});m+=`%0A👉 ${location.origin}`;window.open(`https://wa.me/?text=${m}`,'_blank');}
-fetchTips(currentDate);
-setInterval(()=>fetchTips(currentDate,true),60*1000);
-</script>
-<script>(function(){var loc=location.href.replace(/#.*$/," ");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/," ")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/," ")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/," ")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+    async function fetchTips(date, force) {
+      currentDate = date || currentDate;
+      if (!force) {
+        document.getElementById('tips').innerHTML = '<div class="tip-card" style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;min-height:160px;">Loading...</div>';
+      }
+
+      try {
+        const r = await fetch(`/api/update?date=${currentDate}`);
+        const j = await r.json();
+
+        allTips = j.tips || [];
+        allAccas = j.accas || [];
+
+        document.getElementById('total').textContent = j.fixturesCount || 0;
+        document.getElementById('dateLabel').textContent = (j.date || currentDate) + ' • ' + (j.fixturesCount || 0) + ' games • 1 card per game';
+
+        renderAccas();
+        renderTips();
+      } catch (e) {
+        document.getElementById('tips').innerHTML = '<div class="tip-card" style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;min-height:140px;color:#9ca3af;">No games today</div>';
+      }
+    }
+
+    function renderAccas() {
+      const c = document.getElementById('accas');
+      const order = ['ov15_2odds','ov15_3odds','ov15_5odds','ov25_5odds','btts_5odds','corners_5odds','home15_5odds','away15_5odds','mixed_10odds','super_20odds'];
+
+      c.innerHTML = order.map(key => {
+        const a = allAccas[key];
+        if (!a || !a.games || !a.games.length) return '';
+
+        const status = (a.result || 'PENDING').toUpperCase();
+        const gamesHtml = a.games.map(g => `
+          <div class="acca-game">
+            <strong>${g.match}</strong>
+            <span>${g.league} • ${g.market} @${g.odd} • ${g.result}</span>
+          </div>
+        `).join('');
+
+        return `
+          <div class="acca-card" data-status="${status}">
+            <div class="acca-top" onclick="toggleAcca(this)">
+              <div class="acca-info">
+                <strong>${a.name}</strong>
+                <span>${a.count} games • ${a.totalOdd} odds • ${a.result}</span>
+              </div>
+              <div class="acca-actions" onclick="event.stopPropagation()">
+                <button type="button" class="acca-action" aria-label="Add acca to slip" onclick="addAccaToSlip('${key}')">＋</button>
+                <button type="button" class="acca-action share" aria-label="Share acca" onclick="shareAcca('${key}')">W</button>
+              </div>
+            </div>
+            <div class="collapse-content">
+              <div class="acca-games">${gamesHtml}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.querySelectorAll('.acca-top').forEach(el => {
+        const content = el.parentElement.querySelector('.collapse-content');
+        content.classList.add('open');
+      });
+    }
+
+    function toggleAcca(el) {
+      const card = el.parentElement;
+      const content = card.querySelector('.collapse-content');
+      content.classList.toggle('open');
+    }
+
+    function renderTips() {
+      const c = document.getElementById('tips');
+      c.innerHTML = allTips.map(t => {
+        const state = (t.cardResult || 'PENDING').toUpperCase();
+        const marketsHtml = t.markets.map(m => {
+          const outcomeClass = m.result === 'WON' ? 'won' : m.result === 'LOST' ? 'lost' : '';
+          const badge = m.result === 'WON' ? '✓' : m.result === 'LOST' ? '✕' : '';
+          return `
+            <button type="button" class="market-chip ${outcomeClass}" onclick="addToSlip('${String(t.match).replace(/'/g, "")}', '${m.tip}', '${m.odd}', '${t.league}', '${m.market}')">
+              <span class="market-name">${m.market}</span>
+              <span class="market-odd">@${m.odd} ${badge}</span>
+            </button>
+          `;
+        }).join('');
+
+        return `
+          <article class="tip-card" data-status="${state}">
+            <div class="tip-head">
+              <span class="tip-meta">${t.league} • ${t.time}</span>
+              <span class="tip-state">${state} ${t.wonMarkets || 0}W-${t.lostMarkets || 0}L</span>
+            </div>
+
+            <h3>${t.match}</h3>
+            <p class="sub">6 markets • click any market to add to slip</p>
+
+            <div class="market-grid">${marketsHtml}</div>
+
+            <div class="tip-actions">
+              <button type="button" class="action-btn primary" onclick="addGameToSlip('${String(t.match).replace(/'/g, "")}', ${t.fixtureId})">Add best</button>
+              <button type="button" class="action-btn" onclick="shareGame('${String(t.match).replace(/'/g, "")}', '${t.league}')">Share</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function addToSlip(match, tip, odd, league, market) {
+      const key = `${match}::${tip}`;
+      if (slip.some(s => `${s.match}::${s.tip}` === key)) {
+        toast('Already in slip');
+        return;
+      }
+
+      slip.push({ match, tip, odd: parseFloat(odd), league, market });
+      updateSlipUI();
+      toast(`Added: ${match} ${market}`);
+    }
+
+    function addGameToSlip(match, fixtureId) {
+      const game = allTips.find(t => Number(t.fixtureId) === Number(fixtureId));
+      if (!game || !game.markets || !game.markets.length) return;
+      const best = [...game.markets].sort((a, b) => (b.winProb || 0) - (a.winProb || 0))[0];
+      addToSlip(match, best.tip, best.odd, game.league, best.market);
+    }
+
+    function addAccaToSlip(key) {
+      const a = allAccas[key];
+      if (!a || !a.games) return;
+
+      a.games.forEach(g => {
+        const itemKey = `${g.match}::${g.tip}`;
+        if (!slip.some(s => `${s.match}::${s.tip}` === itemKey)) {
+          slip.push({ match: g.match, tip: g.tip, odd: parseFloat(g.odd), league: g.league, market: g.market });
+        }
+      });
+
+      updateSlipUI();
+      toast(`Added ACCA ${a.name}`);
+    }
+
+    function updateSlipUI() {
+      const btn = document.getElementById('slipBtn');
+      const total = slip.reduce((acc, s) => acc * s.odd, 1).toFixed(2);
+
+      if (!slip.length) {
+        btn.classList.remove('show');
+        document.getElementById('slipModal').classList.remove('show');
+        document.getElementById('slipCount').textContent = '(0)';
+        document.getElementById('slipOdds').textContent = '@1.00';
+        document.getElementById('slipTotalOdds').textContent = '@1.00';
+        document.getElementById('slipModalCount').textContent = '0';
+        document.getElementById('slipList').innerHTML = '';
+        return;
+      }
+
+      btn.classList.add('show');
+      document.getElementById('slipCount').textContent = `(${slip.length})`;
+      document.getElementById('slipOdds').textContent = `@${total}`;
+      document.getElementById('slipModalCount').textContent = slip.length;
+      document.getElementById('slipTotalOdds').textContent = `@${total}`;
+      document.getElementById('slipList').innerHTML = slip.map((s, i) => `
+        <div class="slip-item">
+          <div style="flex:1; min-width:0;">
+            <strong>${s.match}</strong>
+            <span>${s.league} • ${s.market} • ${s.tip} @${s.odd}</span>
+          </div>
+          <button type="button" class="slip-remove" aria-label="Remove item" onclick="removeFromSlip(${i})">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function removeFromSlip(i) {
+      slip.splice(i, 1);
+      updateSlipUI();
+    }
+
+    function clearSlip() {
+      slip = [];
+      updateSlipUI();
+      closeSlip();
+      toast('Slip cleared');
+    }
+
+    function openSlip() {
+      document.getElementById('slipModal').classList.add('show');
+      document.getElementById('slipModal').setAttribute('aria-hidden', 'false');
+    }
+
+    function closeSlip() {
+      document.getElementById('slipModal').classList.remove('show');
+      document.getElementById('slipModal').setAttribute('aria-hidden', 'true');
+    }
+
+    function shareGame(match, league) {
+      const text = `🔥 ${match} - ${league} - 6 markets 👉 ${location.origin}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    function shareAcca(key) {
+      const a = allAccas[key];
+      if (!a) return;
+      let text = `🔥 ${a.name} - ${a.totalOdd} ODDS\n`;
+      a.games.forEach((g, i) => { text += `${i + 1}. ${g.match} - ${g.market} ${g.tip} @${g.odd}\n`; });
+      text += `\n👉 ${location.origin}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    function shareCompleteAcca() {
+      let text = '🔥 COMPLETE 10 ACCAs\n';
+      Object.values(allAccas).forEach(a => {
+        if (!a || !a.games) return;
+        text += `*${a.name} ${a.totalOdd}*\n`;
+      });
+      text += `\n👉 ${location.origin}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    function shareSlip() {
+      if (!slip.length) return;
+      const total = slip.reduce((acc, s) => acc * s.odd, 1).toFixed(2);
+      let text = `🔥 SLIP - ${slip.length} games @${total}\n`;
+      slip.forEach((s, i) => { text += `${i + 1}. ${s.match} - ${s.market} ${s.tip} @${s.odd}\n`; });
+      text += `\n👉 ${location.origin}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    fetchTips(currentDate);
+    setInterval(() => fetchTips(currentDate, true), POLL_MS);
+  </script>
+</body>
 </html>
